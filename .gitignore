@@ -1,0 +1,6 @@
+.vscode
+
+pkg/proto/*.pb.go
+bin
+
+nohup.out
