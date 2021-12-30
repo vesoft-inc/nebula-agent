@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package proto;
+
+enum ServiceRole {
+  ALL = 0;
+  META = 1;
+  GRAPH = 2;
+  STORAGE = 3;
+}
+
+message StartServiceRequest {
+  ServiceRole role = 1;
+  string dir = 2;
+}
+
+message StartServiceResponse {}
+
+message StopServiceRequest {
+  ServiceRole role = 1;
+  string dir = 2;
+}
+
+message StopServiceResponse {}
+
+message BanReadWriteRequest {
+  ServiceRole role = 1;
+  string addr = 2;
+}
+
+message BanReadWriteResponse {}
+
+message AllowReadWriteRequest {
+  ServiceRole role = 1;
+  string addr = 2;
+}
+
+message AllowReadWriteResponse {}
+
+service AgentService {
+  rpc StartService(StartServiceRequest) returns (StartServiceResponse);
+  rpc StopService(StopServiceRequest) returns (StopServiceResponse);
+
+  rpc BanReadWrite(BanReadWriteRequest) returns (BanReadWriteResponse);
+  rpc AllowReadWrite(AllowReadWriteRequest) returns (AllowReadWriteResponse);
+}
