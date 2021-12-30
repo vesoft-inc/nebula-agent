@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package proto;
+
+message Local { string path = 1; }
+
+message S3 {
+  string endpoint = 1;
+  string region = 2;
+  string bucket = 3;
+  string path = 4;
+  string storage_class = 5;
+  string access_key = 6;
+  string secret_key = 7;
+}
+
+message HDFS { string remote = 1; }
+
+message Backend {
+  oneof storage {
+    Local local = 1;
+    S3 s3 = 2;
+    HDFS hdfs = 3;
+  }
+}
+
+// every request should include the storage info,
+// because there is no explicit session management in the interface
+message UploadFileRequest {
+  string session_id = 1; // used for external storage session now
+  bool recursively = 2;
+  string source_path = 3;
+  Backend target_backend = 4;
+}
+
+message UploadFileResponse {}
+
+message DownloadFileRequest {
+  string session_id = 1;
+  bool recursively = 2;
+  Backend source_backend = 3;
+  string target_path = 4;
+}
+
+message DownloadFileResponse {}
+
+message MoveDirRequest {
+  string src_path = 1;
+  string dst_path = 2;
+}
+
+message MoveDirResponse {}
+
+message RemoveDirRequest { string path = 1; }
+
+message RemoveDirResponse {}
+
+service StorageService {
+  // UploadFile upload file from agent machine to external storage
+  rpc UploadFile(UploadFileRequest) returns (UploadFileResponse);
+  // DownloadFile download file from external storage to agent machine
+  rpc DownloadFile(DownloadFileRequest) returns (DownloadFileResponse);
+  // MoveDir rename dir in agent machine
+  rpc MoveDir(MoveDirRequest) returns (MoveDirResponse);
+  // RemoveDir delete dir in agent machine
+  rpc RemoveDir(RemoveDirRequest) returns (RemoveDirResponse);
+}
