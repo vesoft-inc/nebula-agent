@@ -31,7 +31,7 @@ func NewS3(b *pb.Backend) (*S3, error) {
 	creds := credentials.NewStaticCredentials(b.GetS3().AccessKey, b.GetS3().SecretKey, "")
 	forcePath := strings.ContainsAny(b.GetS3().GetEndpoint(), ":")
 	sess := session.Must(session.NewSession(&aws.Config{
-		Region:           aws.String("default"),
+		Region:           aws.String(b.GetS3().GetRegion()),
 		Endpoint:         aws.String(b.GetS3().GetEndpoint()),
 		S3ForcePathStyle: aws.Bool(forcePath), // ip:port
 		Credentials:      creds,
@@ -266,10 +266,15 @@ func (s *S3) ListDir(ctx context.Context, uri string) ([]string, error) {
 	names := make([]string, 0)
 	s.client.ListObjectsV2Pages(req, func(p *s3.ListObjectsV2Output, lastPage bool) bool {
 		for _, obj := range p.CommonPrefixes {
-			name, err := filepath.Rel(prefix, *obj.Prefix)
-			if err != nil {
-				log.WithError(err).WithField("key", *obj.Prefix).WithField("prefix", prefix).Error("Get relative path failed")
-				return false
+			var name string
+			if prefix == "/" { // special case: backup root is the bucket root
+				name = *obj.Prefix
+			} else {
+				name, err = filepath.Rel(prefix, *obj.Prefix)
+				if err != nil {
+					log.WithError(err).WithField("key", *obj.Prefix).WithField("prefix", prefix).Error("Get relative path failed")
+					return false
+				}
 			}
 			names = append(names, name)
 		}
