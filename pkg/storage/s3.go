@@ -30,12 +30,22 @@ func NewS3(b *pb.Backend) (*S3, error) {
 
 	creds := credentials.NewStaticCredentials(b.GetS3().AccessKey, b.GetS3().SecretKey, "")
 	forcePath := strings.ContainsAny(b.GetS3().GetEndpoint(), ":")
+	region := "default"
+	if b.GetS3().GetRegion() != "" {
+		region = b.GetS3().GetRegion()
+	}
+
 	sess := session.Must(session.NewSession(&aws.Config{
-		Region:           aws.String(b.GetS3().GetRegion()),
+		Region:           aws.String(region),
 		Endpoint:         aws.String(b.GetS3().GetEndpoint()),
 		S3ForcePathStyle: aws.Bool(forcePath), // ip:port
 		Credentials:      creds,
 	}))
+
+	log.WithField("region", region).
+		WithField("endpoint", b.GetS3().GetEndpoint()).
+		WithField("forcePath", forcePath).
+		Debugf("Try to create s3 backend")
 
 	return &S3{
 		backend: b,
