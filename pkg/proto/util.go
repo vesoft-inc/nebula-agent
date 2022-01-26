@@ -21,6 +21,21 @@ const (
 	S3Type
 )
 
+func (t BackendType) String() string {
+	switch t {
+	case LocalType:
+		return "Local"
+	case HdfsType:
+		return "HDFS"
+	case S3Type:
+		return "S3-compatible"
+	case InvalidType:
+		return "Invalid"
+	default:
+		return "Unknown"
+	}
+}
+
 func ParseType(uri string) BackendType {
 	if strings.HasPrefix(uri, LocalPrefix) {
 		return LocalType

@@ -47,7 +47,7 @@ type ExternalStorage interface {
 }
 
 func New(b *pb.Backend) (ExternalStorage, error) {
-	log.WithField("uri", b.Uri()).Debugf("Create %v stoarge", b.Type())
+	log.WithField("uri", b.Uri()).Debugf("Create type: %s stoarge", b.Type())
 
 	switch b.Type() {
 	case pb.LocalType:
