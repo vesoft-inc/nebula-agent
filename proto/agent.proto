@@ -9,6 +9,12 @@ enum ServiceRole {
   STORAGE = 3;
 }
 
+enum Status {
+  UNKNOWN = 0;
+  RUNNING = 1;
+  EXITED = 2;
+}
+
 message StartServiceRequest {
   ServiceRole role = 1;
   string dir = 2;
@@ -22,6 +28,13 @@ message StopServiceRequest {
 }
 
 message StopServiceResponse {}
+
+message ServiceStatusRequest {
+  ServiceRole role = 1;
+  string dir = 2;
+}
+
+message ServiceStatusResponse { Status status = 1; }
 
 message BanReadWriteRequest {
   ServiceRole role = 1;
@@ -40,6 +53,7 @@ message AllowReadWriteResponse {}
 service AgentService {
   rpc StartService(StartServiceRequest) returns (StartServiceResponse);
   rpc StopService(StopServiceRequest) returns (StopServiceResponse);
+  rpc ServiceStatus(ServiceStatusRequest) returns (ServiceStatusResponse);
 
   rpc BanReadWrite(BanReadWriteRequest) returns (BanReadWriteResponse);
   rpc AllowReadWrite(AllowReadWriteRequest) returns (AllowReadWriteResponse);

@@ -120,3 +120,20 @@ func (ss *StorageServer) RemoveDir(ctx context.Context, req *pb.RemoveDirRequest
 
 	return res, nil
 }
+
+// ExistDir check if file/dir in agent machine
+func (ss *StorageServer) ExistDir(ctx context.Context, req *pb.ExistDirRequest) (*pb.ExistDirResponse, error) {
+	log.WithField("path", req.GetPath()).Debug("Check if dir exist")
+	res := &pb.ExistDirResponse{Exist: false}
+
+	_, err := os.Stat(req.GetPath())
+	if err == nil {
+		res.Exist = true
+		return res, nil
+	}
+	if os.IsNotExist(err) {
+		return res, nil
+	}
+
+	return res, err
+}

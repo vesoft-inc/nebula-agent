@@ -23,10 +23,12 @@ type Client interface {
 	DownloadFile(req *pb.DownloadFileRequest) (*pb.DownloadFileResponse, error)
 	StartService(req *pb.StartServiceRequest) (*pb.StartServiceResponse, error)
 	StopService(req *pb.StopServiceRequest) (*pb.StopServiceResponse, error)
+	ServiceStatus(req *pb.ServiceStatusRequest) (*pb.ServiceStatusResponse, error)
 	BanReadWrite(req *pb.BanReadWriteRequest) (*pb.BanReadWriteResponse, error)
 	AllowReadWrite(req *pb.AllowReadWriteRequest) (*pb.AllowReadWriteResponse, error)
 	MoveDir(req *pb.MoveDirRequest) (*pb.MoveDirResponse, error)
 	RemoveDir(req *pb.RemoveDirRequest) (*pb.RemoveDirResponse, error)
+	ExistDir(req *pb.ExistDirRequest) (*pb.ExistDirResponse, error)
 }
 
 func genSessionId() string {
@@ -102,6 +104,16 @@ func (c *client) RemoveDir(req *pb.RemoveDirRequest) (resp *pb.RemoveDirResponse
 	return c.storage.RemoveDir(c.ctx, req)
 }
 
+func (c *client) ExistDir(req *pb.ExistDirRequest) (resp *pb.ExistDirResponse, err error) {
+	defer func() {
+		if err != nil {
+			err = fmt.Errorf("agent, check dir exist failed: %w", err)
+		}
+	}()
+
+	return c.storage.ExistDir(c.ctx, req)
+}
+
 func (c *client) StartService(req *pb.StartServiceRequest) (resp *pb.StartServiceResponse, err error) {
 	defer func() {
 		if err != nil {
@@ -120,6 +132,16 @@ func (c *client) StopService(req *pb.StopServiceRequest) (resp *pb.StopServiceRe
 	}()
 
 	return c.agent.StopService(c.ctx, req)
+}
+
+func (c *client) ServiceStatus(req *pb.ServiceStatusRequest) (resp *pb.ServiceStatusResponse, err error) {
+	defer func() {
+		if err != nil {
+			err = fmt.Errorf("agent, get service status failed: %w", err)
+		}
+	}()
+
+	return c.agent.ServiceStatus(c.ctx, req)
 }
 
 func (c *client) BanReadWrite(req *pb.BanReadWriteRequest) (resp *pb.BanReadWriteResponse, err error) {
