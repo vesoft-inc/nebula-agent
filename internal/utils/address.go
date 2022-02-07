@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/vesoft-inc/nebula-go/v2/nebula"
+	"github.com/vesoft-inc/nebula-go/v3/nebula"
 )
 
 // ParseAddr parse "xx.xx.xx.xx:xx" to nebula.HostAddr

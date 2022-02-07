@@ -11,7 +11,7 @@ import (
 	"github.com/vesoft-inc/nebula-agent/internal/utils"
 	pb "github.com/vesoft-inc/nebula-agent/pkg/proto"
 	"github.com/vesoft-inc/nebula-agent/pkg/storage"
-	"github.com/vesoft-inc/nebula-go/v2/nebula"
+	"github.com/vesoft-inc/nebula-go/v3/nebula"
 )
 
 // Client is an agent client to call agent service
