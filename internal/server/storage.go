@@ -100,7 +100,15 @@ func (ss *StorageServer) MoveDir(ctx context.Context, req *pb.MoveDirRequest) (*
 	log.WithField("src", req.GetSrcPath()).WithField("dst", req.GetDstPath()).Debug("Rename dir")
 	res := &pb.MoveDirResponse{}
 
-	err := os.Rename(req.GetSrcPath(), req.GetDstPath())
+	_, err := os.Stat(req.GetSrcPath())
+	if err != nil {
+		if os.IsNotExist(err) {
+			return res, fmt.Errorf("%s does not exist", req.GetSrcPath())
+		}
+		return res, fmt.Errorf("get %s status failed: %w", req.GetSrcPath(), err)
+	}
+
+	err = os.Rename(req.GetSrcPath(), req.GetDstPath())
 	if err != nil {
 		return res, err
 	}
