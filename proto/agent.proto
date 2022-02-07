@@ -3,10 +3,11 @@ syntax = "proto3";
 package proto;
 
 enum ServiceRole {
-  ALL = 0;
-  META = 1;
-  GRAPH = 2;
-  STORAGE = 3;
+  UNKNOWN_ROLE = 0;
+  ALL = 1;
+  META = 2;
+  GRAPH = 3;
+  STORAGE = 4;
 }
 
 enum Status {
