@@ -90,7 +90,8 @@ func connect(metaAddr *nebula.HostAddr) (*meta.MetaServiceClient, error) {
 		log.WithError(err).WithField("addr", addr).Error("open meta failed")
 		return nil, err
 	}
-	req := &meta.VerifyClientVersionReq{}
+
+	req := newVerifyClientVersionReq()
 	resp, err := client.VerifyClientVersion(req)
 	if err != nil || resp.Code != nebula.ErrorCode_SUCCEEDED {
 		log.WithError(err).WithField("addr", addr).Error("incompatible version between client and server")
@@ -222,4 +223,11 @@ func (m *NebulaMeta) refreshInfo(services []*meta.ServiceInfo) error {
 	m.services = newServices
 
 	return nil
+}
+
+func newVerifyClientVersionReq() *meta.VerifyClientVersionReq {
+	return &meta.VerifyClientVersionReq{
+		ClientVersion: []byte("3.0.0"),
+		Host: nebula.NewHostAddr(),
+	}
 }
