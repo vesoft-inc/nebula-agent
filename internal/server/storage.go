@@ -79,7 +79,7 @@ func (ss *StorageServer) DownloadFile(ctx context.Context, req *pb.DownloadFileR
 			"dst":        req.GetTargetPath(),
 			"recursive":  req.GetRecursively(),
 		},
-	).Debug("Download file to local machine")
+	).Debug("Download file to local machine.")
 
 	res := &pb.DownloadFileResponse{}
 	sto, err := ss.getStorage(req.GetSessionId(), req.GetSourceBackend())
@@ -97,7 +97,7 @@ func (ss *StorageServer) DownloadFile(ctx context.Context, req *pb.DownloadFileR
 
 // MoveDir rename file/dir in agent machine
 func (ss *StorageServer) MoveDir(ctx context.Context, req *pb.MoveDirRequest) (*pb.MoveDirResponse, error) {
-	log.WithField("src", req.GetSrcPath()).WithField("dst", req.GetDstPath()).Debug("Rename dir")
+	log.WithField("src", req.GetSrcPath()).WithField("dst", req.GetDstPath()).Debug("Rename dir.")
 	res := &pb.MoveDirResponse{}
 
 	_, err := os.Stat(req.GetSrcPath())
@@ -118,7 +118,7 @@ func (ss *StorageServer) MoveDir(ctx context.Context, req *pb.MoveDirRequest) (*
 
 // RemoveDir delete file/dir in agent machine
 func (ss *StorageServer) RemoveDir(ctx context.Context, req *pb.RemoveDirRequest) (*pb.RemoveDirResponse, error) {
-	log.WithField("path", req.GetPath()).Debug("Will delete dir")
+	log.WithField("path", req.GetPath()).Debug("Will delete dir.")
 	res := &pb.RemoveDirResponse{}
 
 	err := os.RemoveAll(req.GetPath())
@@ -131,7 +131,7 @@ func (ss *StorageServer) RemoveDir(ctx context.Context, req *pb.RemoveDirRequest
 
 // ExistDir check if file/dir in agent machine
 func (ss *StorageServer) ExistDir(ctx context.Context, req *pb.ExistDirRequest) (*pb.ExistDirResponse, error) {
-	log.WithField("path", req.GetPath()).Debug("Check if dir exist")
+	log.WithField("path", req.GetPath()).Debug("Check if dir exist.")
 	res := &pb.ExistDirResponse{Exist: false}
 
 	_, err := os.Stat(req.GetPath())

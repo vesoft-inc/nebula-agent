@@ -14,7 +14,7 @@ func ParseAddr(host string) (*nebula.HostAddr, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &nebula.HostAddr{ipAddr[0], nebula.Port(port)}, nil
+	return &nebula.HostAddr{Host: ipAddr[0], Port: nebula.Port(port)}, nil
 }
 
 func StringifyAddr(addr *nebula.HostAddr) string {

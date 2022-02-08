@@ -26,7 +26,7 @@ var (
 
 func main() {
 	flag.Parse()
-	log.WithField("version", GitInfoSHA).Info("start agent server...")
+	log.WithField("version", GitInfoSHA).Info("Start agent server...")
 
 	if *debug {
 		log.SetLevel(log.DebugLevel)
@@ -36,18 +36,18 @@ func main() {
 
 	lis, err := net.Listen("tcp", *agent)
 	if err != nil {
-		log.WithError(err).Fatalf("failed to listen: %v", *agent)
+		log.WithError(err).Fatalf("Failed to listen: %v.", *agent)
 	}
 	var opts []grpc.ServerOption
 	grpcServer := grpc.NewServer(opts...)
 
 	metaCfg, err := clients.NewMetaConfig(*agent, *meta, GitInfoSHA, *hbs)
 	if err != nil {
-		log.WithError(err).Fatalf("failed to create meta config")
+		log.WithError(err).Fatalf("Failed to create meta config.")
 	}
 	agentServer, err := server.NewAgent(metaCfg)
 	if err != nil {
-		log.WithError(err).Fatalf("failed to create agent server")
+		log.WithError(err).Fatalf("Failed to create agent server.")
 	}
 
 	pb.RegisterAgentServiceServer(grpcServer, agentServer)

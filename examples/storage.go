@@ -22,7 +22,7 @@ func main() {
 	ctx := context.TODO()
 	c, err := agent.New(ctx, cfg)
 	if err != nil {
-		log.WithError(err).Fatalln("create agent client error")
+		log.WithError(err).Fatalln("Create agent client error.")
 	}
 
 	uploadReq := &pb.UploadFileRequest{
@@ -30,10 +30,10 @@ func main() {
 		SourcePath:    "local source path",
 		TargetBackend: &pb.Backend{Storage: &pb.Backend_Local{Local: &pb.Local{Path: "local target path"}}},
 	}
-	log.Infoln("start to upload file...")
+	log.Infoln("Start to upload file...")
 	_, e := c.UploadFile(uploadReq)
 	if e != nil {
-		log.WithError(e).Errorln("upload file failed")
+		log.WithError(e).Errorln("Upload file failed.")
 	}
-	log.Infoln("upload file successfully")
+	log.Infoln("Upload file successfully.")
 }

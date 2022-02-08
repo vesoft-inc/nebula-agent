@@ -45,7 +45,7 @@ func NewS3(b *pb.Backend) (*S3, error) {
 	log.WithField("region", region).
 		WithField("endpoint", b.GetS3().GetEndpoint()).
 		WithField("forcePath", forcePath).
-		Debugf("Try to create s3 backend")
+		Debugf("Try to create s3 backend.")
 
 	return &S3{
 		backend: b,
@@ -81,7 +81,7 @@ func (s *S3) downloadToFile(file, key string) error {
 		return fmt.Errorf("download from %s to %s failed: %w", key, file, err)
 	}
 
-	log.Debugf("Download from %s to %s successfully, bytes=%d", key, file, numBytes)
+	log.Debugf("Download from %s to %s successfully, bytes=%d.", key, file, numBytes)
 	return nil
 }
 
@@ -112,7 +112,7 @@ func (s *S3) downloadPrefix(localDir, prefix string) error {
 		return fmt.Errorf("download %s recursively failed: %w", s.backend.Uri(), err)
 	}
 
-	log.Debugf("Download from %s to %s successfully", s.backend.Uri(), localDir)
+	log.Debugf("Download from %s to %s successfully.", s.backend.Uri(), localDir)
 	return nil
 }
 
@@ -147,7 +147,7 @@ func (s *S3) uploadToStorage(key, file string) error {
 		return fmt.Errorf("upload from %s to %s failed: %w", file, key, err)
 	}
 
-	log.Debugf("Upload from %s to %s successfully", file, key)
+	log.Debugf("Upload from %s to %s successfully.", file, key)
 	return nil
 }
 
@@ -168,7 +168,7 @@ func (s *S3) uploadPrefix(prefix, localDir string) error {
 	go func() {
 		// Gather the files to upload by walking the path recursively
 		if err := filepath.Walk(localDir, walker.Walk); err != nil {
-			log.Fatalln("Walk failed:", err)
+			log.WithError(err).Error("Walk failed.")
 		}
 		close(walker)
 	}()
@@ -178,17 +178,17 @@ func (s *S3) uploadPrefix(prefix, localDir string) error {
 	for path := range walker {
 		rel, err := filepath.Rel(localDir, path)
 		if err != nil {
-			log.Fatalln("Unable to get relative path:", path, err)
+			log.WithError(err).Errorf("Unable to get relative path: %s.", path)
 		}
 		key := filepath.Join(prefix, rel)
 
 		err = s.uploadToStorage(key, path)
 		if err != nil {
-			return fmt.Errorf("Upload from %s to %s failed: %w", path, key, err)
+			return fmt.Errorf("upload from %s to %s failed: %w", path, key, err)
 		}
 	}
 
-	log.Debugf("Upload from %s to %s recursively", localDir, s.backend.Uri())
+	log.Debugf("Upload from %s to %s recursively.", localDir, s.backend.Uri())
 	return nil
 }
 
@@ -210,7 +210,7 @@ func (s *S3) ExistDir(ctx context.Context, uri string) bool {
 	b := s.backend.DeepCopy()
 	err := b.SetUri(uri)
 	if err != nil {
-		log.WithError(err).WithField("uri", uri).Error("Check and set uri failed when test ExistDir")
+		log.WithError(err).WithField("uri", uri).Error("Check and set uri failed when test ExistDir.")
 		return false
 	}
 
@@ -259,12 +259,12 @@ func (s *S3) ListDir(ctx context.Context, uri string) ([]string, error) {
 	b := s.backend.DeepCopy()
 	err := b.SetUri(uri)
 	if err != nil {
-		return nil, fmt.Errorf("list dir, check and set s3 uri %s failed: %w", uri, err)
+		return nil, fmt.Errorf("list dir, check and set s3 uri %s failed: %w.", uri, err)
 	}
 
 	prefix := b.GetS3().GetPath()
 	if !strings.HasSuffix(prefix, "/") {
-		// without "/",  we could only get curr prefix
+		// without "/",  we could only get current prefix
 		prefix += "/"
 	}
 	req := &s3.ListObjectsV2Input{
@@ -282,7 +282,7 @@ func (s *S3) ListDir(ctx context.Context, uri string) ([]string, error) {
 			} else {
 				name, err = filepath.Rel(prefix, *obj.Prefix)
 				if err != nil {
-					log.WithError(err).WithField("key", *obj.Prefix).WithField("prefix", prefix).Error("Get relative path failed")
+					log.WithError(err).WithField("key", *obj.Prefix).WithField("prefix", prefix).Error("Get relative path failed.")
 					return false
 				}
 			}
@@ -318,7 +318,7 @@ func (s *S3) RemoveDir(ctx context.Context, uri string) error {
 
 			_, err = s.client.DeleteObject(delReq)
 			if err != nil {
-				log.WithError(err).WithField("key", *obj.Key).Errorf("Delete object %s failedln", *obj.Key)
+				log.WithError(err).WithField("key", *obj.Key).Errorf("Delete object %s failed.", *obj.Key)
 				return false
 			}
 		}

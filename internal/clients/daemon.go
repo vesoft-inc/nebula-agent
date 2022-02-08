@@ -82,7 +82,7 @@ func NewDaemon(s *Service) (*ServiceDaemon, error) {
 // check the service process status by other means in the future
 func (d *ServiceDaemon) Start() error {
 	cmdStr := fmt.Sprintf("cd %s && scripts/nebula.service start %s", d.s.dir, d.s.name)
-	log.WithField("cmd", cmdStr).Debug("Try to start service")
+	log.WithField("cmd", cmdStr).Debug("Try to start service...")
 	cmd := exec.Command("bash", "-c", cmdStr)
 	err := cmd.Run()
 	if err != nil {
@@ -94,7 +94,7 @@ func (d *ServiceDaemon) Start() error {
 
 func (d *ServiceDaemon) Stop() error {
 	cmdStr := fmt.Sprintf("cd %s && scripts/nebula.service stop %s", d.s.dir, d.s.name)
-	log.WithField("cmd", cmdStr).Debug("Try to stop service")
+	log.WithField("cmd", cmdStr).Debug("Try to stop service...")
 	cmd := exec.Command("bash", "-c", cmdStr)
 	err := cmd.Run()
 	if err != nil {
@@ -106,7 +106,7 @@ func (d *ServiceDaemon) Stop() error {
 
 func (d *ServiceDaemon) Status() (pb.Status, error) {
 	cmdStr := fmt.Sprintf("cd %s && scripts/nebula.service status %s", d.s.dir, d.s.name)
-	log.WithField("cmd", cmdStr).Debug("Try to get service's status")
+	log.WithField("cmd", cmdStr).Debug("Try to get service's status.")
 	cmd := exec.Command("bash", "-c", cmdStr)
 	outByte, err := cmd.Output()
 	if err != nil {

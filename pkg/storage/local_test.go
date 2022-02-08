@@ -31,47 +31,47 @@ func toExternal(localname string) string {
 }
 
 func createFile(t *testing.T, filename string) {
-	t.Logf("create file %s", filename)
+	t.Logf("Create file %s.", filename)
 	f, err := os.Create(filename)
 	defer func() {
 		if err = f.Close(); err != nil {
-			t.Errorf("close file %s failed: %s", filename, err.Error())
+			t.Errorf("Close file %s failed: %s.", filename, err.Error())
 		}
 	}()
 
 	if err != nil {
-		t.Errorf("create %s error: %s", filename, err.Error())
+		t.Errorf("Create %s error: %s.", filename, err.Error())
 	} else {
 		if _, err = f.Write([]byte(filename)); err != nil {
-			t.Errorf("write content error: %s", err.Error())
+			t.Errorf("Write content error: %s.", err.Error())
 		}
 	}
 }
 
 func createDir(t *testing.T, dirname string) {
-	t.Logf("create dir %s", dirname)
+	t.Logf("Create dir %s.", dirname)
 	if err := os.MkdirAll(dirname, os.FileMode(0755)); err != nil {
-		t.Errorf("create dir %s failed: %s", dirname, err.Error())
+		t.Errorf("Create dir %s failed: %s.", dirname, err.Error())
 	}
 }
 
 func removeFile(t *testing.T, filename string) {
 	if _, err := os.Stat(filename); os.IsNotExist(err) {
-		t.Logf("%s does not exist", filename)
+		t.Logf("%s does not exist.", filename)
 		return
 	}
 
 	if err := os.Remove(filename); err != nil {
-		t.Errorf("remove %s failed: %s", filename, err.Error())
+		t.Errorf("Remove %s failed: %s.", filename, err.Error())
 	}
-	t.Logf("has removed file %s", filename)
+	t.Logf("Has removed file %s.", filename)
 }
 
 func removeDir(t *testing.T, dirname string) {
 	if err := os.RemoveAll(dirname); err != nil {
-		t.Errorf("remove dir %s failed: %s", dirname, err.Error())
+		t.Errorf("Remove dir %s failed: %s.", dirname, err.Error())
 	}
-	t.Logf("has removed dir %s", dirname)
+	t.Logf("Has removed dir %s.", dirname)
 }
 
 func setup(t *testing.T) {

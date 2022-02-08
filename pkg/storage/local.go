@@ -134,7 +134,7 @@ func (l *Local) Upload(ctx context.Context, externalUri, localPath string, recur
 	dstPath := strings.TrimPrefix(externalUri, pb.LocalPrefix)
 	_, err := os.Stat(dstPath)
 	if !os.IsNotExist(err) {
-		log.WithField("path", externalUri).Info("Path to upload alredy exist")
+		log.WithField("path", externalUri).Info("Path to upload already exist")
 	}
 
 	// check local path
@@ -180,7 +180,7 @@ func (l *Local) Download(ctx context.Context, localPath, externalUri string, rec
 	// check local path
 	isExist, err := IsExist(localPath)
 	if isExist {
-		log.WithField("path", localPath).Info("Path to download alredy exist")
+		log.WithField("path", localPath).Info("Path to download already exist.")
 	}
 	if err != nil {
 		return fmt.Errorf("get local path: %s status failed: %w", localPath, err)
@@ -202,14 +202,14 @@ func (l *Local) Download(ctx context.Context, localPath, externalUri string, rec
 
 func (l *Local) ExistDir(ctx context.Context, uri string) bool {
 	if pb.ParseType(uri) != pb.LocalType {
-		log.Errorf("Invalid local uri type: %s", uri)
+		log.Errorf("Invalid local uri type: %s.", uri)
 		return false
 	}
 
 	p := strings.TrimPrefix(uri, pb.LocalPrefix)
 	exist, err := IsExist(p)
 	if err != nil {
-		log.WithError(err).Errorf("Check exist failed: %s", uri)
+		log.WithError(err).Errorf("Check exist failed: %s.", uri)
 		return false
 	}
 	return exist
