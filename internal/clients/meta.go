@@ -43,7 +43,7 @@ func NewMetaConfig(agentAddr, metaAddr, gitSHA string, hbInterval int) (*MetaCon
 }
 
 // NebulaMeta is the client to communicate with nebula meta servie, such as heartbeat\getMetaInfo.
-// Through which, the agent could get services to moinitor dynamically
+// Through which, the agent could get services to monitor dynamically
 type NebulaMeta struct {
 	client *meta.MetaServiceClient
 	config *MetaConfig
@@ -58,7 +58,7 @@ func NewMeta(config *MetaConfig) (*NebulaMeta, error) {
 	}
 	var err error
 
-	if m.client, err = connect(m.config.MetaAddr); err != nil {
+	if m.client, err = connect(m.config.MetaAddr, m.config.AgentAddr); err != nil {
 		return nil, err
 	}
 
@@ -69,8 +69,8 @@ func NewMeta(config *MetaConfig) (*NebulaMeta, error) {
 // Connect to meta service by given meta address
 // We will reconnect when:
 //   1. the meta service leader changed
-//   2. get individual info from individual meta serivce, such as dir info
-func connect(metaAddr *nebula.HostAddr) (*meta.MetaServiceClient, error) {
+//   2. get individual info from individual meta service, such as dir info
+func connect(metaAddr, agentAddr *nebula.HostAddr) (*meta.MetaServiceClient, error) {
 	addr := utils.StringifyAddr(metaAddr)
 	log.WithField("meta address", addr).Info("try to connect meta service")
 
@@ -91,7 +91,7 @@ func connect(metaAddr *nebula.HostAddr) (*meta.MetaServiceClient, error) {
 		return nil, err
 	}
 
-	req := newVerifyClientVersionReq()
+	req := newVerifyClientVersionReq(agentAddr)
 	resp, err := client.VerifyClientVersion(req)
 	if err != nil || resp.Code != nebula.ErrorCode_SUCCEEDED {
 		log.WithError(err).WithField("addr", addr).Error("incompatible version between client and server")
@@ -131,7 +131,7 @@ func (m *NebulaMeta) heartbeat() error {
 	for {
 		resp, err := m.client.AgentHeartbeat(req)
 		if err != nil {
-			c, err := connect(m.config.MetaAddr)
+			c, err := connect(m.config.MetaAddr, m.config.AgentAddr)
 			if err != nil {
 				return err
 			}
@@ -157,7 +157,7 @@ func (m *NebulaMeta) heartbeat() error {
 				return LeaderNotFoundError
 			}
 			m.config.MetaAddr = resp.GetLeader()
-			c, err := connect(m.config.MetaAddr)
+			c, err := connect(m.config.MetaAddr, m.config.AgentAddr)
 			if err != nil {
 				return err
 			}
@@ -172,10 +172,10 @@ func (m *NebulaMeta) heartbeat() error {
 
 // getMetaDirInfo get individual meta dir info of given meta service.
 // Because follower meta service could not report its dir info to the leader one.
-func getMetaDirInfo(addr *nebula.HostAddr) (*nebula.DirInfo, error) {
-	log.WithField("addr", utils.StringifyAddr(addr)).
-		Debugf("Try to get dir info from meta service: %s\n", utils.StringifyAddr(addr))
-	c, err := connect(addr)
+func getMetaDirInfo(metaAddr, agentAddr *nebula.HostAddr) (*nebula.DirInfo, error) {
+	log.WithField("addr", utils.StringifyAddr(metaAddr)).
+		Debugf("Try to get dir info from meta service: %s\n", utils.StringifyAddr(metaAddr))
+	c, err := connect(metaAddr, agentAddr)
 	if err != nil {
 		return nil, err
 	}
@@ -183,7 +183,7 @@ func getMetaDirInfo(addr *nebula.HostAddr) (*nebula.DirInfo, error) {
 	defer func() {
 		e := c.Close()
 		if e != nil {
-			log.WithError(e).WithField("host", addr.String()).Error("Close error when get meta dir info.")
+			log.WithError(e).WithField("host", metaAddr.String()).Error("Close error when get meta dir info.")
 		}
 	}()
 
@@ -209,7 +209,7 @@ func (m *NebulaMeta) refreshInfo(services []*meta.ServiceInfo) error {
 	for _, s := range services {
 		k := utils.StringifyAddr(s.GetAddr())
 		if s.GetRole() == meta.HostRole_META {
-			d, err := getMetaDirInfo(s.Addr)
+			d, err := getMetaDirInfo(s.Addr, m.config.AgentAddr)
 			if err != nil {
 				return fmt.Errorf("get meta dir for %s failed: %w", k, err)
 			}
@@ -225,9 +225,9 @@ func (m *NebulaMeta) refreshInfo(services []*meta.ServiceInfo) error {
 	return nil
 }
 
-func newVerifyClientVersionReq() *meta.VerifyClientVersionReq {
+func newVerifyClientVersionReq(agentAddr *nebula.HostAddr) *meta.VerifyClientVersionReq {
 	return &meta.VerifyClientVersionReq{
 		ClientVersion: []byte(nebula.Version),
-		Host:          nebula.NewHostAddr(),
+		Host:          agentAddr,
 	}
 }
