@@ -44,7 +44,7 @@ type client struct {
 
 func New(ctx context.Context, cfg *Config) (Client, error) {
 	addr := utils.StringifyAddr(cfg.Addr)
-	log.Debugln("Dail to address ", addr)
+	log.Debugf("Dialing to address %s.", addr)
 	conn, err := grpc.Dial(addr, grpc.WithInsecure())
 	if err != nil {
 		return nil, fmt.Errorf("failed to dial agent service: %w", err)

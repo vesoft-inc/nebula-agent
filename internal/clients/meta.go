@@ -31,11 +31,11 @@ func NewMetaConfig(agentAddr, metaAddr, gitSHA string, hbInterval int) (*MetaCon
 	var err error
 
 	if cfg.AgentAddr, err = utils.ParseAddr(agentAddr); err != nil {
-		log.WithError(err).WithField("address", agentAddr).Info("parse agent address failed")
+		log.WithError(err).WithField("address", agentAddr).Info("Parse agent address failed.")
 		return nil, err
 	}
 	if cfg.MetaAddr, err = utils.ParseAddr(metaAddr); err != nil {
-		log.WithError(err).WithField("address", metaAddr).Info("parse meta service address failed")
+		log.WithError(err).WithField("address", metaAddr).Info("Parse meta service address failed.")
 		return nil, err
 	}
 
