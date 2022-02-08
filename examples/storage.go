@@ -5,7 +5,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	_ "github.com/vesoft-inc/nebula-agent/internal/log"
-	"github.com/vesoft-inc/nebula-go/v2/nebula"
+	"github.com/vesoft-inc/nebula-go/v3/nebula"
 
 	agent "github.com/vesoft-inc/nebula-agent/pkg/client"
 	pb "github.com/vesoft-inc/nebula-agent/pkg/proto"

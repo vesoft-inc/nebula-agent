@@ -8,8 +8,8 @@ import (
 	"github.com/facebook/fbthrift/thrift/lib/go/thrift"
 	log "github.com/sirupsen/logrus"
 	"github.com/vesoft-inc/nebula-agent/internal/utils"
-	"github.com/vesoft-inc/nebula-go/v2/nebula"
-	"github.com/vesoft-inc/nebula-go/v2/nebula/meta"
+	"github.com/vesoft-inc/nebula-go/v3/nebula"
+	"github.com/vesoft-inc/nebula-go/v3/nebula/meta"
 )
 
 const (
@@ -88,6 +88,14 @@ func connect(metaAddr *nebula.HostAddr) (*meta.MetaServiceClient, error) {
 	client := meta.NewMetaServiceClientFactory(transport, pf)
 	if err := client.CC.Open(); err != nil {
 		log.WithError(err).WithField("addr", addr).Error("open meta failed")
+		return nil, err
+	}
+
+	req := newVerifyClientVersionReq()
+	resp, err := client.VerifyClientVersion(req)
+	if err != nil || resp.Code != nebula.ErrorCode_SUCCEEDED {
+		log.WithError(err).WithField("addr", addr).Error("incompatible version between client and server")
+		client.Close()
 		return nil, err
 	}
 
@@ -215,4 +223,11 @@ func (m *NebulaMeta) refreshInfo(services []*meta.ServiceInfo) error {
 	m.services = newServices
 
 	return nil
+}
+
+func newVerifyClientVersionReq() *meta.VerifyClientVersionReq {
+	return &meta.VerifyClientVersionReq{
+		ClientVersion: []byte(nebula.Version),
+		Host:          nebula.NewHostAddr(),
+	}
 }

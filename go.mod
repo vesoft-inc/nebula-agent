@@ -13,9 +13,11 @@ require (
 	github.com/facebook/fbthrift v0.31.1-0.20211129061412-801ed7f9f295
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da
 	github.com/google/uuid v1.3.0
+	github.com/kr/pretty v0.3.0 // indirect
 	github.com/stretchr/testify v1.7.0
-	github.com/vesoft-inc/nebula-go/v2 v2.5.2-0.20211228055601-b5b11a36e453
+	github.com/vesoft-inc/nebula-go/v3 v3.0.0-20220119024722-ab348afbb79d
 	golang.org/x/net v0.0.0-20210805182204-aaa1db679c0d // indirect
 	golang.org/x/sys v0.0.0-20210809222454-d867a43fc93e // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
+	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )
