@@ -111,7 +111,7 @@ func (d *ServiceDaemon) Status() (pb.Status, error) {
 	outByte, err := cmd.Output()
 	if err != nil {
 		log.WithError(err).Errorf("Get status of service %s failed", d.s.name)
-		return pb.Status_UNKNOWN, err
+		return pb.Status_UNKNOWN_STATUS, err
 	}
 
 	// Note: depend on the nebula scripts output now.
@@ -127,5 +127,5 @@ func (d *ServiceDaemon) Status() (pb.Status, error) {
 		return pb.Status_RUNNING, nil
 	}
 
-	return pb.Status_UNKNOWN, fmt.Errorf("unrecognized output: '%s'", outStr)
+	return pb.Status_UNKNOWN_STATUS, fmt.Errorf("unrecognized output: '%s'", outStr)
 }

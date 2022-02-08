@@ -10,7 +10,7 @@ enum ServiceRole {
 }
 
 enum Status {
-  UNKNOWN = 0;
+  UNKNOWN_STATUS = 0;
   RUNNING = 1;
   EXITED = 2;
 }

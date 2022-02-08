@@ -52,7 +52,7 @@ func (a *AgentServer) StopService(ctx context.Context, req *pb.StopServiceReques
 // ServiceStatus return the status(exit or running) of metad/storaged/graphd/all service in agent machine
 func (a *AgentServer) ServiceStatus(ctx context.Context, req *pb.ServiceStatusRequest) (*pb.ServiceStatusResponse, error) {
 	resp := &pb.ServiceStatusResponse{
-		Status: pb.Status_UNKNOWN,
+		Status: pb.Status_UNKNOWN_STATUS,
 	}
 
 	d, err := clients.NewDaemon(clients.FromStatusReq(req))
