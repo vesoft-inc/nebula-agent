@@ -4,10 +4,9 @@ package proto;
 
 enum ServiceRole {
   UNKNOWN_ROLE = 0;
-  ALL = 1;
-  META = 2;
-  GRAPH = 3;
-  STORAGE = 4;
+  META = 1;
+  GRAPH = 2;
+  STORAGE = 3;
 }
 
 enum Status {

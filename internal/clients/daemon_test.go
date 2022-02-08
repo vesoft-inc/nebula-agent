@@ -11,11 +11,11 @@ func TestDaemon(t *testing.T) {
 	assert := assert.New(t)
 	rootDir := "/tmp/nebula-install"
 	startReq := &pb.StartServiceRequest{
-		Role: pb.ServiceRole_ALL,
+		Role: pb.ServiceRole_STORAGE,
 		Dir:  rootDir,
 	}
 	s := FromStartReq(startReq)
-	assert.Equal(s.name, ServiceName_All)
+	assert.Equal(s.name, ServiceName_Storaged)
 	assert.Equal(s.dir, rootDir)
 	d, err := NewDaemon(s)
 	assert.Nil(err)

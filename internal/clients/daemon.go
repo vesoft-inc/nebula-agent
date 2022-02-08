@@ -12,7 +12,6 @@ import (
 type ServiceName string
 
 const (
-	ServiceName_All      ServiceName = "all"
 	ServiceName_Metad    ServiceName = "metad"
 	ServiceName_Storaged ServiceName = "storaged"
 	ServiceName_Graphd   ServiceName = "graphd"
@@ -21,8 +20,6 @@ const (
 
 func toName(r pb.ServiceRole) ServiceName {
 	switch r {
-	case pb.ServiceRole_ALL:
-		return ServiceName_All
 	case pb.ServiceRole_META:
 		return ServiceName_Metad
 	case pb.ServiceRole_STORAGE:
