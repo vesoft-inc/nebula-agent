@@ -227,7 +227,7 @@ func (m *NebulaMeta) refreshInfo(services []*meta.ServiceInfo) error {
 
 func newVerifyClientVersionReq() *meta.VerifyClientVersionReq {
 	return &meta.VerifyClientVersionReq{
-		ClientVersion: []byte("3.0.0"),
-		Host: nebula.NewHostAddr(),
+		ClientVersion: []byte(nebula.Version),
+		Host:          nebula.NewHostAddr(),
 	}
 }
