@@ -49,6 +49,25 @@ func (a *AgentServer) StopService(ctx context.Context, req *pb.StopServiceReques
 	return resp, d.Stop()
 }
 
+// ServiceStatus return the status(exit or running) of metad/storaged/graphd/all service in agent machine
+func (a *AgentServer) ServiceStatus(ctx context.Context, req *pb.ServiceStatusRequest) (*pb.ServiceStatusResponse, error) {
+	resp := &pb.ServiceStatusResponse{
+		Status: pb.Status_UNKNOWN_STATUS,
+	}
+
+	d, err := clients.NewDaemon(clients.FromStatusReq(req))
+	if err != nil {
+		return resp, fmt.Errorf("create service daemon failed when get service status: %w", err)
+	}
+
+	resp.Status, err = d.Status()
+	if err != nil {
+		return resp, fmt.Errorf("get %s status by daemon failed: %w", req.Role, err)
+	}
+
+	return resp, nil
+}
+
 // TODO(spw): should call graphd's corresponding interface
 func (a *AgentServer) BanReadWrite(context.Context, *pb.BanReadWriteRequest) (*pb.BanReadWriteResponse, error) {
 	return nil, nil

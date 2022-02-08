@@ -30,24 +30,24 @@ const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 type ServiceRole int32
 
 const (
-	ServiceRole_ALL     ServiceRole = 0
-	ServiceRole_META    ServiceRole = 1
-	ServiceRole_GRAPH   ServiceRole = 2
-	ServiceRole_STORAGE ServiceRole = 3
+	ServiceRole_UNKNOWN_ROLE ServiceRole = 0
+	ServiceRole_META         ServiceRole = 1
+	ServiceRole_GRAPH        ServiceRole = 2
+	ServiceRole_STORAGE      ServiceRole = 3
 )
 
 var ServiceRole_name = map[int32]string{
-	0: "ALL",
+	0: "UNKNOWN_ROLE",
 	1: "META",
 	2: "GRAPH",
 	3: "STORAGE",
 }
 
 var ServiceRole_value = map[string]int32{
-	"ALL":     0,
-	"META":    1,
-	"GRAPH":   2,
-	"STORAGE": 3,
+	"UNKNOWN_ROLE": 0,
+	"META":         1,
+	"GRAPH":        2,
+	"STORAGE":      3,
 }
 
 func (x ServiceRole) String() string {
@@ -56,6 +56,34 @@ func (x ServiceRole) String() string {
 
 func (ServiceRole) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_56ede974c0020f77, []int{0}
+}
+
+type Status int32
+
+const (
+	Status_UNKNOWN_STATUS Status = 0
+	Status_RUNNING        Status = 1
+	Status_EXITED         Status = 2
+)
+
+var Status_name = map[int32]string{
+	0: "UNKNOWN_STATUS",
+	1: "RUNNING",
+	2: "EXITED",
+}
+
+var Status_value = map[string]int32{
+	"UNKNOWN_STATUS": 0,
+	"RUNNING":        1,
+	"EXITED":         2,
+}
+
+func (x Status) String() string {
+	return proto.EnumName(Status_name, int32(x))
+}
+
+func (Status) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_56ede974c0020f77, []int{1}
 }
 
 type StartServiceRequest struct {
@@ -103,7 +131,7 @@ func (m *StartServiceRequest) GetRole() ServiceRole {
 	if m != nil {
 		return m.Role
 	}
-	return ServiceRole_ALL
+	return ServiceRole_UNKNOWN_ROLE
 }
 
 func (m *StartServiceRequest) GetDir() string {
@@ -197,7 +225,7 @@ func (m *StopServiceRequest) GetRole() ServiceRole {
 	if m != nil {
 		return m.Role
 	}
-	return ServiceRole_ALL
+	return ServiceRole_UNKNOWN_ROLE
 }
 
 func (m *StopServiceRequest) GetDir() string {
@@ -246,6 +274,108 @@ func (m *StopServiceResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_StopServiceResponse proto.InternalMessageInfo
 
+type ServiceStatusRequest struct {
+	Role                 ServiceRole `protobuf:"varint,1,opt,name=role,proto3,enum=proto.ServiceRole" json:"role,omitempty"`
+	Dir                  string      `protobuf:"bytes,2,opt,name=dir,proto3" json:"dir,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}    `json:"-"`
+	XXX_unrecognized     []byte      `json:"-"`
+	XXX_sizecache        int32       `json:"-"`
+}
+
+func (m *ServiceStatusRequest) Reset()         { *m = ServiceStatusRequest{} }
+func (m *ServiceStatusRequest) String() string { return proto.CompactTextString(m) }
+func (*ServiceStatusRequest) ProtoMessage()    {}
+func (*ServiceStatusRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_56ede974c0020f77, []int{4}
+}
+func (m *ServiceStatusRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ServiceStatusRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ServiceStatusRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ServiceStatusRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ServiceStatusRequest.Merge(m, src)
+}
+func (m *ServiceStatusRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *ServiceStatusRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ServiceStatusRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ServiceStatusRequest proto.InternalMessageInfo
+
+func (m *ServiceStatusRequest) GetRole() ServiceRole {
+	if m != nil {
+		return m.Role
+	}
+	return ServiceRole_UNKNOWN_ROLE
+}
+
+func (m *ServiceStatusRequest) GetDir() string {
+	if m != nil {
+		return m.Dir
+	}
+	return ""
+}
+
+type ServiceStatusResponse struct {
+	Status               Status   `protobuf:"varint,1,opt,name=status,proto3,enum=proto.Status" json:"status,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ServiceStatusResponse) Reset()         { *m = ServiceStatusResponse{} }
+func (m *ServiceStatusResponse) String() string { return proto.CompactTextString(m) }
+func (*ServiceStatusResponse) ProtoMessage()    {}
+func (*ServiceStatusResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_56ede974c0020f77, []int{5}
+}
+func (m *ServiceStatusResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ServiceStatusResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ServiceStatusResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ServiceStatusResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ServiceStatusResponse.Merge(m, src)
+}
+func (m *ServiceStatusResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *ServiceStatusResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_ServiceStatusResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ServiceStatusResponse proto.InternalMessageInfo
+
+func (m *ServiceStatusResponse) GetStatus() Status {
+	if m != nil {
+		return m.Status
+	}
+	return Status_UNKNOWN_STATUS
+}
+
 type BanReadWriteRequest struct {
 	Role                 ServiceRole `protobuf:"varint,1,opt,name=role,proto3,enum=proto.ServiceRole" json:"role,omitempty"`
 	Addr                 string      `protobuf:"bytes,2,opt,name=addr,proto3" json:"addr,omitempty"`
@@ -258,7 +388,7 @@ func (m *BanReadWriteRequest) Reset()         { *m = BanReadWriteRequest{} }
 func (m *BanReadWriteRequest) String() string { return proto.CompactTextString(m) }
 func (*BanReadWriteRequest) ProtoMessage()    {}
 func (*BanReadWriteRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_56ede974c0020f77, []int{4}
+	return fileDescriptor_56ede974c0020f77, []int{6}
 }
 func (m *BanReadWriteRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -291,7 +421,7 @@ func (m *BanReadWriteRequest) GetRole() ServiceRole {
 	if m != nil {
 		return m.Role
 	}
-	return ServiceRole_ALL
+	return ServiceRole_UNKNOWN_ROLE
 }
 
 func (m *BanReadWriteRequest) GetAddr() string {
@@ -311,7 +441,7 @@ func (m *BanReadWriteResponse) Reset()         { *m = BanReadWriteResponse{} }
 func (m *BanReadWriteResponse) String() string { return proto.CompactTextString(m) }
 func (*BanReadWriteResponse) ProtoMessage()    {}
 func (*BanReadWriteResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_56ede974c0020f77, []int{5}
+	return fileDescriptor_56ede974c0020f77, []int{7}
 }
 func (m *BanReadWriteResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -352,7 +482,7 @@ func (m *AllowReadWriteRequest) Reset()         { *m = AllowReadWriteRequest{} }
 func (m *AllowReadWriteRequest) String() string { return proto.CompactTextString(m) }
 func (*AllowReadWriteRequest) ProtoMessage()    {}
 func (*AllowReadWriteRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_56ede974c0020f77, []int{6}
+	return fileDescriptor_56ede974c0020f77, []int{8}
 }
 func (m *AllowReadWriteRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -385,7 +515,7 @@ func (m *AllowReadWriteRequest) GetRole() ServiceRole {
 	if m != nil {
 		return m.Role
 	}
-	return ServiceRole_ALL
+	return ServiceRole_UNKNOWN_ROLE
 }
 
 func (m *AllowReadWriteRequest) GetAddr() string {
@@ -405,7 +535,7 @@ func (m *AllowReadWriteResponse) Reset()         { *m = AllowReadWriteResponse{}
 func (m *AllowReadWriteResponse) String() string { return proto.CompactTextString(m) }
 func (*AllowReadWriteResponse) ProtoMessage()    {}
 func (*AllowReadWriteResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_56ede974c0020f77, []int{7}
+	return fileDescriptor_56ede974c0020f77, []int{9}
 }
 func (m *AllowReadWriteResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -436,10 +566,13 @@ var xxx_messageInfo_AllowReadWriteResponse proto.InternalMessageInfo
 
 func init() {
 	proto.RegisterEnum("proto.ServiceRole", ServiceRole_name, ServiceRole_value)
+	proto.RegisterEnum("proto.Status", Status_name, Status_value)
 	proto.RegisterType((*StartServiceRequest)(nil), "proto.StartServiceRequest")
 	proto.RegisterType((*StartServiceResponse)(nil), "proto.StartServiceResponse")
 	proto.RegisterType((*StopServiceRequest)(nil), "proto.StopServiceRequest")
 	proto.RegisterType((*StopServiceResponse)(nil), "proto.StopServiceResponse")
+	proto.RegisterType((*ServiceStatusRequest)(nil), "proto.ServiceStatusRequest")
+	proto.RegisterType((*ServiceStatusResponse)(nil), "proto.ServiceStatusResponse")
 	proto.RegisterType((*BanReadWriteRequest)(nil), "proto.BanReadWriteRequest")
 	proto.RegisterType((*BanReadWriteResponse)(nil), "proto.BanReadWriteResponse")
 	proto.RegisterType((*AllowReadWriteRequest)(nil), "proto.AllowReadWriteRequest")
@@ -449,29 +582,35 @@ func init() {
 func init() { proto.RegisterFile("agent.proto", fileDescriptor_56ede974c0020f77) }
 
 var fileDescriptor_56ede974c0020f77 = []byte{
-	// 343 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x52, 0xcb, 0x4e, 0xc2, 0x40,
-	0x14, 0x65, 0x78, 0x88, 0xdc, 0x12, 0x32, 0xb9, 0x08, 0xc1, 0xaa, 0x0d, 0x61, 0x61, 0x88, 0x0b,
-	0x16, 0xb8, 0x71, 0x3b, 0x44, 0x52, 0x17, 0x20, 0x3a, 0x25, 0x71, 0x5d, 0xed, 0xc4, 0x90, 0x34,
-	0x0c, 0x0e, 0xa3, 0xfe, 0x8a, 0x3f, 0xe2, 0x3f, 0xb8, 0xf4, 0x13, 0x0c, 0xfe, 0x88, 0xe9, 0x03,
-	0xd2, 0x62, 0x5d, 0x98, 0xb0, 0xea, 0x4d, 0xce, 0xb9, 0xe7, 0x9c, 0xde, 0x33, 0x60, 0xb8, 0x8f,
-	0x62, 0xae, 0x7b, 0x0b, 0x25, 0xb5, 0xc4, 0x52, 0xf8, 0xe9, 0x4c, 0xa0, 0xee, 0x68, 0x57, 0x69,
-	0x47, 0xa8, 0x97, 0xd9, 0x83, 0xe0, 0xe2, 0xe9, 0x59, 0x2c, 0x35, 0x9e, 0x42, 0x51, 0x49, 0x5f,
-	0xb4, 0x48, 0x9b, 0x74, 0x6b, 0x7d, 0x8c, 0x76, 0x7a, 0x6b, 0x92, 0xf4, 0x05, 0x0f, 0x71, 0xa4,
-	0x50, 0xf0, 0x66, 0xaa, 0x95, 0x6f, 0x93, 0x6e, 0x85, 0x07, 0x63, 0xa7, 0x09, 0x07, 0x69, 0xc1,
-	0xe5, 0x42, 0xce, 0x97, 0xa2, 0x73, 0x0d, 0xe8, 0x68, 0xb9, 0xd8, 0x99, 0x4f, 0x23, 0x08, 0x9e,
-	0xd0, 0x8b, 0x6d, 0x6e, 0xa1, 0x3e, 0x70, 0xe7, 0x5c, 0xb8, 0xde, 0x9d, 0x9a, 0xe9, 0x7f, 0xfb,
-	0x20, 0x14, 0x5d, 0xcf, 0x5b, 0x1b, 0x85, 0x73, 0xf0, 0x47, 0x69, 0xc9, 0xd8, 0xca, 0x81, 0x06,
-	0xf3, 0x7d, 0xf9, 0xba, 0x53, 0xb3, 0x16, 0x34, 0xb7, 0x45, 0x23, 0xbb, 0xb3, 0x0b, 0x30, 0x12,
-	0x12, 0x58, 0x86, 0x02, 0x1b, 0x8d, 0x68, 0x0e, 0xf7, 0xa1, 0x38, 0x1e, 0x4e, 0x19, 0x25, 0x58,
-	0x81, 0x92, 0xcd, 0xd9, 0xcd, 0x15, 0xcd, 0xa3, 0x01, 0x65, 0x67, 0x3a, 0xe1, 0xcc, 0x1e, 0xd2,
-	0x42, 0xff, 0x3d, 0x0f, 0x55, 0x16, 0x54, 0x1f, 0xef, 0xa3, 0x0d, 0xd5, 0x64, 0x47, 0x68, 0xae,
-	0x23, 0xfe, 0x7e, 0x09, 0xe6, 0x51, 0x26, 0x16, 0x65, 0xc2, 0x4b, 0x30, 0x12, 0x25, 0xe0, 0xe1,
-	0x86, 0xbb, 0x5d, 0xb4, 0x69, 0x66, 0x41, 0xb1, 0x8a, 0x0d, 0xd5, 0xe4, 0x81, 0x37, 0x71, 0x32,
-	0x8a, 0xdc, 0xc4, 0xc9, 0x6a, 0x04, 0xc7, 0x50, 0x4b, 0x1f, 0x0f, 0x8f, 0x63, 0x7a, 0x66, 0x51,
-	0xe6, 0xc9, 0x1f, 0x68, 0x24, 0x37, 0xa0, 0x1f, 0x2b, 0x8b, 0x7c, 0xae, 0x2c, 0xf2, 0xb5, 0xb2,
-	0xc8, 0xdb, 0xb7, 0x95, 0xbb, 0xdf, 0x0b, 0xf9, 0xe7, 0x3f, 0x01, 0x00, 0x00, 0xff, 0xff, 0x36,
-	0x6d, 0x42, 0x0a, 0x4a, 0x03, 0x00, 0x00,
+	// 441 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x92, 0x41, 0x6f, 0x94, 0x40,
+	0x14, 0xc7, 0x77, 0x76, 0xb7, 0x68, 0x1f, 0x74, 0x33, 0x79, 0xed, 0x36, 0x2b, 0x55, 0xd2, 0x90,
+	0x68, 0x9a, 0x1e, 0x7a, 0xa8, 0xf1, 0x6a, 0x42, 0x53, 0x82, 0x55, 0x0b, 0x75, 0x86, 0x4d, 0xbd,
+	0x19, 0x94, 0x89, 0xd9, 0x84, 0x2c, 0x2b, 0x4c, 0xf5, 0xec, 0xb7, 0xf0, 0x23, 0x79, 0xf4, 0x23,
+	0x98, 0xf5, 0x8b, 0x18, 0x60, 0x58, 0x81, 0xe0, 0xc1, 0xb8, 0x27, 0xc8, 0xfc, 0xdf, 0xfc, 0xfe,
+	0xf3, 0xde, 0xfb, 0x83, 0x1e, 0x7d, 0x14, 0x4b, 0x79, 0xb6, 0xca, 0x52, 0x99, 0xe2, 0x4e, 0xf9,
+	0xb1, 0x03, 0xd8, 0xe7, 0x32, 0xca, 0x24, 0x17, 0xd9, 0xe7, 0xc5, 0x07, 0xc1, 0xc4, 0xa7, 0x3b,
+	0x91, 0x4b, 0x7c, 0x02, 0xe3, 0x2c, 0x4d, 0xc4, 0x8c, 0x1c, 0x93, 0x93, 0xc9, 0x39, 0x56, 0x77,
+	0xce, 0xea, 0xa2, 0x34, 0x11, 0xac, 0xd4, 0x91, 0xc2, 0x28, 0x5e, 0x64, 0xb3, 0xe1, 0x31, 0x39,
+	0xd9, 0x65, 0xc5, 0xaf, 0x7d, 0x08, 0x07, 0x6d, 0x60, 0xbe, 0x4a, 0x97, 0xb9, 0xb0, 0x7d, 0x40,
+	0x2e, 0xd3, 0xd5, 0xd6, 0x7c, 0xa6, 0xc5, 0xc3, 0x1b, 0x3c, 0x65, 0x73, 0x03, 0x07, 0xea, 0x88,
+	0xcb, 0x48, 0xde, 0xe5, 0xff, 0x6f, 0xf4, 0x1c, 0xa6, 0x1d, 0x62, 0x65, 0x85, 0x8f, 0x41, 0xcb,
+	0xcb, 0x13, 0x05, 0xdd, 0xab, 0xa1, 0x55, 0x99, 0x12, 0xed, 0x37, 0xb0, 0x7f, 0x11, 0x2d, 0x99,
+	0x88, 0xe2, 0xdb, 0x6c, 0x21, 0xff, 0xb9, 0x73, 0x84, 0x71, 0x14, 0xc7, 0xf5, 0x8b, 0xca, 0xff,
+	0x62, 0xc6, 0x6d, 0xa4, 0x6a, 0x9e, 0xc3, 0xd4, 0x49, 0x92, 0xf4, 0xcb, 0x56, 0xcd, 0x66, 0x70,
+	0xd8, 0x85, 0x56, 0x76, 0xa7, 0x0e, 0xe8, 0x0d, 0x04, 0x52, 0x30, 0xe6, 0xfe, 0x2b, 0x3f, 0xb8,
+	0xf5, 0xdf, 0xb1, 0xe0, 0xb5, 0x4b, 0x07, 0x78, 0x1f, 0xc6, 0xd7, 0x6e, 0xe8, 0x50, 0x82, 0xbb,
+	0xb0, 0xe3, 0x31, 0xe7, 0xe6, 0x05, 0x1d, 0xa2, 0x0e, 0xf7, 0x78, 0x18, 0x30, 0xc7, 0x73, 0xe9,
+	0xe8, 0xf4, 0x19, 0x68, 0xd5, 0xb8, 0x10, 0x61, 0x52, 0xdf, 0xe6, 0xa1, 0x13, 0xce, 0x39, 0x1d,
+	0x14, 0xa5, 0x6c, 0xee, 0xfb, 0x57, 0xbe, 0x47, 0x09, 0x02, 0x68, 0xee, 0xdb, 0xab, 0xd0, 0xbd,
+	0xa4, 0xc3, 0xf3, 0xaf, 0x23, 0x30, 0x9c, 0x22, 0xcc, 0xca, 0x1f, 0x3d, 0x30, 0x9a, 0xa9, 0x43,
+	0xf3, 0xcf, 0x2e, 0xba, 0xd9, 0x36, 0x8f, 0x7a, 0x35, 0xb5, 0xd4, 0x4b, 0xd0, 0x1b, 0xb1, 0xc2,
+	0x07, 0x9b, 0xda, 0x6e, 0x74, 0x4d, 0xb3, 0x4f, 0x52, 0x94, 0x97, 0xb0, 0xd7, 0xca, 0x0c, 0x1e,
+	0xb5, 0x47, 0xde, 0xca, 0xa6, 0xf9, 0xb0, 0x5f, 0x54, 0x2c, 0x0f, 0x8c, 0xe6, 0xb2, 0x37, 0xad,
+	0xf5, 0x84, 0x6a, 0xd3, 0x5a, 0x5f, 0x3a, 0xf0, 0x1a, 0x26, 0xed, 0x45, 0x62, 0x6d, 0xdc, 0x1b,
+	0x1a, 0xf3, 0xd1, 0x5f, 0xd4, 0x0a, 0x77, 0x41, 0xbf, 0xaf, 0x2d, 0xf2, 0x63, 0x6d, 0x91, 0x9f,
+	0x6b, 0x8b, 0x7c, 0xfb, 0x65, 0x0d, 0xde, 0x6b, 0x65, 0xfd, 0xd3, 0xdf, 0x01, 0x00, 0x00, 0xff,
+	0xff, 0x8a, 0x63, 0xf0, 0x47, 0x68, 0x04, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -488,6 +627,7 @@ const _ = grpc.SupportPackageIsVersion4
 type AgentServiceClient interface {
 	StartService(ctx context.Context, in *StartServiceRequest, opts ...grpc.CallOption) (*StartServiceResponse, error)
 	StopService(ctx context.Context, in *StopServiceRequest, opts ...grpc.CallOption) (*StopServiceResponse, error)
+	ServiceStatus(ctx context.Context, in *ServiceStatusRequest, opts ...grpc.CallOption) (*ServiceStatusResponse, error)
 	BanReadWrite(ctx context.Context, in *BanReadWriteRequest, opts ...grpc.CallOption) (*BanReadWriteResponse, error)
 	AllowReadWrite(ctx context.Context, in *AllowReadWriteRequest, opts ...grpc.CallOption) (*AllowReadWriteResponse, error)
 }
@@ -518,6 +658,15 @@ func (c *agentServiceClient) StopService(ctx context.Context, in *StopServiceReq
 	return out, nil
 }
 
+func (c *agentServiceClient) ServiceStatus(ctx context.Context, in *ServiceStatusRequest, opts ...grpc.CallOption) (*ServiceStatusResponse, error) {
+	out := new(ServiceStatusResponse)
+	err := c.cc.Invoke(ctx, "/proto.AgentService/ServiceStatus", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *agentServiceClient) BanReadWrite(ctx context.Context, in *BanReadWriteRequest, opts ...grpc.CallOption) (*BanReadWriteResponse, error) {
 	out := new(BanReadWriteResponse)
 	err := c.cc.Invoke(ctx, "/proto.AgentService/BanReadWrite", in, out, opts...)
@@ -540,6 +689,7 @@ func (c *agentServiceClient) AllowReadWrite(ctx context.Context, in *AllowReadWr
 type AgentServiceServer interface {
 	StartService(context.Context, *StartServiceRequest) (*StartServiceResponse, error)
 	StopService(context.Context, *StopServiceRequest) (*StopServiceResponse, error)
+	ServiceStatus(context.Context, *ServiceStatusRequest) (*ServiceStatusResponse, error)
 	BanReadWrite(context.Context, *BanReadWriteRequest) (*BanReadWriteResponse, error)
 	AllowReadWrite(context.Context, *AllowReadWriteRequest) (*AllowReadWriteResponse, error)
 }
@@ -553,6 +703,9 @@ func (*UnimplementedAgentServiceServer) StartService(ctx context.Context, req *S
 }
 func (*UnimplementedAgentServiceServer) StopService(ctx context.Context, req *StopServiceRequest) (*StopServiceResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method StopService not implemented")
+}
+func (*UnimplementedAgentServiceServer) ServiceStatus(ctx context.Context, req *ServiceStatusRequest) (*ServiceStatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ServiceStatus not implemented")
 }
 func (*UnimplementedAgentServiceServer) BanReadWrite(ctx context.Context, req *BanReadWriteRequest) (*BanReadWriteResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method BanReadWrite not implemented")
@@ -597,6 +750,24 @@ func _AgentService_StopService_Handler(srv interface{}, ctx context.Context, dec
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AgentServiceServer).StopService(ctx, req.(*StopServiceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AgentService_ServiceStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ServiceStatusRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AgentServiceServer).ServiceStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.AgentService/ServiceStatus",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AgentServiceServer).ServiceStatus(ctx, req.(*ServiceStatusRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -648,6 +819,10 @@ var _AgentService_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "StopService",
 			Handler:    _AgentService_StopService_Handler,
+		},
+		{
+			MethodName: "ServiceStatus",
+			Handler:    _AgentService_ServiceStatus_Handler,
 		},
 		{
 			MethodName: "BanReadWrite",
@@ -790,6 +965,77 @@ func (m *StopServiceResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	if m.XXX_unrecognized != nil {
 		i -= len(m.XXX_unrecognized)
 		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ServiceStatusRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ServiceStatusRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ServiceStatusRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.Dir) > 0 {
+		i -= len(m.Dir)
+		copy(dAtA[i:], m.Dir)
+		i = encodeVarintAgent(dAtA, i, uint64(len(m.Dir)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Role != 0 {
+		i = encodeVarintAgent(dAtA, i, uint64(m.Role))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ServiceStatusResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ServiceStatusResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ServiceStatusResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.Status != 0 {
+		i = encodeVarintAgent(dAtA, i, uint64(m.Status))
+		i--
+		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
@@ -993,6 +1239,40 @@ func (m *StopServiceResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ServiceStatusRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Role != 0 {
+		n += 1 + sovAgent(uint64(m.Role))
+	}
+	l = len(m.Dir)
+	if l > 0 {
+		n += 1 + l + sovAgent(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ServiceStatusResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Status != 0 {
+		n += 1 + sovAgent(uint64(m.Status))
+	}
 	if m.XXX_unrecognized != nil {
 		n += len(m.XXX_unrecognized)
 	}
@@ -1351,6 +1631,178 @@ func (m *StopServiceResponse) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: StopServiceResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipAgent(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthAgent
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ServiceStatusRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowAgent
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ServiceStatusRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ServiceStatusRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Role", wireType)
+			}
+			m.Role = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAgent
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Role |= ServiceRole(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Dir", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAgent
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthAgent
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthAgent
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Dir = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipAgent(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthAgent
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ServiceStatusResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowAgent
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ServiceStatusResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ServiceStatusResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Status", wireType)
+			}
+			m.Status = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAgent
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Status |= Status(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipAgent(dAtA[iNdEx:])

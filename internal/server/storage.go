@@ -100,7 +100,15 @@ func (ss *StorageServer) MoveDir(ctx context.Context, req *pb.MoveDirRequest) (*
 	log.WithField("src", req.GetSrcPath()).WithField("dst", req.GetDstPath()).Debug("Rename dir")
 	res := &pb.MoveDirResponse{}
 
-	err := os.Rename(req.GetSrcPath(), req.GetDstPath())
+	_, err := os.Stat(req.GetSrcPath())
+	if err != nil {
+		if os.IsNotExist(err) {
+			return res, fmt.Errorf("%s does not exist", req.GetSrcPath())
+		}
+		return res, fmt.Errorf("get %s status failed: %w", req.GetSrcPath(), err)
+	}
+
+	err = os.Rename(req.GetSrcPath(), req.GetDstPath())
 	if err != nil {
 		return res, err
 	}
@@ -119,4 +127,21 @@ func (ss *StorageServer) RemoveDir(ctx context.Context, req *pb.RemoveDirRequest
 	}
 
 	return res, nil
+}
+
+// ExistDir check if file/dir in agent machine
+func (ss *StorageServer) ExistDir(ctx context.Context, req *pb.ExistDirRequest) (*pb.ExistDirResponse, error) {
+	log.WithField("path", req.GetPath()).Debug("Check if dir exist")
+	res := &pb.ExistDirResponse{Exist: false}
+
+	_, err := os.Stat(req.GetPath())
+	if err == nil {
+		res.Exist = true
+		return res, nil
+	}
+	if os.IsNotExist(err) {
+		return res, nil
+	}
+
+	return res, err
 }

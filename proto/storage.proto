@@ -55,13 +55,20 @@ message RemoveDirRequest { string path = 1; }
 
 message RemoveDirResponse {}
 
+message ExistDirRequest { string path = 1; }
+
+message ExistDirResponse { bool exist = 1; }
+
 service StorageService {
   // UploadFile upload file from agent machine to external storage
   rpc UploadFile(UploadFileRequest) returns (UploadFileResponse);
   // DownloadFile download file from external storage to agent machine
   rpc DownloadFile(DownloadFileRequest) returns (DownloadFileResponse);
+
   // MoveDir rename dir in agent machine
   rpc MoveDir(MoveDirRequest) returns (MoveDirResponse);
   // RemoveDir delete dir in agent machine
   rpc RemoveDir(RemoveDirRequest) returns (RemoveDirResponse);
+  // ExistDir check if dir in agent machine exist
+  rpc ExistDir(ExistDirRequest) returns (ExistDirResponse);
 }
