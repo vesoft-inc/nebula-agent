@@ -9,7 +9,7 @@ It is only used for [backup and restore](https://github.com/vesoft-inc/nebula-br
 
 If you are in linux amd64 environment, you could download it directly.
 
-1. Download the agent
+1. Download the agent.
   ```bash
   $ wget https://github.com/vesoft-inc/nebula-agent/releases/download/v0.1.1/agent-v0.1.1
   ```
