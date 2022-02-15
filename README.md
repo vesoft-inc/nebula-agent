@@ -3,39 +3,6 @@
 Nebula Agent is an daemon service in each machine of [nebula](https://github.com/vesoft-inc/nebula) cluster. It helps to keep track of nebula metad/storaged/graphd, start/stop them, call local rpc of them.
 It is only used for [backup and restore](https://github.com/vesoft-inc/nebula-br) tools for now.
 
-# Features
-
-Nebula Agent provide two type of services now: file management in nebula machines and agent service. 
-
-## File Management
-
-```C++
-  // UploadFile upload file from agent machine to external storage
-  rpc UploadFile(UploadFileRequest) returns (UploadFileResponse);
-  // DownloadFile download file from external storage to agent machine
-  rpc DownloadFile(DownloadFileRequest) returns (DownloadFileResponse);
-
-  // MoveDir rename dir in agent machine
-  rpc MoveDir(MoveDirRequest) returns (MoveDirResponse);
-  // RemoveDir delete dir in agent machine
-  rpc RemoveDir(RemoveDirRequest) returns (RemoveDirResponse);
-  // ExistDir check if dir in agent machine exist
-  rpc ExistDir(ExistDirRequest) returns (ExistDirResponse);
-```
-
-## Agent Service
-
-```C++
-// start/stop/get status of metad/storaged/graphd service
-rpc StartService(StartServiceRequest) returns (StartServiceResponse);
-rpc StopService(StopServiceRequest) returns (StopServiceResponse);
-rpc ServiceStatus(ServiceStatusRequest) returns (ServiceStatusResponse);
-
-// ban read/write by call graphd's api
-rpc BanReadWrite(BanReadWriteRequest) returns (BanReadWriteResponse);
-rpc AllowReadWrite(AllowReadWriteRequest) returns (AllowReadWriteResponse);
-```
-
 # Quick Start
 
 ## Download directly
@@ -82,8 +49,43 @@ Usage of agent:
         Agent heartbeat interval to nebula meta, in seconds (default 60)
 ```
 
-An example: 
+An example:
 
 ```bash
 ./agent --agent="127.0.0.1:8888" --meta="127.0.0.1:9559"
 ```
+
+
+# Features
+
+Nebula Agent provide two type of services now: file management in nebula machines and agent service. 
+
+## File Management
+
+```C++
+// UploadFile upload file from agent machine to external storage
+rpc UploadFile(UploadFileRequest) returns (UploadFileResponse);
+// DownloadFile download file from external storage to agent machine
+rpc DownloadFile(DownloadFileRequest) returns (DownloadFileResponse);
+
+// MoveDir rename dir in agent machine
+rpc MoveDir(MoveDirRequest) returns (MoveDirResponse);
+// RemoveDir delete dir in agent machine
+rpc RemoveDir(RemoveDirRequest) returns (RemoveDirResponse);
+// ExistDir check if dir in agent machine exist
+rpc ExistDir(ExistDirRequest) returns (ExistDirResponse);
+```
+
+## Agent Service
+
+```C++
+// start/stop/get status of metad/storaged/graphd service
+rpc StartService(StartServiceRequest) returns (StartServiceResponse);
+rpc StopService(StopServiceRequest) returns (StopServiceResponse);
+rpc ServiceStatus(ServiceStatusRequest) returns (ServiceStatusResponse);
+
+// ban read/write by call graphd's api
+rpc BanReadWrite(BanReadWriteRequest) returns (BanReadWriteResponse);
+rpc AllowReadWrite(AllowReadWriteRequest) returns (AllowReadWriteResponse);
+```
+
