@@ -1,40 +1,77 @@
 # Overview
 
 Nebula Agent is an daemon service in each machine of [nebula](https://github.com/vesoft-inc/nebula) cluster. It helps to keep track of nebula metad/storaged/graphd, start/stop them, call local rpc of them.
+It is only used for [backup and restore](https://github.com/vesoft-inc/nebula-br) tools for now.
 
 # Features
 
+Nebula Agent provide two type of services now: file management in nebula machines and agent service. 
+
 ## File Management
 
-```proto
-// UploadFile upload file from agent machine to external storage
-rpc UploadFile(UploadFileRequest) returns (UploadFileResponse);
-// DownloadFile download file from external storage to agent machine
-rpc DownloadFile(DownloadFileRequest) returns (DownloadFileResponse);
-// MoveDir rename dir in agent machine
-rpc MoveDir(MoveDirRequest) returns (MoveDirResponse);
-// RemoveDir delete dir in agent machine
-rpc RemoveDir(RemoveDirRequest) returns (RemoveDirResponse);
+```C++
+  // UploadFile upload file from agent machine to external storage
+  rpc UploadFile(UploadFileRequest) returns (UploadFileResponse);
+  // DownloadFile download file from external storage to agent machine
+  rpc DownloadFile(DownloadFileRequest) returns (DownloadFileResponse);
+
+  // MoveDir rename dir in agent machine
+  rpc MoveDir(MoveDirRequest) returns (MoveDirResponse);
+  // RemoveDir delete dir in agent machine
+  rpc RemoveDir(RemoveDirRequest) returns (RemoveDirResponse);
+  // ExistDir check if dir in agent machine exist
+  rpc ExistDir(ExistDirRequest) returns (ExistDirResponse);
 ```
 
 ## Agent Service
 
-```proto
-// start/stop metad/storaged/graphd service
+```C++
+// start/stop/get status of metad/storaged/graphd service
 rpc StartService(StartServiceRequest) returns (StartServiceResponse);
 rpc StopService(StopServiceRequest) returns (StopServiceResponse);
+rpc ServiceStatus(ServiceStatusRequest) returns (ServiceStatusResponse);
 
 // ban read/write by call graphd's api
 rpc BanReadWrite(BanReadWriteRequest) returns (BanReadWriteResponse);
 rpc AllowReadWrite(AllowReadWriteRequest) returns (AllowReadWriteResponse);
 ```
 
-# Usage
+# Quick Start
 
-Agent will be started in each machine automatically, with it's listen address and metad's address given.
+## Download directly
 
+If you are in linux amd64 environment, you could download it directly.
+
+```bash
+cd /your/path
+wget https://github.com/vesoft-inc/nebula-agent/releases/download/v0.1.1/agent-v0.1.1
+mv agent-v0.1.1 agent
+chmod +x agent
 ```
-Usage of bin/agent:
+
+## Download repo and build
+
+If you are in other environments, you should first install (golang)[https://go.dev/] 1.16+ and git.
+Then you could download the repo and build agent binary yourself.
+
+
+```bash
+cd /your/path
+git clone git@github.com:vesoft-inc/nebula-agent.git
+cd nebula-agent
+git checkout v0.1.1
+make
+cd bin
+chmod +x agent
+```
+
+## Usage
+
+If you want to use nebula-agent, you should start one and **only one** nebula-agent service in each nebula cluster machine which contains metad/storaged/metad services.
+It should be given an agent daemon address and the metad address. If you have multi-metad in one nebula cluster, any address of them will be OK.
+
+```bash
+Usage of agent:
   --agent string
         The agent server address
   --meta string
@@ -45,4 +82,8 @@ Usage of bin/agent:
         Agent heartbeat interval to nebula meta, in seconds (default 60)
 ```
 
-An example: `agent --agent="127.0.0.1:8888" --meta="127.0.0.1:9559"`
+An example: 
+
+```bash
+./agent --agent="127.0.0.1:8888" --meta="127.0.0.1:9559"
+```
