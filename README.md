@@ -9,27 +9,42 @@ It is only used for [backup and restore](https://github.com/vesoft-inc/nebula-br
 
 If you are in linux amd64 environment, you could download it directly.
 
-```bash
-cd /your/path
-wget https://github.com/vesoft-inc/nebula-agent/releases/download/v0.1.1/agent-v0.1.1
-mv agent-v0.1.1 agent
-chmod +x agent
-```
+1. Download the agent
+  ```bash
+  $ wget https://github.com/vesoft-inc/nebula-agent/releases/download/v0.1.1/agent-v0.1.1
+  ```
+2. Change the agent name.
+  ```bash
+  $ mv agent-v0.1.1 agent
+  ```
+3. Add execute permission to agent.
+  ```bash
+  $ chmod +x agent
+  ```
 
 ## Download repo and build
 
 If you are in other environments, you should first install (golang)[https://go.dev/] 1.16+ and git.
 Then you could download the repo and build agent binary yourself.
-
-
+1. Clone repo.
 ```bash
-cd /your/path
-git clone git@github.com:vesoft-inc/nebula-agent.git
-cd nebula-agent
-git checkout v0.1.1
-make
-cd bin
-chmod +x agent
+$ git clone git@github.com:vesoft-inc/nebula-agent.git
+```
+
+2.Change directory to nebula-agent.
+```bash
+$ cd nebula-agent
+```
+
+3. Compile with `make`.
+```bash
+$ make
+```
+
+4. Add execute permission to agent.
+```bash
+$ cd bin
+$ chmod +x agent
 ```
 
 ## Usage
