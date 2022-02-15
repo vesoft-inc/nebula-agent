@@ -31,7 +31,7 @@ Then you could download the repo and build agent binary yourself.
 $ git clone git@github.com:vesoft-inc/nebula-agent.git
 ```
 
-2.Change directory to nebula-agent.
+2. Change directory to nebula-agent.
 ```bash
 $ cd nebula-agent
 ```
