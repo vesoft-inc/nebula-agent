@@ -3,6 +3,7 @@ package storage
 import (
 	"context"
 	"fmt"
+	"github.com/vesoft-inc/nebula-agent/internal/limiter"
 	"io"
 	"io/ioutil"
 	"os"
@@ -19,6 +20,15 @@ type Local struct {
 }
 
 func (l *Local) copyFile(ctx context.Context, dstPath, srcPath string) (err error) {
+	// Take rate limiter count by file size
+	if limiter.IsSet() {
+		srcInfo, err := os.Stat(srcPath)
+		if err != nil {
+			return err
+		}
+		limiter.Wait(srcInfo.Size())
+	}
+
 	// check context
 	select {
 	case <-ctx.Done():

@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"github.com/vesoft-inc/nebula-agent/internal/limiter"
 	"net"
 
 	log "github.com/sirupsen/logrus"
@@ -18,10 +19,11 @@ var (
 )
 
 var (
-	agent = flag.String("agent", "auto", "The agent server address")
-	meta  = flag.String("meta", "", "The nebula metad service address, any metad address will be ok")
-	hbs   = flag.Int("hbs", 60, "Agent heartbeat interval to nebula meta, in seconds")
-	debug = flag.Bool("debug", false, "Open debug will output more detail info")
+	agent     = flag.String("agent", "auto", "The agent server address")
+	meta      = flag.String("meta", "", "The nebula metad service address, any metad address will be ok")
+	hbs       = flag.Int("hbs", 60, "Agent heartbeat interval to nebula meta, in seconds")
+	debug     = flag.Bool("debug", false, "Open debug will output more detail info")
+	ratelimit = flag.Int("ratelimit", 0, "Limit the file upload and download rate, unit Mbps")
 )
 
 func main() {
@@ -33,6 +35,9 @@ func main() {
 	} else {
 		log.SetLevel(log.InfoLevel)
 	}
+
+	// set agent rate limit
+	limiter.SetAgentRateLimiter(*ratelimit)
 
 	lis, err := net.Listen("tcp", *agent)
 	if err != nil {
