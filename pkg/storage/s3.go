@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/vesoft-inc/nebula-agent/internal/limiter"
+	"github.com/vesoft-inc/nebula-agent/internal/utils"
 	"os"
 	"path/filepath"
 	"strings"
@@ -224,6 +225,42 @@ func (s *S3) Upload(ctx context.Context, externalUri, localPath string, recursiv
 	} else {
 		return s.uploadToStorage(b.GetS3().Path, localPath)
 	}
+}
+
+func (s *S3) IncrementalUpload(ctx context.Context, externalUri, localPath string, commitLogId int64) error {
+	b := s.backend.DeepCopy()
+	if err := b.SetUri(externalUri); err != nil {
+		return fmt.Errorf("upload, check and set s3 uri %s failed: %w", externalUri, err)
+	}
+
+	// check local path
+	srcInfo, err := os.Stat(localPath)
+	if os.IsNotExist(err) {
+		return fmt.Errorf("local path: %s does not exist", localPath)
+	}
+	if err != nil {
+		return fmt.Errorf("get %s status err: %w", localPath, err)
+	}
+
+	if !srcInfo.IsDir() {
+		return fmt.Errorf("%s is a file, must specify the partition dir", localPath)
+	}
+
+	// incremental local copy
+	iNames, err := utils.LoadIncrementalFiles(localPath, commitLogId)
+	if err != nil {
+		return err
+	}
+
+	for _, iName := range iNames {
+		dst := filepath.Join(b.GetS3().Path, iName)
+		src := filepath.Join(localPath, iName)
+		if err = s.uploadToStorage(dst, src); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func (s *S3) ExistDir(ctx context.Context, uri string) bool {

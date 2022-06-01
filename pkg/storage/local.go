@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/vesoft-inc/nebula-agent/internal/limiter"
+	"github.com/vesoft-inc/nebula-agent/internal/utils"
 	"io"
 	"io/ioutil"
 	"os"
@@ -171,6 +172,56 @@ func (l *Local) Upload(ctx context.Context, externalUri, localPath string, recur
 	}
 
 	return err
+}
+
+/*
+	localPath    = {nebulaDataPath}/nebula/{spaceId}/{partId}/checkpoints/{backupName}/wal
+    externalUri  = {backupRoot}/{backupName}/{spaceId}/{partId}/wal
+*/
+
+func (l *Local) IncrementalUpload(ctx context.Context, externalUri, localPath string, commitLogId int64) error {
+	// check external uri
+	if pb.ParseType(externalUri) != pb.LocalType {
+		return fmt.Errorf("invalid local uri: %s", externalUri)
+	}
+	dstPath := strings.TrimPrefix(externalUri, pb.LocalPrefix)
+	_, err := os.Stat(dstPath)
+	if !os.IsNotExist(err) {
+		log.WithField("path", externalUri).Info("Path to upload already exist")
+	}
+
+	// check local path
+	srcInfo, err := os.Stat(localPath)
+	if os.IsNotExist(err) {
+		return fmt.Errorf("local path: %s does not exist", localPath)
+	}
+	if err != nil {
+		return fmt.Errorf("get %s status err: %w", localPath, err)
+	}
+
+	if !srcInfo.IsDir() {
+		return fmt.Errorf("%s is a file, must specify the partition dir", localPath)
+	}
+
+	// incremental local copy
+	if err = createIfNotExists(dstPath, 0755); err != nil {
+		return err
+	}
+
+	iNames, err := utils.LoadIncrementalFiles(localPath, commitLogId)
+	if err != nil {
+		return err
+	}
+
+	for _, iName := range iNames {
+		dst := filepath.Join(dstPath, iName)
+		src := filepath.Join(localPath, iName)
+		if err = l.copyFile(ctx, dst, src); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func (l *Local) Download(ctx context.Context, localPath, externalUri string, recursively bool) error {

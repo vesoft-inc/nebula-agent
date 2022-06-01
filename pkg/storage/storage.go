@@ -24,6 +24,7 @@ type Downloader interface {
 // Else upload files in localPath folder to externalUri folder
 type Uploader interface {
 	Upload(ctx context.Context, externalUri, localPath string, recursively bool) error
+	IncrementalUpload(ctx context.Context, externalUri, localPath string, commitLogId int64) error
 }
 
 // Dir means we treat the storage organized as tree hierarchy
