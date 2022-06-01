@@ -3,8 +3,6 @@ package storage
 import (
 	"context"
 	"fmt"
-	"github.com/vesoft-inc/nebula-agent/internal/limiter"
-	"github.com/vesoft-inc/nebula-agent/internal/utils"
 	"os"
 	"path/filepath"
 	"strings"
@@ -15,6 +13,9 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	log "github.com/sirupsen/logrus"
+
+	"github.com/vesoft-inc/nebula-agent/internal/limiter"
+	"github.com/vesoft-inc/nebula-agent/internal/utils"
 	pb "github.com/vesoft-inc/nebula-agent/pkg/proto"
 )
 

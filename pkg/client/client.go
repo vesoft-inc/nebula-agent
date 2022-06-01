@@ -20,6 +20,7 @@ type Client interface {
 	GetAddr() *nebula.HostAddr
 	// dst file or dir should not exist
 	UploadFile(req *pb.UploadFileRequest) (*pb.UploadFileResponse, error)
+	IncrementalUploadFile(req *pb.IncrementalUploadFileRequest) (*pb.IncrementalUploadFileResponse, error)
 	DownloadFile(req *pb.DownloadFileRequest) (*pb.DownloadFileResponse, error)
 	StartService(req *pb.StartServiceRequest) (*pb.StartServiceResponse, error)
 	StopService(req *pb.StopServiceRequest) (*pb.StopServiceResponse, error)
@@ -74,6 +75,14 @@ func (c *client) UploadFile(req *pb.UploadFileRequest) (*pb.UploadFileResponse, 
 	}
 	req.SessionId = fmt.Sprintf("%v", c.ctx.Value(storage.SessionKey))
 	return c.storage.UploadFile(c.ctx, req)
+}
+
+func (c *client) IncrementalUploadFile(req *pb.IncrementalUploadFileRequest) (*pb.IncrementalUploadFileResponse, error) {
+	if c.ctx.Value(storage.SessionKey) == nil {
+		return nil, fmt.Errorf("missing session in context")
+	}
+	req.SessionId = fmt.Sprintf("%v", c.ctx.Value(storage.SessionKey))
+	return c.storage.IncrementalUploadFile(c.ctx, req)
 }
 
 func (c *client) DownloadFile(req *pb.DownloadFileRequest) (*pb.DownloadFileResponse, error) {

@@ -2,13 +2,13 @@ package main
 
 import (
 	"flag"
-	"github.com/vesoft-inc/nebula-agent/internal/limiter"
 	"net"
 
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 
 	"github.com/vesoft-inc/nebula-agent/internal/clients"
+	"github.com/vesoft-inc/nebula-agent/internal/limiter"
 	_ "github.com/vesoft-inc/nebula-agent/internal/log"
 	"github.com/vesoft-inc/nebula-agent/internal/server"
 	pb "github.com/vesoft-inc/nebula-agent/pkg/proto"

@@ -3,8 +3,6 @@ package storage
 import (
 	"context"
 	"fmt"
-	"github.com/vesoft-inc/nebula-agent/internal/limiter"
-	"github.com/vesoft-inc/nebula-agent/internal/utils"
 	"io"
 	"io/ioutil"
 	"os"
@@ -14,6 +12,9 @@ import (
 	"syscall"
 
 	log "github.com/sirupsen/logrus"
+
+	"github.com/vesoft-inc/nebula-agent/internal/limiter"
+	"github.com/vesoft-inc/nebula-agent/internal/utils"
 	pb "github.com/vesoft-inc/nebula-agent/pkg/proto"
 )
 

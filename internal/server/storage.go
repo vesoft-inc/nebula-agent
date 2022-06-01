@@ -70,6 +70,31 @@ func (ss *StorageServer) UploadFile(ctx context.Context, req *pb.UploadFileReque
 	return res, nil
 }
 
+// IncrementalUploadFile upload the Incremental file or directory recursively from agent machine to external storage
+func (ss *StorageServer) IncrementalUploadFile(ctx context.Context, req *pb.IncrementalUploadFileRequest) (*pb.IncrementalUploadFileResponse, error) {
+	log.WithFields(
+		log.Fields{
+			"session_id":    req.GetSessionId(),
+			"src":           req.GetSourcePath(),
+			"dst":           req.GetTargetBackend().Uri(),
+			"commit_log_id": req.GetCommitLogId(),
+		},
+	).Debug("Upload file to external storage")
+
+	res := &pb.IncrementalUploadFileResponse{}
+	sto, err := ss.getStorage(req.GetSessionId(), req.GetTargetBackend())
+	if err != nil {
+		return res, err
+	}
+
+	err = sto.IncrementalUpload(ctx, req.GetTargetBackend().Uri(), req.GetSourcePath(), req.GetCommitLogId())
+	if err != nil {
+		return res, err
+	}
+
+	return res, nil
+}
+
 // DownloadFile download the file or directory recursively from external storage to agent machine
 func (ss *StorageServer) DownloadFile(ctx context.Context, req *pb.DownloadFileRequest) (*pb.DownloadFileResponse, error) {
 	log.WithFields(
