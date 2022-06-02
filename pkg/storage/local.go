@@ -23,12 +23,12 @@ type Local struct {
 
 func (l *Local) copyFile(ctx context.Context, dstPath, srcPath string) (err error) {
 	// Take rate limiter count by file size
-	if limiter.IsSet() {
+	if limiter.Rate.IsSet() {
 		srcInfo, err := os.Stat(srcPath)
 		if err != nil {
 			return err
 		}
-		limiter.Wait(srcInfo.Size())
+		limiter.Rate.Wait(srcInfo.Size())
 	}
 
 	// check context
@@ -180,7 +180,7 @@ func (l *Local) Upload(ctx context.Context, externalUri, localPath string, recur
     externalUri  = {backupRoot}/{backupName}/{spaceId}/{partId}/wal
 */
 
-func (l *Local) IncrementalUpload(ctx context.Context, externalUri, localPath string, commitLogId int64) error {
+func (l *Local) IncrUpload(ctx context.Context, externalUri, localPath string, commitLogId, lastLogId int64) error {
 	// check external uri
 	if pb.ParseType(externalUri) != pb.LocalType {
 		return fmt.Errorf("invalid local uri: %s", externalUri)
@@ -209,7 +209,7 @@ func (l *Local) IncrementalUpload(ctx context.Context, externalUri, localPath st
 		return err
 	}
 
-	iNames, err := utils.LoadIncrementalFiles(localPath, commitLogId)
+	iNames, err := utils.LoadIncrFiles(localPath, commitLogId, lastLogId)
 	if err != nil {
 		return err
 	}

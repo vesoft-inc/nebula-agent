@@ -4,21 +4,25 @@ import (
 	"github.com/juju/ratelimit"
 )
 
-var limiter *ratelimit.Bucket
+var Rate rateLimiter
 
-func SetAgentRateLimiter(limit int) {
+type rateLimiter struct {
+	limiter *ratelimit.Bucket
+}
+
+func (r *rateLimiter) SetLimiter(limit int) {
 	if limit > 0 {
 		bps := float64(limit * (1 << 20) / 8)
-		limiter = ratelimit.NewBucketWithRate(bps, int64(bps)*3)
+		r.limiter = ratelimit.NewBucketWithRate(bps, int64(bps)*3)
 	}
 }
 
-func Wait(size int64) {
-	if limiter != nil {
-		limiter.Wait(size)
+func (r *rateLimiter) Wait(size int64) {
+	if r.limiter != nil {
+		r.limiter.Wait(size)
 	}
 }
 
-func IsSet() bool {
-	return limiter != nil
+func (r *rateLimiter) IsSet() bool {
+	return r.limiter != nil
 }

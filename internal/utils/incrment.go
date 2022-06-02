@@ -3,39 +3,49 @@ package utils
 import (
 	"fmt"
 	"io/ioutil"
+	"math"
 	"path"
 	"strconv"
 	"strings"
 )
 
 const (
-	WalExt          = ".wal"
-	CommitLogIdName = "commitlog.id"
+	WalExt            = ".wal"
+	CommitLogFileName = "commitlog.id"
 )
 
-func LoadIncrementalFiles(srcDir string, commitLogId int64) ([]string, error) {
+// LoadIncrFiles load incremental wal file and commitlog.id file
+func LoadIncrFiles(srcDir string, commitLogId, lastLogId int64) ([]string, error) {
 	entries, err := ioutil.ReadDir(srcDir)
 	if err != nil {
 		return nil, err
 	}
+	var (
+		// splitId is the largest wal start id which smaller than commitLogId
+		splitId int64 = -1
 
-	// splitId is the largest id which smaller than commitLogId
-	var splitId int64 = -1
-	// hasLogId check if the src dir have commitlog.id
-	hasLogId := false
+		// minWalStartId is the min wal start id in src dir
+		minWalStartId int64 = math.MaxInt64
+	)
+
+	// hasCommitFile check if the src dir have commitlog.id file
+	hasCommitFile := false
 	walMap := make(map[string]int64)
 
 	for _, entry := range entries {
-		wid, err := ParseWalName(entry.Name())
+		walStartId, err := parseWalName(entry.Name())
 		if err != nil {
-			if entry.Name() == CommitLogIdName {
-				hasLogId = true
+			if entry.Name() == CommitLogFileName {
+				hasCommitFile = true
 			}
 			continue
 		}
-		walMap[entry.Name()] = wid
-		if wid <= commitLogId && splitId < wid {
-			splitId = wid
+		walMap[entry.Name()] = walStartId
+		if walStartId <= commitLogId && splitId < walStartId {
+			splitId = walStartId
+		}
+		if walStartId < minWalStartId {
+			minWalStartId = walStartId
 		}
 	}
 
@@ -43,12 +53,16 @@ func LoadIncrementalFiles(srcDir string, commitLogId int64) ([]string, error) {
 		return nil, fmt.Errorf("%s dir doesn't have incremental wal, commitlog.id is %d", srcDir, commitLogId)
 	}
 
+	if lastLogId < minWalStartId {
+		return nil, fmt.Errorf("%s dir's wal is discontinuous, lastLogId is %d and minWalStartId is %d", srcDir, lastLogId, minWalStartId)
+	}
+
 	filter := make([]string, 0)
-	if !hasLogId {
+	if !hasCommitFile {
 		return nil, fmt.Errorf("%s dir doesn't have a commitlog.id file", srcDir)
 	}
 	// commitlog.id need upload
-	filter = append(filter, CommitLogIdName)
+	filter = append(filter, CommitLogFileName)
 
 	for name, id := range walMap {
 		if id >= splitId {
@@ -59,7 +73,7 @@ func LoadIncrementalFiles(srcDir string, commitLogId int64) ([]string, error) {
 	return filter, nil
 }
 
-func ParseWalName(name string) (int64, error) {
+func parseWalName(name string) (int64, error) {
 	if path.Ext(name) != WalExt {
 		return -1, fmt.Errorf("%s  is not a .wal format", name)
 	}

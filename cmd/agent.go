@@ -37,7 +37,7 @@ func main() {
 	}
 
 	// set agent rate limit
-	limiter.SetAgentRateLimiter(*ratelimit)
+	limiter.Rate.SetLimiter(*ratelimit)
 
 	lis, err := net.Listen("tcp", *agent)
 	if err != nil {

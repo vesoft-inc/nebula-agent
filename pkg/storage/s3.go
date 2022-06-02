@@ -59,12 +59,12 @@ func NewS3(b *pb.Backend) (*S3, error) {
 
 func (s *S3) downloadToFile(file, key string) error {
 	// Take rate limiter count by object size
-	if limiter.IsSet() {
+	if limiter.Rate.IsSet() {
 		size, err := s.GetObjectSize(s.backend.GetS3().Bucket, key)
 		if err != nil {
 			return err
 		}
-		limiter.Wait(size)
+		limiter.Rate.Wait(size)
 	}
 
 	// Create the directories in the path
@@ -145,12 +145,12 @@ func (s *S3) Download(ctx context.Context, localPath, externalUri string, recurs
 
 func (s *S3) uploadToStorage(key, file string) error {
 	// Take rate limiter count by file size
-	if limiter.IsSet() {
+	if limiter.Rate.IsSet() {
 		srcInfo, err := os.Stat(file)
 		if err != nil {
 			return err
 		}
-		limiter.Wait(srcInfo.Size())
+		limiter.Rate.Wait(srcInfo.Size())
 	}
 
 	fd, err := os.Open(file)
@@ -228,7 +228,7 @@ func (s *S3) Upload(ctx context.Context, externalUri, localPath string, recursiv
 	}
 }
 
-func (s *S3) IncrementalUpload(ctx context.Context, externalUri, localPath string, commitLogId int64) error {
+func (s *S3) IncrUpload(ctx context.Context, externalUri, localPath string, commitLogId, lastLogId int64) error {
 	b := s.backend.DeepCopy()
 	if err := b.SetUri(externalUri); err != nil {
 		return fmt.Errorf("upload, check and set s3 uri %s failed: %w", externalUri, err)
@@ -248,7 +248,7 @@ func (s *S3) IncrementalUpload(ctx context.Context, externalUri, localPath strin
 	}
 
 	// incremental local copy
-	iNames, err := utils.LoadIncrementalFiles(localPath, commitLogId)
+	iNames, err := utils.LoadIncrFiles(localPath, commitLogId, lastLogId)
 	if err != nil {
 		return err
 	}

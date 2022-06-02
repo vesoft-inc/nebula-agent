@@ -8,6 +8,7 @@ import (
 
 	"github.com/golang/groupcache/lru"
 	log "github.com/sirupsen/logrus"
+
 	pb "github.com/vesoft-inc/nebula-agent/pkg/proto"
 	"github.com/vesoft-inc/nebula-agent/pkg/storage"
 )
@@ -70,8 +71,8 @@ func (ss *StorageServer) UploadFile(ctx context.Context, req *pb.UploadFileReque
 	return res, nil
 }
 
-// IncrementalUploadFile upload the Incremental file or directory recursively from agent machine to external storage
-func (ss *StorageServer) IncrementalUploadFile(ctx context.Context, req *pb.IncrementalUploadFileRequest) (*pb.IncrementalUploadFileResponse, error) {
+// IncrUploadFile upload the Incremental file or directory recursively from agent machine to external storage
+func (ss *StorageServer) IncrUploadFile(ctx context.Context, req *pb.IncrUploadFileRequest) (*pb.IncrUploadFileResponse, error) {
 	log.WithFields(
 		log.Fields{
 			"session_id":    req.GetSessionId(),
@@ -81,13 +82,13 @@ func (ss *StorageServer) IncrementalUploadFile(ctx context.Context, req *pb.Incr
 		},
 	).Debug("Upload file to external storage")
 
-	res := &pb.IncrementalUploadFileResponse{}
+	res := &pb.IncrUploadFileResponse{}
 	sto, err := ss.getStorage(req.GetSessionId(), req.GetTargetBackend())
 	if err != nil {
 		return res, err
 	}
 
-	err = sto.IncrementalUpload(ctx, req.GetTargetBackend().Uri(), req.GetSourcePath(), req.GetCommitLogId())
+	err = sto.IncrUpload(ctx, req.GetTargetBackend().Uri(), req.GetSourcePath(), req.GetCommitLogId(), req.GetLastLogId())
 	if err != nil {
 		return res, err
 	}
