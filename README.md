@@ -16,7 +16,7 @@ If you are in linux amd64 environment, you could download it directly.
   ```
 2. Change the agent name.
   ```bash
-  $ mv agent-v0.1.1 agent
+  $ mv agent-0.1.1-linux-amd64 agent
   ```
 3. Add execute permission to agent.
   ```bash
