@@ -13,6 +13,9 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	log "github.com/sirupsen/logrus"
+
+	"github.com/vesoft-inc/nebula-agent/internal/limiter"
+	"github.com/vesoft-inc/nebula-agent/internal/utils"
 	pb "github.com/vesoft-inc/nebula-agent/pkg/proto"
 )
 
@@ -55,6 +58,15 @@ func NewS3(b *pb.Backend) (*S3, error) {
 }
 
 func (s *S3) downloadToFile(file, key string) error {
+	// Take rate limiter count by object size
+	if limiter.Rate.IsSet() {
+		size, err := s.GetObjectSize(s.backend.GetS3().Bucket, key)
+		if err != nil {
+			return err
+		}
+		limiter.Rate.Wait(size)
+	}
+
 	// Create the directories in the path
 	dir := filepath.Dir(file)
 	if err := os.MkdirAll(dir, 0775); err != nil {
@@ -75,6 +87,7 @@ func (s *S3) downloadToFile(file, key string) error {
 		Bucket: aws.String(s.backend.GetS3().Bucket),
 		Key:    aws.String(key),
 	}
+
 	downloader := s3manager.NewDownloader(s.sess)
 	numBytes, err := downloader.Download(fd, req)
 	if err != nil {
@@ -131,6 +144,15 @@ func (s *S3) Download(ctx context.Context, localPath, externalUri string, recurs
 }
 
 func (s *S3) uploadToStorage(key, file string) error {
+	// Take rate limiter count by file size
+	if limiter.Rate.IsSet() {
+		srcInfo, err := os.Stat(file)
+		if err != nil {
+			return err
+		}
+		limiter.Rate.Wait(srcInfo.Size())
+	}
+
 	fd, err := os.Open(file)
 	if err != nil {
 		return fmt.Errorf("open file %s failed: %w when upload", file, err)
@@ -204,6 +226,42 @@ func (s *S3) Upload(ctx context.Context, externalUri, localPath string, recursiv
 	} else {
 		return s.uploadToStorage(b.GetS3().Path, localPath)
 	}
+}
+
+func (s *S3) IncrUpload(ctx context.Context, externalUri, localPath string, commitLogId, lastLogId int64) error {
+	b := s.backend.DeepCopy()
+	if err := b.SetUri(externalUri); err != nil {
+		return fmt.Errorf("upload, check and set s3 uri %s failed: %w", externalUri, err)
+	}
+
+	// check local path
+	srcInfo, err := os.Stat(localPath)
+	if os.IsNotExist(err) {
+		return fmt.Errorf("local path: %s does not exist", localPath)
+	}
+	if err != nil {
+		return fmt.Errorf("get %s status err: %w", localPath, err)
+	}
+
+	if !srcInfo.IsDir() {
+		return fmt.Errorf("%s is a file, must specify the partition dir", localPath)
+	}
+
+	// incremental local copy
+	iNames, err := utils.LoadIncrFiles(localPath, commitLogId, lastLogId)
+	if err != nil {
+		return err
+	}
+
+	for _, iName := range iNames {
+		dst := filepath.Join(b.GetS3().Path, iName)
+		src := filepath.Join(localPath, iName)
+		if err = s.uploadToStorage(dst, src); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func (s *S3) ExistDir(ctx context.Context, uri string) bool {
@@ -328,4 +386,19 @@ func (s *S3) RemoveDir(ctx context.Context, uri string) error {
 
 	log.WithField("uri", uri).Debugf("Remove all files with prefix %s successfully.", uri)
 	return nil
+}
+
+// GetObjectSize get s3 object size for rate-limit
+func (s *S3) GetObjectSize(bucket, key string) (int64, error) {
+	req := &s3.HeadObjectInput{
+		Bucket: aws.String(bucket),
+		Key:    aws.String(key),
+	}
+
+	resp, err := s.client.HeadObject(req)
+	if err != nil {
+		return 0, err
+	}
+
+	return *resp.ContentLength, nil
 }

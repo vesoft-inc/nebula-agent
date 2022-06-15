@@ -50,6 +50,14 @@ message AllowReadWriteRequest {
 
 message AllowReadWriteResponse {}
 
+message DataPlayBackRequest {
+  string dir = 1;
+  string data_path = 2;
+  string meta_addr = 3;
+}
+
+message DataPlayBackResponse {}
+
 service AgentService {
   rpc StartService(StartServiceRequest) returns (StartServiceResponse);
   rpc StopService(StopServiceRequest) returns (StopServiceResponse);
@@ -57,4 +65,6 @@ service AgentService {
 
   rpc BanReadWrite(BanReadWriteRequest) returns (BanReadWriteResponse);
   rpc AllowReadWrite(AllowReadWriteRequest) returns (AllowReadWriteResponse);
+
+  rpc DataPlayBack(DataPlayBackRequest) returns (DataPlayBackResponse);
 }

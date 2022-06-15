@@ -13,6 +13,7 @@ require (
 	github.com/facebook/fbthrift v0.31.1-0.20211129061412-801ed7f9f295
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da
 	github.com/google/uuid v1.3.0
+	github.com/juju/ratelimit v1.0.1
 	github.com/kr/pretty v0.3.0 // indirect
 	github.com/stretchr/testify v1.7.0
 	github.com/vesoft-inc/nebula-go/v3 v3.0.0

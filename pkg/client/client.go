@@ -20,12 +20,14 @@ type Client interface {
 	GetAddr() *nebula.HostAddr
 	// dst file or dir should not exist
 	UploadFile(req *pb.UploadFileRequest) (*pb.UploadFileResponse, error)
+	IncrUploadFile(req *pb.IncrUploadFileRequest) (*pb.IncrUploadFileResponse, error)
 	DownloadFile(req *pb.DownloadFileRequest) (*pb.DownloadFileResponse, error)
 	StartService(req *pb.StartServiceRequest) (*pb.StartServiceResponse, error)
 	StopService(req *pb.StopServiceRequest) (*pb.StopServiceResponse, error)
 	ServiceStatus(req *pb.ServiceStatusRequest) (*pb.ServiceStatusResponse, error)
 	BanReadWrite(req *pb.BanReadWriteRequest) (*pb.BanReadWriteResponse, error)
 	AllowReadWrite(req *pb.AllowReadWriteRequest) (*pb.AllowReadWriteResponse, error)
+	DataPlayBack(req *pb.DataPlayBackRequest) (*pb.DataPlayBackResponse, error)
 	MoveDir(req *pb.MoveDirRequest) (*pb.MoveDirResponse, error)
 	RemoveDir(req *pb.RemoveDirRequest) (*pb.RemoveDirResponse, error)
 	ExistDir(req *pb.ExistDirRequest) (*pb.ExistDirResponse, error)
@@ -74,6 +76,14 @@ func (c *client) UploadFile(req *pb.UploadFileRequest) (*pb.UploadFileResponse, 
 	}
 	req.SessionId = fmt.Sprintf("%v", c.ctx.Value(storage.SessionKey))
 	return c.storage.UploadFile(c.ctx, req)
+}
+
+func (c *client) IncrUploadFile(req *pb.IncrUploadFileRequest) (*pb.IncrUploadFileResponse, error) {
+	if c.ctx.Value(storage.SessionKey) == nil {
+		return nil, fmt.Errorf("missing session in context")
+	}
+	req.SessionId = fmt.Sprintf("%v", c.ctx.Value(storage.SessionKey))
+	return c.storage.IncrUploadFile(c.ctx, req)
 }
 
 func (c *client) DownloadFile(req *pb.DownloadFileRequest) (*pb.DownloadFileResponse, error) {
@@ -162,4 +172,8 @@ func (c *client) AllowReadWrite(req *pb.AllowReadWriteRequest) (resp *pb.AllowRe
 	}()
 
 	return c.agent.AllowReadWrite(c.ctx, req)
+}
+
+func (c *client) DataPlayBack(req *pb.DataPlayBackRequest) (resp *pb.DataPlayBackResponse, err error) {
+	return c.agent.DataPlayBack(c.ctx, req)
 }

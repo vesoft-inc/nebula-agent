@@ -77,3 +77,9 @@ func (a *AgentServer) BanReadWrite(context.Context, *pb.BanReadWriteRequest) (*p
 func (a *AgentServer) AllowReadWrite(context.Context, *pb.AllowReadWriteRequest) (*pb.AllowReadWriteResponse, error) {
 	return nil, nil
 }
+
+func (a *AgentServer) DataPlayBack(ctx context.Context, req *pb.DataPlayBackRequest) (*pb.DataPlayBackResponse, error) {
+	resp := &pb.DataPlayBackResponse{}
+
+	return resp, clients.NewPlayBack(req).PlayBack()
+}

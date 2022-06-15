@@ -35,6 +35,16 @@ message UploadFileRequest {
 
 message UploadFileResponse {}
 
+message IncrUploadFileRequest {
+  string session_id = 1; // used for external storage session now
+  string source_path = 2;
+  Backend target_backend = 3;
+  int64 commit_log_id = 4;
+  int64 last_log_id = 5;
+}
+
+message IncrUploadFileResponse {}
+
 message DownloadFileRequest {
   string session_id = 1;
   bool recursively = 2;
@@ -62,6 +72,8 @@ message ExistDirResponse { bool exist = 1; }
 service StorageService {
   // UploadFile upload file from agent machine to external storage
   rpc UploadFile(UploadFileRequest) returns (UploadFileResponse);
+  // IncrUploadFile upload incremental file from agent machine to external storage
+  rpc IncrUploadFile(IncrUploadFileRequest) returns (IncrUploadFileResponse);
   // DownloadFile download file from external storage to agent machine
   rpc DownloadFile(DownloadFileRequest) returns (DownloadFileResponse);
 

@@ -429,6 +429,124 @@ func (m *UploadFileResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_UploadFileResponse proto.InternalMessageInfo
 
+type IncrUploadFileRequest struct {
+	SessionId            string   `protobuf:"bytes,1,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
+	SourcePath           string   `protobuf:"bytes,2,opt,name=source_path,json=sourcePath,proto3" json:"source_path,omitempty"`
+	TargetBackend        *Backend `protobuf:"bytes,3,opt,name=target_backend,json=targetBackend,proto3" json:"target_backend,omitempty"`
+	CommitLogId          int64    `protobuf:"varint,4,opt,name=commit_log_id,json=commitLogId,proto3" json:"commit_log_id,omitempty"`
+	LastLogId            int64    `protobuf:"varint,5,opt,name=last_log_id,json=lastLogId,proto3" json:"last_log_id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *IncrUploadFileRequest) Reset()         { *m = IncrUploadFileRequest{} }
+func (m *IncrUploadFileRequest) String() string { return proto.CompactTextString(m) }
+func (*IncrUploadFileRequest) ProtoMessage()    {}
+func (*IncrUploadFileRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_0d2c4ccf1453ffdb, []int{6}
+}
+func (m *IncrUploadFileRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *IncrUploadFileRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_IncrUploadFileRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *IncrUploadFileRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_IncrUploadFileRequest.Merge(m, src)
+}
+func (m *IncrUploadFileRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *IncrUploadFileRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_IncrUploadFileRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_IncrUploadFileRequest proto.InternalMessageInfo
+
+func (m *IncrUploadFileRequest) GetSessionId() string {
+	if m != nil {
+		return m.SessionId
+	}
+	return ""
+}
+
+func (m *IncrUploadFileRequest) GetSourcePath() string {
+	if m != nil {
+		return m.SourcePath
+	}
+	return ""
+}
+
+func (m *IncrUploadFileRequest) GetTargetBackend() *Backend {
+	if m != nil {
+		return m.TargetBackend
+	}
+	return nil
+}
+
+func (m *IncrUploadFileRequest) GetCommitLogId() int64 {
+	if m != nil {
+		return m.CommitLogId
+	}
+	return 0
+}
+
+func (m *IncrUploadFileRequest) GetLastLogId() int64 {
+	if m != nil {
+		return m.LastLogId
+	}
+	return 0
+}
+
+type IncrUploadFileResponse struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *IncrUploadFileResponse) Reset()         { *m = IncrUploadFileResponse{} }
+func (m *IncrUploadFileResponse) String() string { return proto.CompactTextString(m) }
+func (*IncrUploadFileResponse) ProtoMessage()    {}
+func (*IncrUploadFileResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_0d2c4ccf1453ffdb, []int{7}
+}
+func (m *IncrUploadFileResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *IncrUploadFileResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_IncrUploadFileResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *IncrUploadFileResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_IncrUploadFileResponse.Merge(m, src)
+}
+func (m *IncrUploadFileResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *IncrUploadFileResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_IncrUploadFileResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_IncrUploadFileResponse proto.InternalMessageInfo
+
 type DownloadFileRequest struct {
 	SessionId            string   `protobuf:"bytes,1,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
 	Recursively          bool     `protobuf:"varint,2,opt,name=recursively,proto3" json:"recursively,omitempty"`
@@ -443,7 +561,7 @@ func (m *DownloadFileRequest) Reset()         { *m = DownloadFileRequest{} }
 func (m *DownloadFileRequest) String() string { return proto.CompactTextString(m) }
 func (*DownloadFileRequest) ProtoMessage()    {}
 func (*DownloadFileRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0d2c4ccf1453ffdb, []int{6}
+	return fileDescriptor_0d2c4ccf1453ffdb, []int{8}
 }
 func (m *DownloadFileRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -510,7 +628,7 @@ func (m *DownloadFileResponse) Reset()         { *m = DownloadFileResponse{} }
 func (m *DownloadFileResponse) String() string { return proto.CompactTextString(m) }
 func (*DownloadFileResponse) ProtoMessage()    {}
 func (*DownloadFileResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0d2c4ccf1453ffdb, []int{7}
+	return fileDescriptor_0d2c4ccf1453ffdb, []int{9}
 }
 func (m *DownloadFileResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -551,7 +669,7 @@ func (m *MoveDirRequest) Reset()         { *m = MoveDirRequest{} }
 func (m *MoveDirRequest) String() string { return proto.CompactTextString(m) }
 func (*MoveDirRequest) ProtoMessage()    {}
 func (*MoveDirRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0d2c4ccf1453ffdb, []int{8}
+	return fileDescriptor_0d2c4ccf1453ffdb, []int{10}
 }
 func (m *MoveDirRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -604,7 +722,7 @@ func (m *MoveDirResponse) Reset()         { *m = MoveDirResponse{} }
 func (m *MoveDirResponse) String() string { return proto.CompactTextString(m) }
 func (*MoveDirResponse) ProtoMessage()    {}
 func (*MoveDirResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0d2c4ccf1453ffdb, []int{9}
+	return fileDescriptor_0d2c4ccf1453ffdb, []int{11}
 }
 func (m *MoveDirResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -644,7 +762,7 @@ func (m *RemoveDirRequest) Reset()         { *m = RemoveDirRequest{} }
 func (m *RemoveDirRequest) String() string { return proto.CompactTextString(m) }
 func (*RemoveDirRequest) ProtoMessage()    {}
 func (*RemoveDirRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0d2c4ccf1453ffdb, []int{10}
+	return fileDescriptor_0d2c4ccf1453ffdb, []int{12}
 }
 func (m *RemoveDirRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -690,7 +808,7 @@ func (m *RemoveDirResponse) Reset()         { *m = RemoveDirResponse{} }
 func (m *RemoveDirResponse) String() string { return proto.CompactTextString(m) }
 func (*RemoveDirResponse) ProtoMessage()    {}
 func (*RemoveDirResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0d2c4ccf1453ffdb, []int{11}
+	return fileDescriptor_0d2c4ccf1453ffdb, []int{13}
 }
 func (m *RemoveDirResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -730,7 +848,7 @@ func (m *ExistDirRequest) Reset()         { *m = ExistDirRequest{} }
 func (m *ExistDirRequest) String() string { return proto.CompactTextString(m) }
 func (*ExistDirRequest) ProtoMessage()    {}
 func (*ExistDirRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0d2c4ccf1453ffdb, []int{12}
+	return fileDescriptor_0d2c4ccf1453ffdb, []int{14}
 }
 func (m *ExistDirRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -777,7 +895,7 @@ func (m *ExistDirResponse) Reset()         { *m = ExistDirResponse{} }
 func (m *ExistDirResponse) String() string { return proto.CompactTextString(m) }
 func (*ExistDirResponse) ProtoMessage()    {}
 func (*ExistDirResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0d2c4ccf1453ffdb, []int{13}
+	return fileDescriptor_0d2c4ccf1453ffdb, []int{15}
 }
 func (m *ExistDirResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -820,6 +938,8 @@ func init() {
 	proto.RegisterType((*Backend)(nil), "proto.Backend")
 	proto.RegisterType((*UploadFileRequest)(nil), "proto.UploadFileRequest")
 	proto.RegisterType((*UploadFileResponse)(nil), "proto.UploadFileResponse")
+	proto.RegisterType((*IncrUploadFileRequest)(nil), "proto.IncrUploadFileRequest")
+	proto.RegisterType((*IncrUploadFileResponse)(nil), "proto.IncrUploadFileResponse")
 	proto.RegisterType((*DownloadFileRequest)(nil), "proto.DownloadFileRequest")
 	proto.RegisterType((*DownloadFileResponse)(nil), "proto.DownloadFileResponse")
 	proto.RegisterType((*MoveDirRequest)(nil), "proto.MoveDirRequest")
@@ -833,47 +953,52 @@ func init() {
 func init() { proto.RegisterFile("storage.proto", fileDescriptor_0d2c4ccf1453ffdb) }
 
 var fileDescriptor_0d2c4ccf1453ffdb = []byte{
-	// 633 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x53, 0xdd, 0x4e, 0x13, 0x41,
-	0x14, 0xee, 0x96, 0x96, 0x76, 0xcf, 0x42, 0x81, 0x01, 0x61, 0x59, 0x62, 0xc1, 0xf5, 0x27, 0x5c,
-	0x71, 0xd1, 0x86, 0xc4, 0xc4, 0xc4, 0x44, 0x44, 0xac, 0x41, 0x13, 0xb3, 0x8d, 0xd7, 0x9b, 0x65,
-	0xf6, 0x08, 0x1b, 0x96, 0x9d, 0x3a, 0xb3, 0x45, 0xeb, 0x93, 0xf8, 0x10, 0xc6, 0xd7, 0xd0, 0x4b,
-	0x13, 0x5f, 0xc0, 0xe0, 0x8b, 0x98, 0x9d, 0x39, 0x2d, 0x0b, 0x6d, 0xe2, 0x8d, 0x57, 0xed, 0xf9,
-	0xbe, 0xef, 0xcc, 0x9c, 0xef, 0x9b, 0xb3, 0xb0, 0xa8, 0x72, 0x21, 0xa3, 0x53, 0xdc, 0x1b, 0x48,
-	0x91, 0x0b, 0x56, 0xd7, 0x3f, 0xfe, 0x16, 0xd4, 0x5f, 0x0b, 0x1e, 0xa5, 0x8c, 0x41, 0x6d, 0x10,
-	0xe5, 0x67, 0xae, 0xb5, 0x63, 0xed, 0xda, 0x81, 0xfe, 0xef, 0x7f, 0xb7, 0xa0, 0xda, 0xef, 0x32,
-	0x0f, 0x9a, 0x98, 0xc5, 0x03, 0x91, 0x64, 0x39, 0xd1, 0x93, 0x9a, 0xad, 0xc3, 0xbc, 0xc4, 0xd3,
-	0x44, 0x64, 0x6e, 0x55, 0x33, 0x54, 0x15, 0xf8, 0xc9, 0x90, 0x9f, 0x63, 0xee, 0xce, 0x19, 0xdc,
-	0x54, 0x93, 0x6b, 0x6a, 0xd7, 0xd7, 0xb0, 0xfb, 0x93, 0xd9, 0x42, 0x9e, 0x46, 0x4a, 0xb9, 0x75,
-	0x4d, 0x2e, 0x10, 0xf8, 0xbc, 0xc0, 0xd8, 0x5d, 0x80, 0x88, 0x73, 0x54, 0x2a, 0x3c, 0xc7, 0x91,
-	0x3b, 0xaf, 0x15, 0xb6, 0x41, 0x8e, 0x71, 0x54, 0xd0, 0x0a, 0xb9, 0xc4, 0x5c, 0xd3, 0x0d, 0x43,
-	0x1b, 0xe4, 0x18, 0x47, 0x7e, 0x1b, 0x6a, 0xbd, 0xc3, 0xa3, 0xbe, 0x19, 0xf7, 0x42, 0xe4, 0x48,
-	0x46, 0xa8, 0xf2, 0x3f, 0x43, 0xe3, 0x20, 0xe2, 0xe7, 0x98, 0xc5, 0xec, 0x01, 0xd4, 0xd3, 0x22,
-	0x11, 0xad, 0x70, 0x3a, 0x0b, 0x26, 0xaf, 0x3d, 0x9d, 0x52, 0xaf, 0x12, 0x18, 0x92, 0x6d, 0x41,
-	0x55, 0x75, 0xb5, 0x67, 0xa7, 0x63, 0x93, 0xa4, 0xdf, 0xed, 0x55, 0x82, 0xaa, 0xea, 0xb2, 0x7b,
-	0x50, 0x3b, 0x8b, 0xdf, 0x2b, 0x6d, 0xdd, 0xe9, 0x38, 0x44, 0x17, 0x03, 0xf4, 0x2a, 0x81, 0xa6,
-	0x0e, 0x6c, 0x68, 0x90, 0x3d, 0xff, 0xab, 0x05, 0x2b, 0xef, 0x06, 0xa9, 0x88, 0xe2, 0xa3, 0x24,
-	0xc5, 0x00, 0x3f, 0x0c, 0x51, 0xe5, 0xc6, 0x90, 0x52, 0x89, 0xc8, 0xc2, 0x24, 0xa6, 0x69, 0x6d,
-	0x42, 0x5e, 0xc5, 0x6c, 0x07, 0x1c, 0x89, 0x7c, 0x28, 0x55, 0x72, 0x89, 0xe9, 0x48, 0x0f, 0xd2,
-	0x0c, 0xca, 0x10, 0xdb, 0x06, 0x47, 0x89, 0xa1, 0xe4, 0x18, 0xea, 0xc0, 0xcd, 0x33, 0x80, 0x81,
-	0xde, 0x16, 0xb1, 0xef, 0x43, 0x2b, 0x8f, 0xe4, 0x29, 0xe6, 0xe1, 0x89, 0xb1, 0xae, 0x1f, 0xc5,
-	0xe9, 0xb4, 0x68, 0x5e, 0x0a, 0x24, 0x58, 0x34, 0x2a, 0x2a, 0xfd, 0x35, 0x60, 0xe5, 0x69, 0xd5,
-	0x40, 0x64, 0x0a, 0xfd, 0x6f, 0x16, 0xac, 0x1e, 0x8a, 0x8f, 0xd9, 0x7f, 0xb7, 0xb1, 0x0f, 0x2d,
-	0xb2, 0x31, 0x9e, 0x72, 0x6e, 0xf6, 0x94, 0x46, 0x35, 0x7e, 0xc5, 0x6d, 0x70, 0xc8, 0x5c, 0x69,
-	0xdd, 0xc0, 0x40, 0x85, 0x7b, 0x7f, 0x1d, 0xd6, 0x6e, 0xce, 0x4b, 0x46, 0x8e, 0xa0, 0xf5, 0x46,
-	0x5c, 0xe2, 0x61, 0x22, 0xc7, 0x16, 0x36, 0xa1, 0xa9, 0x24, 0x0f, 0x4b, 0x5f, 0x47, 0x43, 0x49,
-	0xae, 0x23, 0xdc, 0x84, 0x66, 0xac, 0xe8, 0x0a, 0xb3, 0xff, 0x8d, 0x58, 0x99, 0xf3, 0x57, 0x60,
-	0x69, 0x72, 0x0e, 0x1d, 0xfd, 0x08, 0x96, 0x03, 0xbc, 0xb8, 0x79, 0xf8, 0xac, 0xcf, 0x6e, 0x15,
-	0x56, 0x4a, 0x3a, 0x6a, 0x7e, 0x08, 0x4b, 0x2f, 0x3e, 0x25, 0x2a, 0xff, 0x47, 0xef, 0x2e, 0x2c,
-	0x5f, 0xcb, 0x4c, 0x2b, 0x5b, 0x83, 0x3a, 0x16, 0x98, 0x16, 0x36, 0x03, 0x53, 0x74, 0x7e, 0x55,
-	0xa1, 0xd5, 0x37, 0x2b, 0xd8, 0x47, 0x79, 0x99, 0x70, 0x64, 0xcf, 0x00, 0xae, 0x9f, 0x96, 0xb9,
-	0x94, 0xf0, 0xd4, 0x6e, 0x7a, 0x9b, 0x33, 0x18, 0xba, 0xeb, 0x25, 0x2c, 0x94, 0x63, 0x65, 0x1e,
-	0x49, 0x67, 0xec, 0x86, 0xb7, 0x35, 0x93, 0xa3, 0x83, 0x1e, 0x43, 0x83, 0xf2, 0x63, 0x77, 0x48,
-	0x77, 0xf3, 0x5d, 0xbc, 0xf5, 0xdb, 0x30, 0x75, 0x3e, 0x05, 0x7b, 0x12, 0x1f, 0xdb, 0x20, 0xd1,
-	0xed, 0xe0, 0x3d, 0x77, 0x9a, 0xa0, 0xfe, 0x27, 0xd0, 0x1c, 0x47, 0xc8, 0xc6, 0x77, 0xdc, 0x8a,
-	0xde, 0xdb, 0x98, 0xc2, 0x4d, 0xf3, 0xc1, 0xf2, 0x8f, 0xab, 0xb6, 0xf5, 0xf3, 0xaa, 0x6d, 0xfd,
-	0xbe, 0x6a, 0x5b, 0x5f, 0xfe, 0xb4, 0x2b, 0x27, 0xf3, 0x5a, 0xd9, 0xfd, 0x1b, 0x00, 0x00, 0xff,
-	0xff, 0x6c, 0xbb, 0x07, 0xe3, 0x80, 0x05, 0x00, 0x00,
+	// 710 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x54, 0xcb, 0x4e, 0xdb, 0x40,
+	0x14, 0x8d, 0xf3, 0x20, 0xf1, 0x35, 0x04, 0x18, 0x20, 0x18, 0x53, 0x02, 0x75, 0x1f, 0x62, 0xc5,
+	0x22, 0x11, 0x52, 0xa5, 0x4a, 0x95, 0x4a, 0x29, 0x0d, 0x02, 0xa4, 0xca, 0x51, 0xd7, 0x96, 0x19,
+	0x4f, 0x83, 0x85, 0xe3, 0x49, 0x3d, 0x0e, 0x6d, 0xfa, 0x25, 0x5d, 0x77, 0x5d, 0xf5, 0x37, 0xda,
+	0x65, 0xd5, 0x2f, 0xa8, 0xe8, 0x8f, 0x54, 0x9e, 0xb9, 0x09, 0xce, 0xa3, 0x82, 0x4a, 0x5d, 0x25,
+	0x73, 0xce, 0xb9, 0x77, 0xee, 0xb9, 0xc7, 0x36, 0x2c, 0x88, 0x84, 0xc7, 0x5e, 0x87, 0xed, 0xf5,
+	0x62, 0x9e, 0x70, 0x52, 0x92, 0x3f, 0xf6, 0x26, 0x94, 0x4e, 0x39, 0xf5, 0x42, 0x42, 0xa0, 0xd8,
+	0xf3, 0x92, 0x0b, 0x53, 0xdb, 0xd1, 0x76, 0x75, 0x47, 0xfe, 0xb7, 0xbf, 0x69, 0x90, 0x6f, 0x37,
+	0x89, 0x05, 0x15, 0x16, 0xf9, 0x3d, 0x1e, 0x44, 0x09, 0xd2, 0xa3, 0x33, 0xa9, 0xc1, 0x5c, 0xcc,
+	0x3a, 0x01, 0x8f, 0xcc, 0xbc, 0x64, 0xf0, 0x94, 0xe2, 0xe7, 0x7d, 0x7a, 0xc9, 0x12, 0xb3, 0xa0,
+	0x70, 0x75, 0x1a, 0x5d, 0x53, 0xbc, 0xb9, 0x86, 0x3c, 0x18, 0xcd, 0xe6, 0xd2, 0xd0, 0x13, 0xc2,
+	0x2c, 0x49, 0x72, 0x1e, 0xc1, 0x17, 0x29, 0x46, 0xb6, 0x00, 0x3c, 0x4a, 0x99, 0x10, 0xee, 0x25,
+	0x1b, 0x98, 0x73, 0x52, 0xa1, 0x2b, 0xe4, 0x84, 0x0d, 0x52, 0x5a, 0x30, 0x1a, 0xb3, 0x44, 0xd2,
+	0x65, 0x45, 0x2b, 0xe4, 0x84, 0x0d, 0xec, 0x3a, 0x14, 0x5b, 0x87, 0x47, 0x6d, 0x35, 0x6e, 0x97,
+	0x27, 0x0c, 0x8d, 0xe0, 0xc9, 0xfe, 0x08, 0xe5, 0x03, 0x8f, 0x5e, 0xb2, 0xc8, 0x27, 0x0f, 0xa1,
+	0x14, 0xa6, 0x1b, 0x91, 0x0a, 0xa3, 0x31, 0xaf, 0xf6, 0xb5, 0x27, 0xb7, 0xd4, 0xca, 0x39, 0x8a,
+	0x24, 0x9b, 0x90, 0x17, 0x4d, 0xe9, 0xd9, 0x68, 0xe8, 0x28, 0x69, 0x37, 0x5b, 0x39, 0x27, 0x2f,
+	0x9a, 0xe4, 0x3e, 0x14, 0x2f, 0xfc, 0xb7, 0x42, 0x5a, 0x37, 0x1a, 0x06, 0xd2, 0xe9, 0x00, 0xad,
+	0x9c, 0x23, 0xa9, 0x03, 0x1d, 0xca, 0x68, 0xcf, 0xfe, 0xa2, 0xc1, 0xf2, 0x9b, 0x5e, 0xc8, 0x3d,
+	0xff, 0x28, 0x08, 0x99, 0xc3, 0xde, 0xf5, 0x99, 0x48, 0x94, 0x21, 0x21, 0x02, 0x1e, 0xb9, 0x81,
+	0x8f, 0xd3, 0xea, 0x88, 0x1c, 0xfb, 0x64, 0x07, 0x8c, 0x98, 0xd1, 0x7e, 0x2c, 0x82, 0x2b, 0x16,
+	0x0e, 0xe4, 0x20, 0x15, 0x27, 0x0b, 0x91, 0x6d, 0x30, 0x04, 0xef, 0xc7, 0x94, 0xb9, 0x72, 0xe1,
+	0x2a, 0x06, 0x50, 0xd0, 0xeb, 0x74, 0xed, 0xfb, 0x50, 0x4d, 0xbc, 0xb8, 0xc3, 0x12, 0xf7, 0x5c,
+	0x59, 0x97, 0xa1, 0x18, 0x8d, 0x2a, 0xce, 0x8b, 0x0b, 0x71, 0x16, 0x94, 0x0a, 0x8f, 0xf6, 0x2a,
+	0x90, 0xec, 0xb4, 0xa2, 0xc7, 0x23, 0xc1, 0xec, 0x9f, 0x1a, 0xac, 0x1d, 0x47, 0x34, 0xfe, 0x67,
+	0x23, 0x13, 0x63, 0xe6, 0xef, 0x30, 0x66, 0xe1, 0x0e, 0x63, 0x12, 0x1b, 0x16, 0x28, 0xef, 0x76,
+	0x83, 0xc4, 0x0d, 0x79, 0x27, 0xbd, 0x39, 0x35, 0x57, 0x70, 0x0c, 0x05, 0x9e, 0xf2, 0xce, 0xb1,
+	0x4f, 0xea, 0x60, 0x84, 0x9e, 0x18, 0x29, 0x4a, 0x52, 0xa1, 0xa7, 0x90, 0xe4, 0x6d, 0x13, 0x6a,
+	0x93, 0x9e, 0xd0, 0xee, 0x57, 0x0d, 0x56, 0x0e, 0xf9, 0xfb, 0xe8, 0xbf, 0xa7, 0xb6, 0x0f, 0x55,
+	0x5c, 0xc7, 0x2d, 0x6e, 0x95, 0x6a, 0xe8, 0x76, 0x1b, 0x0c, 0x5c, 0x52, 0xe6, 0xed, 0x02, 0x05,
+	0xa5, 0x5b, 0xb4, 0x6b, 0xb0, 0x3a, 0x3e, 0x2f, 0x1a, 0x39, 0x82, 0xea, 0x19, 0xbf, 0x62, 0x87,
+	0x41, 0x3c, 0xb4, 0xb0, 0x01, 0x15, 0x11, 0x53, 0x37, 0xf3, 0x31, 0x28, 0x8b, 0x98, 0xca, 0x28,
+	0x36, 0xa0, 0xe2, 0x8b, 0x24, 0x1b, 0x54, 0xd9, 0x17, 0xaa, 0xff, 0x32, 0x2c, 0x8e, 0xfa, 0x60,
+	0xeb, 0xc7, 0xb0, 0xe4, 0xb0, 0xee, 0x78, 0xf3, 0x59, 0x5f, 0x99, 0x15, 0x58, 0xce, 0xe8, 0xb0,
+	0xf8, 0x11, 0x2c, 0xbe, 0xfc, 0x10, 0x88, 0xe4, 0x96, 0xda, 0x5d, 0x58, 0xba, 0x91, 0xa9, 0x52,
+	0xb2, 0x0a, 0x25, 0x96, 0x62, 0x52, 0x58, 0x71, 0xd4, 0xa1, 0xf1, 0xb9, 0x00, 0xd5, 0xb6, 0x7a,
+	0xe3, 0xda, 0x2c, 0xbe, 0x0a, 0x28, 0x23, 0xcf, 0x01, 0x6e, 0xa2, 0x25, 0x26, 0x6e, 0x78, 0xea,
+	0x09, 0xb6, 0x36, 0x66, 0x30, 0x78, 0xd7, 0x19, 0x54, 0xc7, 0x9f, 0x10, 0x72, 0x0f, 0xc5, 0x33,
+	0x5f, 0x06, 0x6b, 0xeb, 0x2f, 0x2c, 0xb6, 0x7b, 0x05, 0xf3, 0xd9, 0x94, 0x88, 0x85, 0xf2, 0x19,
+	0x8f, 0x9a, 0xb5, 0x39, 0x93, 0xc3, 0x46, 0x4f, 0xa0, 0x8c, 0x71, 0x90, 0x35, 0xd4, 0x8d, 0xc7,
+	0x6c, 0xd5, 0x26, 0x61, 0xac, 0x7c, 0x06, 0xfa, 0x28, 0x0d, 0xb2, 0x8e, 0xa2, 0xc9, 0x1c, 0x2d,
+	0x73, 0x9a, 0xc0, 0xfa, 0xa7, 0x50, 0x19, 0x26, 0x42, 0x86, 0x77, 0x4c, 0x24, 0x69, 0xad, 0x4f,
+	0xe1, 0xaa, 0xf8, 0x60, 0xe9, 0xfb, 0x75, 0x5d, 0xfb, 0x71, 0x5d, 0xd7, 0x7e, 0x5d, 0xd7, 0xb5,
+	0x4f, 0xbf, 0xeb, 0xb9, 0xf3, 0x39, 0xa9, 0x6c, 0xfe, 0x09, 0x00, 0x00, 0xff, 0xff, 0x0e, 0x1c,
+	0x1b, 0x67, 0xbe, 0x06, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -890,6 +1015,8 @@ const _ = grpc.SupportPackageIsVersion4
 type StorageServiceClient interface {
 	// UploadFile upload file from agent machine to external storage
 	UploadFile(ctx context.Context, in *UploadFileRequest, opts ...grpc.CallOption) (*UploadFileResponse, error)
+	// IncrUploadFile upload incremental file from agent machine to external storage
+	IncrUploadFile(ctx context.Context, in *IncrUploadFileRequest, opts ...grpc.CallOption) (*IncrUploadFileResponse, error)
 	// DownloadFile download file from external storage to agent machine
 	DownloadFile(ctx context.Context, in *DownloadFileRequest, opts ...grpc.CallOption) (*DownloadFileResponse, error)
 	// MoveDir rename dir in agent machine
@@ -911,6 +1038,15 @@ func NewStorageServiceClient(cc *grpc.ClientConn) StorageServiceClient {
 func (c *storageServiceClient) UploadFile(ctx context.Context, in *UploadFileRequest, opts ...grpc.CallOption) (*UploadFileResponse, error) {
 	out := new(UploadFileResponse)
 	err := c.cc.Invoke(ctx, "/proto.StorageService/UploadFile", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *storageServiceClient) IncrUploadFile(ctx context.Context, in *IncrUploadFileRequest, opts ...grpc.CallOption) (*IncrUploadFileResponse, error) {
+	out := new(IncrUploadFileResponse)
+	err := c.cc.Invoke(ctx, "/proto.StorageService/IncrUploadFile", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -957,6 +1093,8 @@ func (c *storageServiceClient) ExistDir(ctx context.Context, in *ExistDirRequest
 type StorageServiceServer interface {
 	// UploadFile upload file from agent machine to external storage
 	UploadFile(context.Context, *UploadFileRequest) (*UploadFileResponse, error)
+	// IncrUploadFile upload incremental file from agent machine to external storage
+	IncrUploadFile(context.Context, *IncrUploadFileRequest) (*IncrUploadFileResponse, error)
 	// DownloadFile download file from external storage to agent machine
 	DownloadFile(context.Context, *DownloadFileRequest) (*DownloadFileResponse, error)
 	// MoveDir rename dir in agent machine
@@ -973,6 +1111,9 @@ type UnimplementedStorageServiceServer struct {
 
 func (*UnimplementedStorageServiceServer) UploadFile(ctx context.Context, req *UploadFileRequest) (*UploadFileResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UploadFile not implemented")
+}
+func (*UnimplementedStorageServiceServer) IncrUploadFile(ctx context.Context, req *IncrUploadFileRequest) (*IncrUploadFileResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IncrUploadFile not implemented")
 }
 func (*UnimplementedStorageServiceServer) DownloadFile(ctx context.Context, req *DownloadFileRequest) (*DownloadFileResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DownloadFile not implemented")
@@ -1005,6 +1146,24 @@ func _StorageService_UploadFile_Handler(srv interface{}, ctx context.Context, de
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(StorageServiceServer).UploadFile(ctx, req.(*UploadFileRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StorageService_IncrUploadFile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IncrUploadFileRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StorageServiceServer).IncrUploadFile(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.StorageService/IncrUploadFile",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StorageServiceServer).IncrUploadFile(ctx, req.(*IncrUploadFileRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1088,6 +1247,10 @@ var _StorageService_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UploadFile",
 			Handler:    _StorageService_UploadFile_Handler,
+		},
+		{
+			MethodName: "IncrUploadFile",
+			Handler:    _StorageService_IncrUploadFile_Handler,
 		},
 		{
 			MethodName: "DownloadFile",
@@ -1432,6 +1595,96 @@ func (m *UploadFileResponse) MarshalTo(dAtA []byte) (int, error) {
 }
 
 func (m *UploadFileResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *IncrUploadFileRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *IncrUploadFileRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *IncrUploadFileRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.LastLogId != 0 {
+		i = encodeVarintStorage(dAtA, i, uint64(m.LastLogId))
+		i--
+		dAtA[i] = 0x28
+	}
+	if m.CommitLogId != 0 {
+		i = encodeVarintStorage(dAtA, i, uint64(m.CommitLogId))
+		i--
+		dAtA[i] = 0x20
+	}
+	if m.TargetBackend != nil {
+		{
+			size, err := m.TargetBackend.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintStorage(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.SourcePath) > 0 {
+		i -= len(m.SourcePath)
+		copy(dAtA[i:], m.SourcePath)
+		i = encodeVarintStorage(dAtA, i, uint64(len(m.SourcePath)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.SessionId) > 0 {
+		i -= len(m.SessionId)
+		copy(dAtA[i:], m.SessionId)
+		i = encodeVarintStorage(dAtA, i, uint64(len(m.SessionId)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *IncrUploadFileResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *IncrUploadFileResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *IncrUploadFileResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1895,6 +2148,48 @@ func (m *UploadFileRequest) Size() (n int) {
 }
 
 func (m *UploadFileResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *IncrUploadFileRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.SessionId)
+	if l > 0 {
+		n += 1 + l + sovStorage(uint64(l))
+	}
+	l = len(m.SourcePath)
+	if l > 0 {
+		n += 1 + l + sovStorage(uint64(l))
+	}
+	if m.TargetBackend != nil {
+		l = m.TargetBackend.Size()
+		n += 1 + l + sovStorage(uint64(l))
+	}
+	if m.CommitLogId != 0 {
+		n += 1 + sovStorage(uint64(m.CommitLogId))
+	}
+	if m.LastLogId != 0 {
+		n += 1 + sovStorage(uint64(m.LastLogId))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *IncrUploadFileResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2837,6 +3132,246 @@ func (m *UploadFileResponse) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: UploadFileResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipStorage(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthStorage
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *IncrUploadFileRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowStorage
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: IncrUploadFileRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: IncrUploadFileRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field SessionId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowStorage
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthStorage
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthStorage
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.SessionId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field SourcePath", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowStorage
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthStorage
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthStorage
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.SourcePath = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TargetBackend", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowStorage
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthStorage
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthStorage
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.TargetBackend == nil {
+				m.TargetBackend = &Backend{}
+			}
+			if err := m.TargetBackend.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CommitLogId", wireType)
+			}
+			m.CommitLogId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowStorage
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.CommitLogId |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field LastLogId", wireType)
+			}
+			m.LastLogId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowStorage
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.LastLogId |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipStorage(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthStorage
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *IncrUploadFileResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowStorage
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: IncrUploadFileResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: IncrUploadFileResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
