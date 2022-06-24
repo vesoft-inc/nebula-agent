@@ -32,7 +32,7 @@ func NewS3(b *pb.Backend) (*S3, error) {
 	}
 
 	creds := credentials.NewStaticCredentials(b.GetS3().AccessKey, b.GetS3().SecretKey, "")
-	forcePath := strings.ContainsAny(b.GetS3().GetEndpoint(), ":")
+	forcePath := CheckEndpoint(b.GetS3().GetEndpoint())
 	region := "default"
 	if b.GetS3().GetRegion() != "" {
 		region = b.GetS3().GetRegion()
