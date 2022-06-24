@@ -321,7 +321,8 @@ func (s *S3) ListDir(ctx context.Context, uri string) ([]string, error) {
 	}
 
 	prefix := b.GetS3().GetPath()
-	if !strings.HasSuffix(prefix, "/") {
+	// prefix can't start with "/"
+	if prefix != "" && !strings.HasSuffix(prefix, "/") {
 		// without "/",  we could only get current prefix
 		prefix += "/"
 	}
