@@ -26,10 +26,10 @@ func (p *ServicePlayBack) PlayBack() error {
 	cmdStr := fmt.Sprintf("cd %s && bin/db_playback --db_path=%s --playback_meta_server=%s", p.dir, p.dataPath, p.metaAddr)
 	log.WithField("cmd", cmdStr).Debug("Try to playback storage data...")
 	cmd := exec.Command("bash", "-c", cmdStr)
-	err := cmd.Run()
+	out, err := cmd.Output()
 	if err != nil {
 		log.WithError(err).Errorf("Data playback failed")
-		return err
+		return fmt.Errorf("data playback err: %w, db_playback output: %s", err, string(out))
 	}
 
 	return nil
