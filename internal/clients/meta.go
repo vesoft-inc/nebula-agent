@@ -68,8 +68,8 @@ func NewMeta(config *MetaConfig) (*NebulaMeta, error) {
 
 // Connect to meta service by given meta address
 // We will reconnect when:
-//   1. the meta service leader changed
-//   2. get individual info from individual meta service, such as dir info
+//  1. the meta service leader changed
+//  2. get individual info from individual meta service, such as dir info
 func connect(metaAddr, agentAddr *nebula.HostAddr) (*meta.MetaServiceClient, error) {
 	addr := utils.StringifyAddr(metaAddr)
 	log.WithField("meta address", addr).Info("try to connect meta service")
@@ -127,6 +127,7 @@ func (m *NebulaMeta) heartbeat() error {
 		GitInfoSha: []byte(m.config.GitInfoSHA),
 	}
 
+	try := 1
 	// retry only when leader change
 	for {
 		resp, err := m.client.AgentHeartbeat(req)
@@ -162,6 +163,10 @@ func (m *NebulaMeta) heartbeat() error {
 				return err
 			}
 			m.client = c
+
+			log.Infof("retry heatbeat, meta leader changed, try times=%d.", try)
+			time.Sleep(time.Duration(try) * time.Second)
+			try *= 2
 			continue
 		}
 
