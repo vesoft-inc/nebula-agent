@@ -58,6 +58,10 @@ message DataPlayBackRequest {
 
 message DataPlayBackResponse {}
 
+message StopAgentRequest {}
+
+message StopAgentResponse {}
+
 service AgentService {
   rpc StartService(StartServiceRequest) returns (StartServiceResponse);
   rpc StopService(StopServiceRequest) returns (StopServiceResponse);
@@ -67,4 +71,6 @@ service AgentService {
   rpc AllowReadWrite(AllowReadWriteRequest) returns (AllowReadWriteResponse);
 
   rpc DataPlayBack(DataPlayBackRequest) returns (DataPlayBackResponse);
+
+  rpc StopAgent(StopAgentRequest) returns (StopAgentResponse);
 }

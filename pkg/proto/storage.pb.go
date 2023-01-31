@@ -218,6 +218,7 @@ func (m *HDFS) GetRemote() string {
 
 type Backend struct {
 	// Types that are valid to be assigned to Storage:
+	//
 	//	*Backend_Local
 	//	*Backend_S3
 	//	*Backend_Hdfs

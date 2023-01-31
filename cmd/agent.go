@@ -46,6 +46,13 @@ func main() {
 	var opts []grpc.ServerOption
 	grpcServer := grpc.NewServer(opts...)
 
+	// graceful stop
+	go func() {
+		<-clients.StopChan
+		log.Infoln("Stopping server...")
+		grpcServer.GracefulStop()
+	}()
+
 	metaCfg, err := clients.NewMetaConfig(*agent, *meta, GitInfoSHA, *hbs)
 	if err != nil {
 		log.WithError(err).Fatalf("Failed to create meta config.")

@@ -83,3 +83,8 @@ func (a *AgentServer) DataPlayBack(ctx context.Context, req *pb.DataPlayBackRequ
 
 	return resp, clients.NewPlayBack(req).PlayBack()
 }
+
+func (a *AgentServer) StopAgent(ctx context.Context, req *pb.StopAgentRequest) (*pb.StopAgentResponse, error) {
+	resp := &pb.StopAgentResponse{}
+	return resp, clients.StopAgent(req)
+}
