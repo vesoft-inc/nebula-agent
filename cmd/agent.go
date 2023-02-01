@@ -53,13 +53,16 @@ func main() {
 		grpcServer.GracefulStop()
 	}()
 
-	metaCfg, err := clients.NewMetaConfig(*agent, *meta, GitInfoSHA, *hbs)
-	if err != nil {
-		log.WithError(err).Fatalf("Failed to create meta config.")
-	}
-	agentServer, err := server.NewAgent(metaCfg)
-	if err != nil {
-		log.WithError(err).Fatalf("Failed to create agent server.")
+	var agentServer *server.AgentServer
+	if *meta != "" {
+		metaCfg, err := clients.NewMetaConfig(*agent, *meta, GitInfoSHA, *hbs)
+		if err != nil {
+			log.WithError(err).Fatalf("Failed to create meta config.")
+		}
+		agentServer, err = server.NewAgent(metaCfg)
+		if err != nil {
+			log.WithError(err).Fatalf("Failed to create agent server.")
+		}
 	}
 
 	pb.RegisterAgentServiceServer(grpcServer, agentServer)
