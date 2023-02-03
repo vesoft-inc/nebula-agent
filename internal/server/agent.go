@@ -88,3 +88,9 @@ func (a *AgentServer) StopAgent(ctx context.Context, req *pb.StopAgentRequest) (
 	resp := &pb.StopAgentResponse{}
 	return resp, clients.StopAgent(req)
 }
+
+func (a *AgentServer) HealthCheck(ctx context.Context, req *pb.HealthCheckRequest) (*pb.HealthCheckResponse, error) {
+	return &pb.HealthCheckResponse{
+		Status: "healthy",
+	}, nil
+}
