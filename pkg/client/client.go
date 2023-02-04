@@ -32,6 +32,7 @@ type Client interface {
 	RemoveDir(req *pb.RemoveDirRequest) (*pb.RemoveDirResponse, error)
 	ExistDir(req *pb.ExistDirRequest) (*pb.ExistDirResponse, error)
 	StopAgent(req *pb.StopAgentRequest) (*pb.StopAgentResponse, error)
+	HealthCheck(req *pb.HealthCheckRequest) (*pb.HealthCheckResponse, error)
 }
 
 func genSessionId() string {
@@ -187,4 +188,14 @@ func (c *client) StopAgent(req *pb.StopAgentRequest) (resp *pb.StopAgentResponse
 	}()
 
 	return c.agent.StopAgent(c.ctx, req)
+}
+
+func (c *client) HealthCheck(req *pb.HealthCheckRequest) (resp *pb.HealthCheckResponse, err error) {
+	defer func() {
+		if err != nil {
+			err = fmt.Errorf("agent, health check failed: %w", err)
+		}
+	}()
+
+	return c.agent.HealthCheck(c.ctx, req)
 }
