@@ -16,7 +16,7 @@ require (
 	github.com/juju/ratelimit v1.0.1
 	github.com/kr/pretty v0.3.0 // indirect
 	github.com/stretchr/testify v1.7.0
-	github.com/vesoft-inc/nebula-go/v3 v3.0.0
+	github.com/vesoft-inc/nebula-go/v3 v3.4.0
 	golang.org/x/net v0.0.0-20210805182204-aaa1db679c0d // indirect
 	golang.org/x/sys v0.0.0-20210809222454-d867a43fc93e // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
