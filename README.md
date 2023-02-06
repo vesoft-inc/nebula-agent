@@ -12,11 +12,11 @@ If you are in linux amd64 environment, you could download it directly.
 1. Download the agent.
 
   ```bash
-  $ wget https://github.com/vesoft-inc/nebula-agent/releases/download/v0.1.1/agent-0.1.1-linux-amd64
+  $ wget https://github.com/vesoft-inc/nebula-agent/releases/download/v3.4.0/agent-3.4.0-linux-amd64
   ```
 2. Change the agent name.
   ```bash
-  $ mv agent-0.1.1-linux-amd64 agent
+  $ mv agent-3.4.0-linux-amd64 agent
   ```
 3. Add execute permission to agent.
   ```bash
