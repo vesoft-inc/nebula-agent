@@ -9,8 +9,8 @@ import (
 	"github.com/golang/groupcache/lru"
 	log "github.com/sirupsen/logrus"
 
-	pb "github.com/vesoft-inc/nebula-agent/pkg/proto"
-	"github.com/vesoft-inc/nebula-agent/pkg/storage"
+	pb "github.com/vesoft-inc/nebula-agent/v3/pkg/proto"
+	"github.com/vesoft-inc/nebula-agent/v3/pkg/storage"
 )
 
 // StorageServer provide service:

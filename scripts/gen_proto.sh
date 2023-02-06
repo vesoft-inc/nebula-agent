@@ -29,7 +29,7 @@ GO111MODULE=off go get google.golang.org/grpc
 
 
 echo "collect proto..."
-GO_PREFIX_PATH=github.com/vesoft-inc/nebula-agent/pkg/proto
+GO_PREFIX_PATH=github.com/vesoft-inc/nebula-agent/v3/pkg/proto
 export PATH=$NEBULA_AGENT_ROOT/_tools/bin:$GOPATH/bin:$PATH
 
 function collect() {

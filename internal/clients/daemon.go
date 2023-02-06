@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	log "github.com/sirupsen/logrus"
-	pb "github.com/vesoft-inc/nebula-agent/pkg/proto"
+	pb "github.com/vesoft-inc/nebula-agent/v3/pkg/proto"
 )
 
 type ServiceName string

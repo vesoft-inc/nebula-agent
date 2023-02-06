@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/vesoft-inc/nebula-agent/internal/clients"
-	pb "github.com/vesoft-inc/nebula-agent/pkg/proto"
+	"github.com/vesoft-inc/nebula-agent/v3/internal/clients"
+	pb "github.com/vesoft-inc/nebula-agent/v3/pkg/proto"
 )
 
 // AgentServer act as an agent to interactive with services in agent machine

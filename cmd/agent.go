@@ -7,11 +7,11 @@ import (
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 
-	"github.com/vesoft-inc/nebula-agent/internal/clients"
-	"github.com/vesoft-inc/nebula-agent/internal/limiter"
-	_ "github.com/vesoft-inc/nebula-agent/internal/log"
-	"github.com/vesoft-inc/nebula-agent/internal/server"
-	pb "github.com/vesoft-inc/nebula-agent/pkg/proto"
+	"github.com/vesoft-inc/nebula-agent/v3/internal/clients"
+	"github.com/vesoft-inc/nebula-agent/v3/internal/limiter"
+	_ "github.com/vesoft-inc/nebula-agent/v3/internal/log"
+	"github.com/vesoft-inc/nebula-agent/v3/internal/server"
+	pb "github.com/vesoft-inc/nebula-agent/v3/pkg/proto"
 )
 
 var (

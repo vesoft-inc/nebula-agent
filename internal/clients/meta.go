@@ -7,7 +7,7 @@ import (
 
 	"github.com/facebook/fbthrift/thrift/lib/go/thrift"
 	log "github.com/sirupsen/logrus"
-	"github.com/vesoft-inc/nebula-agent/internal/utils"
+	"github.com/vesoft-inc/nebula-agent/v3/internal/utils"
 	"github.com/vesoft-inc/nebula-go/v3/nebula"
 	"github.com/vesoft-inc/nebula-go/v3/nebula/meta"
 )

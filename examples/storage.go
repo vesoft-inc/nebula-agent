@@ -4,11 +4,11 @@ import (
 	"context"
 
 	log "github.com/sirupsen/logrus"
-	_ "github.com/vesoft-inc/nebula-agent/internal/log"
+	_ "github.com/vesoft-inc/nebula-agent/v3/internal/log"
 	"github.com/vesoft-inc/nebula-go/v3/nebula"
 
-	agent "github.com/vesoft-inc/nebula-agent/pkg/client"
-	pb "github.com/vesoft-inc/nebula-agent/pkg/proto"
+	agent "github.com/vesoft-inc/nebula-agent/v3/pkg/client"
+	pb "github.com/vesoft-inc/nebula-agent/v3/pkg/proto"
 )
 
 func main() {
