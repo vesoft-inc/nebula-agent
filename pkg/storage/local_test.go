@@ -8,8 +8,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	_ "github.com/vesoft-inc/nebula-agent/internal/log"
-	pb "github.com/vesoft-inc/nebula-agent/pkg/proto"
+	_ "github.com/vesoft-inc/nebula-agent/v3/internal/log"
+	pb "github.com/vesoft-inc/nebula-agent/v3/pkg/proto"
 )
 
 var (

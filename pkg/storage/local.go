@@ -13,9 +13,9 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/vesoft-inc/nebula-agent/internal/limiter"
-	"github.com/vesoft-inc/nebula-agent/internal/utils"
-	pb "github.com/vesoft-inc/nebula-agent/pkg/proto"
+	"github.com/vesoft-inc/nebula-agent/v3/internal/limiter"
+	"github.com/vesoft-inc/nebula-agent/v3/internal/utils"
+	pb "github.com/vesoft-inc/nebula-agent/v3/pkg/proto"
 )
 
 type Local struct {

@@ -8,9 +8,9 @@ import (
 
 	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
-	"github.com/vesoft-inc/nebula-agent/internal/utils"
-	pb "github.com/vesoft-inc/nebula-agent/pkg/proto"
-	"github.com/vesoft-inc/nebula-agent/pkg/storage"
+	"github.com/vesoft-inc/nebula-agent/v3/internal/utils"
+	pb "github.com/vesoft-inc/nebula-agent/v3/pkg/proto"
+	"github.com/vesoft-inc/nebula-agent/v3/pkg/storage"
 	"github.com/vesoft-inc/nebula-go/v3/nebula"
 )
 

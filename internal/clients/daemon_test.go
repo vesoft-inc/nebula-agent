@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	pb "github.com/vesoft-inc/nebula-agent/pkg/proto"
+	pb "github.com/vesoft-inc/nebula-agent/v3/pkg/proto"
 )
 
 func TestDaemon(t *testing.T) {
