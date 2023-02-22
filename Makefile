@@ -1,5 +1,9 @@
 .PHONY: build clean fmt test proto run examples test
 
+DOCKER_REPO ?= docker.io/vesoft
+IMAGE_TAG ?= latest
+
+
 default: build
 
 clean:
@@ -13,6 +17,12 @@ build: clean fmt
 	go build -o ./bin/client examples/storage.go
 	chmod +x ./bin/agent
 	chmod +x ./bin/client
+
+docker-build:
+	docker build -t "${DOCKER_REPO}/nebula-agent:${IMAGE_TAG}" .
+
+docker-push:
+	docker push "${DOCKER_REPO}/nebula-agent:${IMAGE_TAG}"
 
 proto:
 	sh scripts/gen_proto.sh
