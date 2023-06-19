@@ -28,7 +28,15 @@ proto:
 	sh scripts/gen_proto.sh
 
 run: build
-	 ./bin/agent
+	 ./bin/agent -f ./etc/config.test.yaml
 
 test:
 	go test -v ./...
+
+testShell:
+	go build -o  ./bin/shell ./examples/task/shell.go
+	bin/shell 127.0.0.1:8888 "ls"
+
+testHeartbeat:
+	go build -o  ./bin/heartbeat-server ./examples/server/server.go
+	bin/heartbeat-server
