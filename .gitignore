@@ -6,3 +6,6 @@ bin
 _test
 
 nohup.out
+plugins
+go.work.sum
+.license.cache

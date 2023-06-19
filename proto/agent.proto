@@ -80,4 +80,5 @@ service AgentService {
 
   rpc StopAgent(StopAgentRequest) returns (StopAgentResponse);
   rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse);
+
 }
