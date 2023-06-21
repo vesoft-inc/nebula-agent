@@ -5,7 +5,6 @@ import (
 	"log"
 	"net"
 
-	"github.com/vesoft-inc/nebula-agent/v3/internal/clients"
 	"github.com/vesoft-inc/nebula-agent/v3/pkg/proto"
 	"google.golang.org/grpc"
 )
@@ -25,14 +24,6 @@ func main() {
 	}
 	var opts []grpc.ServerOption
 	grpcServer := grpc.NewServer(opts...)
-
-	// graceful stop
-	go func() {
-		<-clients.StopChan
-		log.Println("Stopping server...")
-		grpcServer.GracefulStop()
-	}()
-
 	var server Server
 	proto.RegisterServerServiceServer(grpcServer, &server)
 	grpcServer.Serve(lis)
