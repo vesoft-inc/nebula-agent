@@ -5,18 +5,18 @@ import (
 	"os/exec"
 )
 
-type PipeShell struct {
+type StreamShell struct {
 	Shell           string
 	Cmd             *exec.Cmd
 	PushMessageFlag bool
 }
 
-var PipeShellMap map[int32]*PipeShell
+var PipeShellMap map[int32]*StreamShell
 var PipeShellId int32
 
-func RunPipeShell(id int32, shell string) error {
+func RunStreamShell(id int32, shell string) error {
 	cmd := exec.Command("bash", "-c", shell)
-	pipeShell := &PipeShell{
+	pipeShell := &StreamShell{
 		Shell:           shell,
 		Cmd:             cmd,
 		PushMessageFlag: true,
@@ -46,6 +46,6 @@ func RunPipeShell(id int32, shell string) error {
 	return nil
 }
 
-func StopPipeShell(id int32) {
+func StopStreamShell(id int32) {
 	PipeShellMap[id].PushMessageFlag = false
 }
