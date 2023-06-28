@@ -18,6 +18,10 @@ build: clean fmt
 	chmod +x ./bin/agent
 	chmod +x ./bin/client
 
+build-analytics:
+	cp ./packages/analytics/config.yaml ./plugins/analytics
+	go build -trimpath -buildmode=plugin -ldflags "-X main.GitInfoSHA=`git rev-parse --short HEAD`" -o ./plugins/analytics/analytics.so packages/analytics/main.go
+
 docker-build:
 	docker build -t "${DOCKER_REPO}/nebula-agent:${IMAGE_TAG}" .
 
@@ -36,6 +40,10 @@ test:
 testShell:
 	go build -o  ./bin/shell ./examples/task/shell.go
 	bin/shell 127.0.0.1:8888 "ls"
+
+testStreamShell:
+	go build -o  ./bin/shell ./examples/streamshell/streamshell.go
+	bin/shell 127.0.0.1:8888 "top"
 
 testHeartbeat:
 	go build -o  ./bin/heartbeat-server ./examples/server/server.go

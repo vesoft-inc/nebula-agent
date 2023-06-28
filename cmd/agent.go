@@ -12,7 +12,7 @@ import (
 	_ "github.com/vesoft-inc/nebula-agent/v3/internal/log"
 	"github.com/vesoft-inc/nebula-agent/v3/internal/server"
 	"github.com/vesoft-inc/nebula-agent/v3/pkg/config"
-	"github.com/vesoft-inc/nebula-agent/v3/pkg/heartbeat"
+	"github.com/vesoft-inc/nebula-agent/v3/pkg/plugin"
 	pb "github.com/vesoft-inc/nebula-agent/v3/pkg/proto"
 )
 
@@ -25,7 +25,7 @@ var (
 	hbs        = flag.Int("hbs", 60, "Agent heartbeat interval to nebula meta, in seconds")
 	debug      = flag.Bool("debug", false, "Open debug will output more detail info")
 	ratelimit  = flag.Int("ratelimit", 0, "Limit the file upload and download rate, unit Mbps")
-	configFile = flag.String("f", "etc/config.yaml", "the config file")
+	configFile = flag.String("f", "./etc/config.yaml", "the config file path")
 )
 
 func main() {
@@ -35,13 +35,17 @@ func main() {
 	if *agent != "auto" {
 		config.C.Agent = *agent
 	}
+	if config.C.Agent == "auto" {
+		config.C.Agent = net.IPv4bcast.String() + ":8888"
+	}
 	if *debug {
 		log.SetLevel(log.DebugLevel)
 	} else {
 		log.SetLevel(log.InfoLevel)
 	}
+	// load plugin
+	plugin.Load()
 
-	go heartbeat.StartHeartBeat()
 	// set agent rate limit
 	limiter.Rate.SetLimiter(*ratelimit)
 
@@ -57,6 +61,8 @@ func main() {
 		<-clients.StopChan
 		log.Infoln("Stopping server...")
 		grpcServer.GracefulStop()
+		log.Infoln("Stopping plugins.")
+		plugin.Stop()
 	}()
 
 	var agentServer *server.AgentServer

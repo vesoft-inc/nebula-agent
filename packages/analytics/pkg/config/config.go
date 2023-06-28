@@ -1,6 +1,7 @@
 package config
 
 import (
+	"log"
 	"os"
 
 	"github.com/sirupsen/logrus"
@@ -10,8 +11,8 @@ import (
 var C Config
 
 type Config struct {
-	Agent      string
-	PluginPath string
+	ExplorerHosts     []string
+	HeartBeatInterval int64
 }
 
 // parse yaml config file
@@ -23,4 +24,5 @@ func InitConfig(configFilePath string) {
 		return
 	}
 	conf.MustLoad(configFilePath, &C, conf.UseEnv())
+	log.Println("configFilePath:", C.ExplorerHosts)
 }

@@ -1,0 +1,3 @@
+ExplorerHosts:
+  - "ws://127.0.0.1:9000/nebula_ws"
+HeartBeatInterval: 60

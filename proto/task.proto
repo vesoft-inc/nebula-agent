@@ -4,7 +4,6 @@ package proto;
  
 enum TaskType {
   SHELL = 0;
-  STREAM_SHELL = 1;
   JSON = 2;
 }
 
@@ -23,6 +22,14 @@ message RunTaskResponse {
   string data = 2;
   int32 id = 3;
 }
+
+message StreamRunTaskResponse {
+  TaskStatus status = 1;
+  string data = 2;
+  int32 id = 3;
+}
+
 service TaskService {
   rpc RunTask(RunTaskRequest) returns (RunTaskResponse);
+  rpc RunStreamTask(RunTaskRequest) returns (stream StreamRunTaskResponse);
 }

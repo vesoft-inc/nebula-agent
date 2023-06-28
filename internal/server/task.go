@@ -5,6 +5,7 @@ import (
 	"os/exec"
 
 	pb "github.com/vesoft-inc/nebula-agent/v3/pkg/proto"
+	"github.com/vesoft-inc/nebula-agent/v3/pkg/task"
 )
 
 // AgentServer act as an agent to interactive with services in agent machine
@@ -34,4 +35,13 @@ func (a *TaskServer) runShell(ctx context.Context, req *pb.RunTaskRequest) (*pb.
 		Status: pb.TaskStatus_TASK_SUCCESS,
 		Data:   string(output),
 	}, nil
+}
+
+func (a *TaskServer) RunStreamTask(in *pb.RunTaskRequest, out pb.TaskService_RunStreamTaskServer) error {
+	return task.RunStreamShell(0, in.Data, func(s string) error {
+		return out.Send(&pb.StreamRunTaskResponse{
+			Status: pb.TaskStatus_TASK_SUCCESS,
+			Data:   s,
+		})
+	})
 }

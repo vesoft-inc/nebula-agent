@@ -1,4 +1,2 @@
 Agent: 127.0.0.1:8888
-HeartBeatHosts:
-  - 127.0.0.1:8889
-HeartBeatInterval: 5
+PluginPath: ./plugins

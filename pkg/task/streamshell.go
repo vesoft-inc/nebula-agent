@@ -1,7 +1,6 @@
 package task
 
 import (
-	"fmt"
 	"os/exec"
 )
 
@@ -14,7 +13,7 @@ type StreamShell struct {
 var PipeShellMap map[int32]*StreamShell
 var PipeShellId int32
 
-func RunStreamShell(id int32, shell string) error {
+func RunStreamShell(id int32, shell string, rpcSend func(s string) error) error {
 	cmd := exec.Command("bash", "-c", shell)
 	pipeShell := &StreamShell{
 		Shell:           shell,
@@ -30,20 +29,20 @@ func RunStreamShell(id int32, shell string) error {
 	if err != nil {
 		return err
 	}
-	go func() {
-		buf := make([]byte, 1024)
-		for {
-			n, err := reader.Read(buf)
-			if err != nil || !pipeShell.PushMessageFlag {
-				return
-			}
-			if n > 0 {
-				// todo: rpc to push message or write to file or ignore
-				fmt.Println(string(buf[:n]))
+	buf := make([]byte, 1024)
+	for {
+		n, err := reader.Read(buf)
+		if err != nil || !pipeShell.PushMessageFlag {
+			return nil
+		}
+		if n > 0 {
+			// rpc to push message or write to file or ignore
+			err := rpcSend(string(buf[:n]))
+			if err != nil {
+				return err
 			}
 		}
-	}()
-	return nil
+	}
 }
 
 func StopStreamShell(id int32) {

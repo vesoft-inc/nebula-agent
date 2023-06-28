@@ -1,30 +1,33 @@
 package main
 
 import (
-	"context"
-	"log"
-	"net"
+	"fmt"
+	"net/http"
 
-	"github.com/vesoft-inc/nebula-agent/v3/pkg/proto"
-	"google.golang.org/grpc"
+	"github.com/gorilla/websocket"
 )
 
 type Server struct{}
 
-func (s *Server) SendHeartbeat(ctx context.Context, req *proto.SendHeartbeatRequest) (*proto.SendHeartbeatResponse, error) {
-	log.Printf("receiveHeartBeat: %v", req)
-	return &proto.SendHeartbeatResponse{}, nil
-}
-
 func main() {
-
-	lis, err := net.Listen("tcp", "127.0.0.1:8889")
-	if err != nil {
-		log.Fatalf("Failed to listen: %v.", err)
-	}
-	var opts []grpc.ServerOption
-	grpcServer := grpc.NewServer(opts...)
-	var server Server
-	proto.RegisterServerServiceServer(grpcServer, &server)
-	grpcServer.Serve(lis)
+	//make websocket server
+	ws := websocket.Upgrader{}
+	httpServer := http.NewServeMux()
+	httpServer.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+		conn, err := ws.Upgrade(w, r, nil)
+		if err != nil {
+			return
+		}
+		// handle websocket connection
+		go func() {
+			for {
+				_, msg, err := conn.ReadMessage()
+				if err != nil {
+					return
+				}
+				conn.WriteMessage(websocket.TextMessage, []byte(fmt.Sprintf("recive msg: %v", msg)))
+			}
+		}()
+	})
+	http.ListenAndServe(":8889", httpServer)
 }
