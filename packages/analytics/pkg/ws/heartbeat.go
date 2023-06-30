@@ -13,15 +13,9 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/vesoft-inc/nebula-agent/v3/packages/analytics/pkg/config"
+	"github.com/vesoft-inc/nebula-agent/v3/packages/analytics/pkg/types"
 	agentConfig "github.com/vesoft-inc/nebula-agent/v3/pkg/config"
 )
-
-type MachineInfo struct {
-	Host   string
-	CPU    CPUInfo
-	Memory MemoryInfo
-	Disk   DiskInfo
-}
 
 type CPUInfo struct {
 	Percentages []float64
@@ -63,13 +57,14 @@ func SendHeartBeat() {
 			}
 			err = c.WriteMessage(websocket.TextMessage, bytes)
 			if err != nil {
-				logrus.Errorf("send heartbeat to %v failed: %v", c.LocalAddr(), err)
+				logrus.Errorf("send heartbeat to %v failed: %v", c.RemoteAddr(), err)
+			} else {
+				logrus.Infof("send heartbeat successfully to %s", c.RemoteAddr().String())
 			}
 			wg.Done()
 		}(conn)
 	}
 	wg.Wait()
-	logrus.Infof("send heartbeat successfully %v", WsClients)
 }
 
 func StartHeartBeat() {
@@ -85,13 +80,21 @@ func StopHeartBeat() {
 }
 
 func GetMachineInfo() ([]byte, error) {
-	data := MachineInfo{
-		CPU:    GetCPUInfo(),
-		Memory: GetMemoryInfo(),
-		Disk:   GetDiskInfo(),
-		Host:   agentConfig.C.Agent,
+	res := types.Ws_Message{
+		Header: types.Ws_Message_Header{
+			SendTime: time.Now().Unix(),
+		},
+		Body: types.Ws_Message_Body{
+			MsgType: types.Ws_Message_Type_Machine_Info,
+			Content: map[string]interface{}{
+				"cpu":    GetCPUInfo(),
+				"memory": GetMemoryInfo(),
+				"disk":   GetDiskInfo(),
+				"agent":   agentConfig.C.Agent,
+			},
+		},
 	}
-	text, err := json.Marshal(data)
+	text, err := json.Marshal(res)
 	if err != nil {
 		logrus.Errorf("get machine info failed: %v", err)
 		return nil, err
@@ -188,4 +191,36 @@ func GetProcessInfo() []ProcessInfo {
 		})
 	}
 	return processesInfo
+}
+
+func SendAgentChangeToExplorer() {
+	explorerHosts := make([]string, 0, len(WsClients))
+	for k := range WsClients {
+		explorerHosts = append(explorerHosts, k)
+	}
+	for _, conn := range WsClients {
+		res := types.Ws_Message{
+			Header: types.Ws_Message_Header{
+				SendTime: time.Now().Unix(),
+			},
+			Body: types.Ws_Message_Body{
+				MsgType: types.Ws_Message_Type_Agent,
+				Content: map[string]interface{}{
+					"activeExplorerHosts": explorerHosts,
+					"agent":	agentConfig.C.Agent,
+					"explorerHosts":	config.C.ExplorerHosts,
+				},
+			},
+		}
+		bytes, err := json.Marshal(res)
+		if err != nil {
+			logrus.Errorf("marshal message error: %v", err)
+			continue
+		}
+		err = conn.WriteMessage(websocket.TextMessage, bytes)
+		if err != nil {
+			logrus.Errorf("write message error: %v", err)
+			continue
+		}
+	}
 }

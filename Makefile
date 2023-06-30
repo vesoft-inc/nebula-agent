@@ -44,7 +44,6 @@ testShell:
 testStreamShell:
 	go build -o  ./bin/shell ./examples/streamshell/streamshell.go
 	bin/shell 127.0.0.1:8888 "top"
-
-testHeartbeat:
-	go build -o  ./bin/heartbeat-server ./examples/server/server.go
-	bin/heartbeat-server
+ 
+testAnalytics: build-analytics
+	 ./bin/agent

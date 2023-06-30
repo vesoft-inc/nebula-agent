@@ -24,5 +24,5 @@ func InitConfig(configFilePath string) {
 		return
 	}
 	conf.MustLoad(configFilePath, &C, conf.UseEnv())
-	log.Println("configFilePath:", C.ExplorerHosts)
+	log.Println("ExplorerHosts:", C.ExplorerHosts)
 }
