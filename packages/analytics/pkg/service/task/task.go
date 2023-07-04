@@ -6,6 +6,7 @@ import (
 
 	"github.com/gorilla/websocket"
 	"github.com/sirupsen/logrus"
+	"github.com/vesoft-inc/nebula-agent/v3/packages/analytics/pkg/config"
 	"github.com/vesoft-inc/nebula-agent/v3/packages/analytics/pkg/types"
 	agentTask "github.com/vesoft-inc/nebula-agent/v3/pkg/task"
 )
@@ -13,7 +14,6 @@ import (
 type TaskInfo struct {
 	JobId  string `json:"jobId"`
 	TaskId string `json:"taskId"`
-	ExecFile string `json:"exec_file"`
 	Spec     map[string]string `json:"spec"`
 
 	Status types.TaskStatus `json:"status"`
@@ -26,7 +26,7 @@ type TaskService struct {
 	task *TaskInfo
 }
 
-func HandleAnalyticsTask(res *types.Ws_Message,conn *websocket.Conn) {
+func HandleAnalyticsTask(res *types.Ws_Message,conn *websocket.Conn) *TaskService {
 	action := res.Body.Content["action"].(string)
 	task := res.Body.Content["task"].(TaskInfo)
 	t := &TaskService{
@@ -39,6 +39,7 @@ func HandleAnalyticsTask(res *types.Ws_Message,conn *websocket.Conn) {
 	case "stop":
 		t.StopAnalyticsTask()
 	}
+	return t;
 }
 
 func (t *TaskService) StartAnalyticsTask() {
@@ -63,8 +64,8 @@ func (t *TaskService) StartAnalyticsTask() {
 			taskInfo.EndTime = time.Now().Unix()
 			t.SendTaskStatusToExplorer()
 	 }()
-	 
 }
+
 func (t *TaskService) StopAnalyticsTask() {
 	id := t.task.JobId + "-" + t.task.TaskId
 	err := agentTask.StopStreamShell(id)
@@ -96,7 +97,7 @@ func (t *TaskService) SendTaskStatusToExplorer() {
 }
 
 func task2cmd(task *TaskInfo, filterPwd bool) string {
-	cmd := task.ExecFile
+	cmd := config.C.ExecFile
 	if jobId, exist := task.Spec["job_id"]; exist {
 		cmd = cmd + " --job_id '" + jobId + "' "
 	}
