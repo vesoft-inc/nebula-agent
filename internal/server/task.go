@@ -38,7 +38,7 @@ func (a *TaskServer) runShell(ctx context.Context, req *pb.RunTaskRequest) (*pb.
 }
 
 func (a *TaskServer) RunStreamTask(in *pb.RunTaskRequest, out pb.TaskService_RunStreamTaskServer) error {
-	return task.RunStreamShell(0, in.Data, func(s string) error {
+	return task.RunStreamShell(in.Id, in.Data, func(s string) error {
 		return out.Send(&pb.StreamRunTaskResponse{
 			Status: pb.TaskStatus_TASK_SUCCESS,
 			Data:   s,

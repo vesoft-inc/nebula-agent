@@ -10,7 +10,7 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/sirupsen/logrus"
 	"github.com/vesoft-inc/nebula-agent/v3/packages/analytics/pkg/config"
-	"github.com/vesoft-inc/nebula-agent/v3/packages/analytics/pkg/task"
+	"github.com/vesoft-inc/nebula-agent/v3/packages/analytics/pkg/service/task"
 	"github.com/vesoft-inc/nebula-agent/v3/packages/analytics/pkg/types"
 	agentConfig "github.com/vesoft-inc/nebula-agent/v3/pkg/config"
 )
@@ -29,10 +29,12 @@ func InitWsConnect() {
 
 func CloseWsConnect() {
 	StopHeartBeat()
+	mu.Lock()
 	for _, conn := range WsClients {
 		conn.Close()
 	}
 	WsClients = nil
+	mu.Unlock()
 }
 
 func reconnect(host string) {
@@ -69,7 +71,9 @@ func connect(host string) error {
 		logrus.Errorf("connect to %s error: %v", host, err)
 		return err
 	}
+	mu.Lock()
 	WsClients[host] = conn
+	mu.Unlock()
 	return nil
 }
 
@@ -92,7 +96,7 @@ func listen(host string) {
 		}
 		switch res.Body.MsgType {
 		case types.Ws_Message_Type_Task:
-			task.HandleAnalyticsTask(&res)
+			task.HandleAnalyticsTask(&res, conn)
 		default:
 		}
 	}

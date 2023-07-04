@@ -10,10 +10,9 @@ type StreamShell struct {
 	PushMessageFlag bool
 }
 
-var PipeShellMap map[int32]*StreamShell
-var PipeShellId int32
+var PipeShellMap map[string]*StreamShell
 
-func RunStreamShell(id int32, shell string, rpcSend func(s string) error) error {
+func RunStreamShell(id string, shell string, rpcSend func(s string) error) error {
 	cmd := exec.Command("bash", "-c", shell)
 	pipeShell := &StreamShell{
 		Shell:           shell,
@@ -45,6 +44,8 @@ func RunStreamShell(id int32, shell string, rpcSend func(s string) error) error 
 	}
 }
 
-func StopStreamShell(id int32) {
+func StopStreamShell(id string)error {
 	PipeShellMap[id].PushMessageFlag = false
+	cmd := PipeShellMap[id].Cmd
+	return cmd.Process.Kill()
 }

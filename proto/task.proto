@@ -15,18 +15,18 @@ enum TaskStatus {
 message RunTaskRequest {
   TaskType type = 1;
   string data = 2;
-  int32 id = 3;
+  string id = 3;
 }
 message RunTaskResponse {
   TaskStatus status = 1;
   string data = 2;
-  int32 id = 3;
+  string id = 3;
 }
 
 message StreamRunTaskResponse {
   TaskStatus status = 1;
   string data = 2;
-  int32 id = 3;
+  string id = 3;
 }
 
 service TaskService {

@@ -5,8 +5,8 @@ type Ws_Message struct {
 	Body   Ws_Message_Body   `json:"body"`
 }
 type Ws_Message_Header struct {
-	Version  string `json:"version"`
-	MsgId    string `json:"msgId"`
+	Version  string `json:"version,omitempty"`
+	MsgId    string `json:"msgId,omitempty"`
 	SendTime int64  `json:"sendTime"`
 }
 
