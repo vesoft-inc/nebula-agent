@@ -13,7 +13,7 @@ var C Config
 type Config struct {
 	ExplorerHosts     []string
 	HeartBeatInterval int64
-	ExecFile 				string
+	ExecFile          string
 }
 
 // parse yaml config file

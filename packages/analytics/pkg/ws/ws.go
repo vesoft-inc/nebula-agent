@@ -40,7 +40,7 @@ func CloseWsConnect() {
 func reconnect(host string) {
 	err := connect(host)
 	if err == nil {
-		logrus.Info("connect success:",host)
+		logrus.Info("connect success:", host)
 		go listen(host)
 		return
 	}
@@ -48,13 +48,13 @@ func reconnect(host string) {
 	delete(WsClients, host)
 	mu.Unlock()
 	SendAgentChangeToExplorer()
-	go func(){
-		tricker := time.NewTicker(time.Duration(config.C.HeartBeatInterval)* time.Second)
+	go func() {
+		tricker := time.NewTicker(time.Duration(config.C.HeartBeatInterval) * time.Second)
 		for range tricker.C {
 			err = connect(host)
 			if err == nil {
 				tricker.Stop()
-				logrus.Info("reconnect success:",host)
+				logrus.Info("reconnect success:", host)
 				return
 			}
 		}
@@ -96,7 +96,7 @@ func listen(host string) {
 		}
 		switch res.Body.MsgType {
 		case types.Ws_Message_Type_Task:
-			task.HandleAnalyticsTask(&res, conn)
+			go task.HandleAnalyticsTask(&res, conn)
 		default:
 		}
 	}

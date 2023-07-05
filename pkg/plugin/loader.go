@@ -18,7 +18,7 @@ func Load() {
 	// load plugin
 	pluginDirs, err := os.ReadDir(pluginPath)
 	if err != nil {
-		logrus.Fatalf("read plugin path %s error: %v", pluginPath, err)
+		logrus.Errorf("read plugin path %s error: %v", pluginPath, err)
 		return
 	}
 	for _, file := range pluginDirs {

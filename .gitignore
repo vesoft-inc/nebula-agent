@@ -7,3 +7,4 @@ _test
 
 nohup.out
 plugins
+go.work.sum

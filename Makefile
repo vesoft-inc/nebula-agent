@@ -19,6 +19,7 @@ build: clean fmt
 	chmod +x ./bin/client
 
 build-analytics:
+	mkdir -p ./plugins/analytics
 	cp ./packages/analytics/config.yaml ./plugins/analytics
 	go build -trimpath -buildmode=plugin -ldflags "-X main.GitInfoSHA=`git rev-parse --short HEAD`" -o ./plugins/analytics/analytics.so packages/analytics/main.go
 
@@ -37,13 +38,16 @@ run: build
 test:
 	go test -v ./...
 
-testShell:
+test-shell:
 	go build -o  ./bin/shell ./examples/task/shell.go
 	bin/shell 127.0.0.1:8888 "ls"
 
-testStreamShell:
+test-streamShell:
 	go build -o  ./bin/shell ./examples/streamshell/streamshell.go
 	bin/shell 127.0.0.1:8888 "top"
  
-testAnalytics: build-analytics
+run-analytics: build-analytics
 	 ./bin/agent
+
+test-analytics:
+	go test -timeout 30s github.com/vesoft-inc/nebula-agent/v3/packages/analytics/pkg/service/task -v

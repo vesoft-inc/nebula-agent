@@ -30,6 +30,7 @@ var (
 
 func main() {
 	flag.Parse()
+	log.SetFormatter(&log.TextFormatter{})
 	log.WithField("version", GitInfoSHA).Info("Start agent server...")
 	config.InitConfig(*configFile)
 	if *agent != "auto" {
@@ -76,8 +77,7 @@ func main() {
 			log.WithError(err).Fatalf("Failed to create agent server.")
 		}
 	}
-	var taskServer *server.TaskServer
-	pb.RegisterTaskServiceServer(grpcServer, taskServer)
+	pb.RegisterTaskServiceServer(grpcServer, server.NewTaskServer())
 	pb.RegisterAgentServiceServer(grpcServer, agentServer)
 	pb.RegisterStorageServiceServer(grpcServer, server.NewStorage())
 

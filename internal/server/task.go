@@ -11,6 +11,12 @@ import (
 // AgentServer act as an agent to interactive with services in agent machine
 type TaskServer struct{}
 
+func NewTaskServer() *TaskServer {
+	taskServer := TaskServer{}
+	task.PipeShellMap = make(map[string]*task.StreamShell)
+	return &taskServer
+}
+
 // StartService start metad/storaged/graphd/all service in agent machine
 func (a *TaskServer) RunTask(ctx context.Context, req *pb.RunTaskRequest) (*pb.RunTaskResponse, error) {
 	if req.Type == pb.TaskType_SHELL {

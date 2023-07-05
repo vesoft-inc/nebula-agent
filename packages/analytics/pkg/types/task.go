@@ -7,6 +7,5 @@ const (
 	TaskStatusSuccess     TaskStatus = "success"
 	TaskStatusFailed      TaskStatus = "failed"
 	TaskStatusInterrupted TaskStatus = "interrupted"
-	TaskStatusStopped    TaskStatus = "stopped"
-
+	TaskStatusStopped     TaskStatus = "stopped"
 )

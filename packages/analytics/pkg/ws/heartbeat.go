@@ -90,7 +90,7 @@ func GetMachineInfo() ([]byte, error) {
 				"cpu":    GetCPUInfo(),
 				"memory": GetMemoryInfo(),
 				"disk":   GetDiskInfo(),
-				"agent":   agentConfig.C.Agent,
+				"agent":  agentConfig.C.Agent,
 			},
 		},
 	}
@@ -207,8 +207,8 @@ func SendAgentChangeToExplorer() {
 				MsgType: types.Ws_Message_Type_Agent,
 				Content: map[string]interface{}{
 					"activeExplorerHosts": explorerHosts,
-					"agent":	agentConfig.C.Agent,
-					"explorerHosts":	config.C.ExplorerHosts,
+					"agent":               agentConfig.C.Agent,
+					"explorerHosts":       config.C.ExplorerHosts,
 				},
 			},
 		}

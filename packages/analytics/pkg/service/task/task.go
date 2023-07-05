@@ -9,16 +9,18 @@ import (
 	"github.com/vesoft-inc/nebula-agent/v3/packages/analytics/pkg/config"
 	"github.com/vesoft-inc/nebula-agent/v3/packages/analytics/pkg/types"
 	agentTask "github.com/vesoft-inc/nebula-agent/v3/pkg/task"
+	"github.com/vesoft-inc/nebula-agent/v3/pkg/utils"
 )
 
 type TaskInfo struct {
-	JobId  string `json:"jobId"`
-	TaskId string `json:"taskId"`
+	JobId    string            `json:"jobId"`
+	TaskId   string            `json:"taskId"`
 	Spec     map[string]string `json:"spec"`
+	ExecFile string            `json:"exec_file"`
 
-	Status types.TaskStatus `json:"status"`
-	StartTime int64 `json:"start_time"`
-	EndTime int64 `json:"end_time"`
+	Status    types.TaskStatus `json:"status"`
+	StartTime int64            `json:"start_time"`
+	EndTime   int64            `json:"end_time"`
 }
 
 type TaskService struct {
@@ -26,7 +28,7 @@ type TaskService struct {
 	task *TaskInfo
 }
 
-func HandleAnalyticsTask(res *types.Ws_Message,conn *websocket.Conn) *TaskService {
+func HandleAnalyticsTask(res *types.Ws_Message, conn *websocket.Conn) *TaskService {
 	action := res.Body.Content["action"].(string)
 	task := res.Body.Content["task"].(TaskInfo)
 	t := &TaskService{
@@ -39,31 +41,36 @@ func HandleAnalyticsTask(res *types.Ws_Message,conn *websocket.Conn) *TaskServic
 	case "stop":
 		t.StopAnalyticsTask()
 	}
-	return t;
+	return t
 }
 
 func (t *TaskService) StartAnalyticsTask() {
-	 taskInfo := t.task
-	 cmd := task2cmd(taskInfo, true)
-	 cmdWithoutPwd := task2cmd(taskInfo, false)
-	 id := taskInfo.JobId + "-" + taskInfo.TaskId
-	 taskInfo.Status = types.TaskStatusRunning
-	 taskInfo.StartTime = time.Now().Unix()
-	 t.SendTaskStatusToExplorer()
-	 go func() {
-		  err := agentTask.RunStreamShell(id, cmd,func(msg string) error{
-				return nil
-			})
-			if err != nil {
-				logrus.Errorf("run task %s failed: %s", cmdWithoutPwd, err)
+	taskInfo := t.task
+	cmd := task2cmd(taskInfo, true)
+	cmdWithoutPwd := task2cmd(taskInfo, false)
+	id := taskInfo.JobId + "-" + taskInfo.TaskId
+	taskInfo.Status = types.TaskStatusRunning
+	taskInfo.StartTime = time.Now().Unix()
+	t.SendTaskStatusToExplorer()
+	go func() {
+		logrus.Info("start task: ", cmdWithoutPwd)
+		err := agentTask.RunStreamShell(id, cmd, func(msg string) error {
+			// log.Println(msg)
+			return nil
+		})
+		if err != nil {
+			if err.Error() == "stop stream shell" {
+				logrus.Infof("stop task %s succeed:", id)
+				taskInfo.Status = types.TaskStatusStopped
+			}else{
+				logrus.Errorf("run task failed:%s err: %s", cmdWithoutPwd, err)
 				taskInfo.Status = types.TaskStatusFailed
-			} else {
-				logrus.Infof("run task %s success", cmdWithoutPwd)
-				taskInfo.Status = types.TaskStatusSuccess
 			}
-			taskInfo.EndTime = time.Now().Unix()
-			t.SendTaskStatusToExplorer()
-	 }()
+		} else {
+			taskInfo.Status = types.TaskStatusSuccess
+		}
+		t.SendTaskStatusToExplorer()
+	}()
 }
 
 func (t *TaskService) StopAnalyticsTask() {
@@ -72,32 +79,43 @@ func (t *TaskService) StopAnalyticsTask() {
 	if err != nil {
 		logrus.Errorf("stop task %s failed: %s", id, err)
 	}
-	t.task.Status = types.TaskStatusStopped
-	t.task.EndTime = time.Now().Unix()
-	t.SendTaskStatusToExplorer()
+	t.KillAnalyticsProcess()
+}
+
+func (t *TaskService) KillAnalyticsProcess() {
+	logDirId := t.task.JobId + "_" + t.task.TaskId
+	pids := utils.GetPidByName(logDirId)
+	logrus.Infof("kill task %s pids: %v", logDirId, pids)
+	utils.KillProcessByPids(pids)
 }
 
 func (t *TaskService) SendTaskStatusToExplorer() {
-		t.conn.WriteJSON(types.Ws_Message{
-			Header: types.Ws_Message_Header{
-				SendTime: time.Now().Unix(),
-			},
-			Body: types.Ws_Message_Body{
-				MsgType: "analytics_task",
-				Content: map[string]interface{}{
-					"task": map[string]interface{}{
-						"jobId":  t.task.JobId,
-						"taskId": t.task.TaskId,
-						"status": t.task.Status,
-					},
-					"spendTime": t.task.EndTime - t.task.StartTime,
-				},
-			},
+	content := map[string]interface{}{
+		"task": map[string]interface{}{
+			"jobId":  t.task.JobId,
+			"taskId": t.task.TaskId,
+			"status": t.task.Status,
+			"startTime": t.task.StartTime,
+			"endTime": time.Now().Unix(),
+		},
+	}
+	logrus.Info("send task status to explorer: ", t.task.JobId, "-", t.task.TaskId, " status: ", t.task.Status)
+	t.conn.WriteJSON(types.Ws_Message{
+		Header: types.Ws_Message_Header{
+			SendTime: time.Now().Unix(),
+		},
+		Body: types.Ws_Message_Body{
+			MsgType: "analytics_task",
+			Content:content,
+		},
 	})
 }
 
 func task2cmd(task *TaskInfo, filterPwd bool) string {
 	cmd := config.C.ExecFile
+	if task.ExecFile != "" {
+		cmd = task.ExecFile
+	}
 	if jobId, exist := task.Spec["job_id"]; exist {
 		cmd = cmd + " --job_id '" + jobId + "' "
 	}

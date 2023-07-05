@@ -13,8 +13,8 @@ type Ws_Message_Header struct {
 type Ws_Message_Type string
 
 const (
-	Ws_Message_Type_Task Ws_Message_Type = "analytics_task"
-	Ws_Message_Type_Agent Ws_Message_Type = "analytics_agent"
+	Ws_Message_Type_Task         Ws_Message_Type = "analytics_task"
+	Ws_Message_Type_Agent        Ws_Message_Type = "analytics_agent"
 	Ws_Message_Type_Machine_Info Ws_Message_Type = "analytics_machine_info"
 )
 
@@ -23,4 +23,3 @@ type Ws_Message_Body struct {
 	MsgType Ws_Message_Type        `json:"msgType"`
 	Content map[string]interface{} `json:"content"`
 }
-
