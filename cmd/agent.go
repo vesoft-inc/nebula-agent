@@ -3,7 +3,6 @@ package main
 import (
 	"crypto/tls"
 	"flag"
-	"github.com/vesoft-inc/nebula-agent/v3/internal/utils"
 	"net"
 
 	log "github.com/sirupsen/logrus"
@@ -13,6 +12,7 @@ import (
 	"github.com/vesoft-inc/nebula-agent/v3/internal/limiter"
 	_ "github.com/vesoft-inc/nebula-agent/v3/internal/log"
 	"github.com/vesoft-inc/nebula-agent/v3/internal/server"
+	"github.com/vesoft-inc/nebula-agent/v3/internal/utils"
 	pb "github.com/vesoft-inc/nebula-agent/v3/pkg/proto"
 )
 
