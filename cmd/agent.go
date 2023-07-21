@@ -30,7 +30,7 @@ var (
 	keyPath            = flag.String("key_path", "certs/server.key", "Path to cert key")
 	caPath             = flag.String("ca_path", "certs/ca.crt", "path to CA file")
 	enableSSL          = flag.Bool("enable_ssl", false, "Enable SSL for agent")
-	insecureSkipVerify = flag.Bool("insecure_skip_verify", true, "Skip server side cert verification")
+	insecureSkipVerify = flag.Bool("insecure_skip_verify", false, "Skip server side cert verification")
 )
 
 func main() {
