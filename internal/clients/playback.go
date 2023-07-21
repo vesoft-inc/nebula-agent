@@ -17,7 +17,7 @@ type PlayBackTLSConfig struct {
 	EnableSSL bool
 }
 
-func InitPlayBackTLSConfig(certPath, keyPath, caPath string, enableSSL bool) {
+func InitPlayBackTLSConfig(caPath, keyPath, certPath string, enableSSL bool) {
 	pbtc = &PlayBackTLSConfig{
 		CertPath:  certPath,
 		KeyPath:   keyPath,
