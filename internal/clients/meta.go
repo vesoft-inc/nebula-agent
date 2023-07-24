@@ -1,6 +1,7 @@
 package clients
 
 import (
+	"crypto/tls"
 	"fmt"
 	"sync"
 	"time"
@@ -21,12 +22,14 @@ type MetaConfig struct {
 	HBInterval int
 	MetaAddr   *nebula.HostAddr // meta service address to connect
 	AgentAddr  *nebula.HostAddr // info to be reported to the meta service
+	TLSConfig  *tls.Config
 }
 
-func NewMetaConfig(agentAddr, metaAddr, gitSHA string, hbInterval int) (*MetaConfig, error) {
+func NewMetaConfig(agentAddr, metaAddr, gitSHA string, hbInterval int, tlsConfig *tls.Config) (*MetaConfig, error) {
 	cfg := &MetaConfig{
 		GitInfoSHA: gitSHA,
 		HBInterval: hbInterval,
+		TLSConfig:  tlsConfig,
 	}
 	var err error
 
@@ -58,7 +61,7 @@ func NewMeta(config *MetaConfig) (*NebulaMeta, error) {
 	}
 	var err error
 
-	if m.client, err = connect(m.config.MetaAddr, m.config.AgentAddr); err != nil {
+	if m.client, err = connect(m.config.MetaAddr, m.config.AgentAddr, m.config.TLSConfig); err != nil {
 		return nil, err
 	}
 
@@ -70,13 +73,22 @@ func NewMeta(config *MetaConfig) (*NebulaMeta, error) {
 // We will reconnect when:
 //  1. the meta service leader changed
 //  2. get individual info from individual meta service, such as dir info
-func connect(metaAddr, agentAddr *nebula.HostAddr) (*meta.MetaServiceClient, error) {
+func connect(metaAddr, agentAddr *nebula.HostAddr, tlsConfig *tls.Config) (*meta.MetaServiceClient, error) {
 	addr := utils.StringifyAddr(metaAddr)
 	log.WithField("meta address", addr).Info("try to connect meta service")
 
 	timeoutOption := thrift.SocketTimeout(defaultTimeout)
 	addressOption := thrift.SocketAddr(addr)
-	sock, err := thrift.NewSocket(timeoutOption, addressOption)
+
+	var (
+		err  error
+		sock thrift.Transport
+	)
+	if tlsConfig != nil {
+		sock, err = thrift.NewSSLSocketTimeout(addr, tlsConfig, defaultTimeout)
+	} else {
+		sock, err = thrift.NewSocket(timeoutOption, addressOption)
+	}
 	if err != nil {
 		log.WithError(err).WithField("addr", addr).Error("open socket failed")
 		return nil, err
@@ -132,7 +144,7 @@ func (m *NebulaMeta) heartbeat() error {
 	for {
 		resp, err := m.client.AgentHeartbeat(req)
 		if err != nil {
-			c, err := connect(m.config.MetaAddr, m.config.AgentAddr)
+			c, err := connect(m.config.MetaAddr, m.config.AgentAddr, m.config.TLSConfig)
 			if err != nil {
 				return err
 			}
@@ -158,7 +170,7 @@ func (m *NebulaMeta) heartbeat() error {
 				return LeaderNotFoundError
 			}
 			m.config.MetaAddr = resp.GetLeader()
-			c, err := connect(m.config.MetaAddr, m.config.AgentAddr)
+			c, err := connect(m.config.MetaAddr, m.config.AgentAddr, m.config.TLSConfig)
 			if err != nil {
 				return err
 			}
@@ -177,10 +189,10 @@ func (m *NebulaMeta) heartbeat() error {
 
 // getMetaDirInfo get individual meta dir info of given meta service.
 // Because follower meta service could not report its dir info to the leader one.
-func getMetaDirInfo(metaAddr, agentAddr *nebula.HostAddr) (*nebula.DirInfo, error) {
+func getMetaDirInfo(metaAddr, agentAddr *nebula.HostAddr, tlsConfig *tls.Config) (*nebula.DirInfo, error) {
 	log.WithField("addr", utils.StringifyAddr(metaAddr)).
 		Debugf("Try to get dir info from meta service: %s\n", utils.StringifyAddr(metaAddr))
-	c, err := connect(metaAddr, agentAddr)
+	c, err := connect(metaAddr, agentAddr, tlsConfig)
 	if err != nil {
 		return nil, err
 	}
@@ -214,7 +226,7 @@ func (m *NebulaMeta) refreshInfo(services []*meta.ServiceInfo) error {
 	for _, s := range services {
 		k := utils.StringifyAddr(s.GetAddr())
 		if s.GetRole() == meta.HostRole_META {
-			d, err := getMetaDirInfo(s.Addr, m.config.AgentAddr)
+			d, err := getMetaDirInfo(s.Addr, m.config.AgentAddr, m.config.TLSConfig)
 			if err != nil {
 				return fmt.Errorf("get meta dir for %s failed: %w", k, err)
 			}

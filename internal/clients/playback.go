@@ -8,6 +8,24 @@ import (
 	pb "github.com/vesoft-inc/nebula-agent/v3/pkg/proto"
 )
 
+var pbtc *PlayBackTLSConfig
+
+type PlayBackTLSConfig struct {
+	CertPath  string
+	KeyPath   string
+	CAPath    string
+	EnableSSL bool
+}
+
+func InitPlayBackTLSConfig(caPath, keyPath, certPath string, enableSSL bool) {
+	pbtc = &PlayBackTLSConfig{
+		CertPath:  certPath,
+		KeyPath:   keyPath,
+		CAPath:    caPath,
+		EnableSSL: enableSSL,
+	}
+}
+
 type ServicePlayBack struct {
 	dir      string
 	dataPath string
@@ -24,6 +42,10 @@ func NewPlayBack(req *pb.DataPlayBackRequest) *ServicePlayBack {
 
 func (p *ServicePlayBack) PlayBack() error {
 	cmdStr := fmt.Sprintf("cd %s && bin/db_playback --db_path=%s --playback_meta_server=%s", p.dir, p.dataPath, p.metaAddr)
+	if pbtc.EnableSSL {
+		cmdStr += fmt.Sprintf(" --enable_ssl=%t --cert_path=%s --key_path=%s --ca_path=%s", pbtc.EnableSSL, pbtc.CertPath, pbtc.KeyPath, pbtc.CAPath)
+	}
+
 	log.WithField("cmd", cmdStr).Debug("Try to playback storage data...")
 	cmd := exec.Command("bash", "-c", cmdStr)
 	err := cmd.Run()
