@@ -18,7 +18,7 @@ build: clean fmt
 	chmod +x ./bin/agent
 	chmod +x ./bin/client
 
-build-analytics:
+build-analytics:build
 	mkdir -p ./plugins/analytics
 	cp ./packages/analytics/config.yaml ./plugins/analytics
 	go build -trimpath -buildmode=plugin -ldflags "-X main.GitInfoSHA=`git rev-parse --short HEAD`" -o ./plugins/analytics/analytics.so packages/analytics/main.go

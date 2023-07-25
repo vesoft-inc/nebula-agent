@@ -48,21 +48,18 @@ var timeTricker *time.Ticker
 
 func SendHeartBeat() {
 	wg := &sync.WaitGroup{}
-	for _, conn := range WsClients {
+	for wsHost, conn := range WsClients {
 		wg.Add(1)
-		go func(c *websocket.Conn) {
-			bytes, err := GetMachineInfo()
+		go func(c *websocket.Conn, wsHost string) {
+			err := c.WriteJSON(GetMachineInfo())
 			if err != nil {
-				logrus.Errorf("get machine info failed: %v", err)
-			}
-			err = c.WriteMessage(websocket.TextMessage, bytes)
-			if err != nil {
-				logrus.Errorf("send heartbeat to %v failed: %v", c.RemoteAddr(), err)
+				logrus.Errorf("send heartbeat to %v failed: %v", wsHost, err)
+				reconnect(wsHost)
 			} else {
 				logrus.Infof("send heartbeat successfully to %s", c.RemoteAddr().String())
 			}
 			wg.Done()
-		}(conn)
+		}(conn, wsHost)
 	}
 	wg.Wait()
 }
@@ -79,7 +76,7 @@ func StopHeartBeat() {
 	timeTricker.Stop()
 }
 
-func GetMachineInfo() ([]byte, error) {
+func GetMachineInfo() types.Ws_Message {
 	res := types.Ws_Message{
 		Header: types.Ws_Message_Header{
 			SendTime: time.Now().Unix(),
@@ -94,12 +91,7 @@ func GetMachineInfo() ([]byte, error) {
 			},
 		},
 	}
-	text, err := json.Marshal(res)
-	if err != nil {
-		logrus.Errorf("get machine info failed: %v", err)
-		return nil, err
-	}
-	return text, nil
+	return res
 }
 
 func GetCPUInfo() CPUInfo {

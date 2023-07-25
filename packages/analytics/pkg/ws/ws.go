@@ -3,7 +3,6 @@ package ws
 import (
 	"encoding/json"
 	"net/http"
-	"strings"
 	"sync"
 	"time"
 
@@ -38,15 +37,15 @@ func CloseWsConnect() {
 }
 
 func reconnect(host string) {
+	mu.Lock()
+	delete(WsClients, host)
+	mu.Unlock()
 	err := connect(host)
 	if err == nil {
 		logrus.Info("connect success:", host)
 		go listen(host)
 		return
 	}
-	mu.Lock()
-	delete(WsClients, host)
-	mu.Unlock()
 	SendAgentChangeToExplorer()
 	go func() {
 		tricker := time.NewTicker(time.Duration(config.C.HeartBeatInterval) * time.Second)
@@ -62,6 +61,7 @@ func reconnect(host string) {
 }
 
 func connect(host string) error {
+	logrus.Info("connecting to ", host)
 	ws := websocket.Dialer{}
 	conn, _, err := ws.Dial(host, http.Header{
 		"Origin":        []string{agentConfig.C.Agent},
@@ -83,9 +83,7 @@ func listen(host string) {
 		_, msg, err := conn.ReadMessage()
 		if err != nil {
 			logrus.Error("read message error: ", err)
-			if strings.Contains(err.Error(), "close") {
-				reconnect(host)
-			}
+			reconnect(host)
 			return
 		}
 		res := types.Ws_Message{}
@@ -94,10 +92,13 @@ func listen(host string) {
 			logrus.Errorf("unmarshal message error: %v", err)
 			continue
 		}
-		switch res.Body.MsgType {
-		case types.Ws_Message_Type_Task:
-			go task.HandleAnalyticsTask(&res, conn)
-		default:
-		}
+		switchRoute(&res)
+	}
+}
+func switchRoute(res *types.Ws_Message) {
+	switch res.Body.MsgType {
+	case types.Ws_Message_Type_Task:
+		go task.HandleAnalyticsTask(res, nil)
+	default:
 	}
 }

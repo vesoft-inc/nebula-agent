@@ -1,6 +1,7 @@
 package task
 
 import (
+	"path"
 	"strings"
 	"time"
 
@@ -13,10 +14,10 @@ import (
 )
 
 type TaskInfo struct {
-	JobId    string            `json:"jobId"`
-	TaskId   string            `json:"taskId"`
-	Spec     map[string]string `json:"spec"`
-	ExecFile string            `json:"exec_file"`
+	JobId         string            `json:"jobId"`
+	TaskId        string            `json:"taskId"`
+	Spec          map[string]string `json:"spec"`
+	AnalyticsPath string            `json:"analytics_path"`
 
 	Status    types.TaskStatus `json:"status"`
 	StartTime int64            `json:"start_time"`
@@ -24,22 +25,28 @@ type TaskInfo struct {
 }
 
 type TaskService struct {
-	conn *websocket.Conn
-	task *TaskInfo
+	conn  *websocket.Conn
+	task  *TaskInfo
+	msgId string
 }
 
 func HandleAnalyticsTask(res *types.Ws_Message, conn *websocket.Conn) *TaskService {
 	action := res.Body.Content["action"].(string)
 	task := res.Body.Content["task"].(TaskInfo)
 	t := &TaskService{
-		conn: conn,
-		task: &task,
+		conn:  conn,
+		task:  &task,
+		msgId: res.Header.MsgId,
 	}
 	switch action {
 	case "start":
 		t.StartAnalyticsTask()
 	case "stop":
 		t.StopAnalyticsTask()
+	case "getLog":
+		t.GetAnalyticsTaskLog()
+	case "stopLog":
+		t.StopPipeLog()
 	}
 	return t
 }
@@ -48,21 +55,20 @@ func (t *TaskService) StartAnalyticsTask() {
 	taskInfo := t.task
 	cmd := task2cmd(taskInfo, true)
 	cmdWithoutPwd := task2cmd(taskInfo, false)
-	id := taskInfo.JobId + "-" + taskInfo.TaskId
+	id := taskInfo.JobId + "_" + taskInfo.TaskId
 	taskInfo.Status = types.TaskStatusRunning
 	taskInfo.StartTime = time.Now().Unix()
 	t.SendTaskStatusToExplorer()
 	go func() {
 		logrus.Info("start task: ", cmdWithoutPwd)
 		err := agentTask.RunStreamShell(id, cmd, func(msg string) error {
-			// log.Println(msg)
 			return nil
 		})
 		if err != nil {
 			if err.Error() == "stop stream shell" {
 				logrus.Infof("stop task %s succeed:", id)
 				taskInfo.Status = types.TaskStatusStopped
-			}else{
+			} else {
 				logrus.Errorf("run task failed:%s err: %s", cmdWithoutPwd, err)
 				taskInfo.Status = types.TaskStatusFailed
 			}
@@ -74,7 +80,7 @@ func (t *TaskService) StartAnalyticsTask() {
 }
 
 func (t *TaskService) StopAnalyticsTask() {
-	id := t.task.JobId + "-" + t.task.TaskId
+	id := t.task.JobId + "_" + t.task.TaskId
 	err := agentTask.StopStreamShell(id)
 	if err != nil {
 		logrus.Errorf("stop task %s failed: %s", id, err)
@@ -92,29 +98,30 @@ func (t *TaskService) KillAnalyticsProcess() {
 func (t *TaskService) SendTaskStatusToExplorer() {
 	content := map[string]interface{}{
 		"task": map[string]interface{}{
-			"jobId":  t.task.JobId,
-			"taskId": t.task.TaskId,
-			"status": t.task.Status,
+			"jobId":     t.task.JobId,
+			"taskId":    t.task.TaskId,
+			"status":    t.task.Status,
 			"startTime": t.task.StartTime,
-			"endTime": time.Now().Unix(),
+			"endTime":   time.Now().Unix(),
 		},
 	}
-	logrus.Info("send task status to explorer: ", t.task.JobId, "-", t.task.TaskId, " status: ", t.task.Status)
+	logrus.Info("send task status to explorer: ", t.task.JobId, "_", t.task.TaskId, " status: ", t.task.Status)
 	t.conn.WriteJSON(types.Ws_Message{
 		Header: types.Ws_Message_Header{
 			SendTime: time.Now().Unix(),
+			MsgId:    t.msgId,
 		},
 		Body: types.Ws_Message_Body{
-			MsgType: "analytics_task",
-			Content:content,
+			MsgType: types.Ws_Message_Type_Task,
+			Content: content,
 		},
 	})
 }
 
 func task2cmd(task *TaskInfo, filterPwd bool) string {
-	cmd := config.C.ExecFile
-	if task.ExecFile != "" {
-		cmd = task.ExecFile
+	cmd := path.Join(config.C.AnalyticsPath, "scripts/run_algo.sh")
+	if task.AnalyticsPath != "" {
+		cmd = path.Join(task.AnalyticsPath, "scripts/run_algo.sh")
 	}
 	if jobId, exist := task.Spec["job_id"]; exist {
 		cmd = cmd + " --job_id '" + jobId + "' "

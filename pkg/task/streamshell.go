@@ -9,24 +9,25 @@ import (
 )
 
 type StreamShell struct {
-	Shell           string
-	Cmd             *exec.Cmd
+	Shell   string
+	Cmd     *exec.Cmd
 	Stopped bool
 }
-var mu sync.RWMutex
 
-var PipeShellMap map[string]*StreamShell 
+var Mu sync.RWMutex
+
+var PipeShellMap map[string]*StreamShell
 
 func RunStreamShell(id string, shell string, rpcSend func(s string) error) error {
 	cmd := exec.Command("bash", "-c", shell)
 	pipeShell := &StreamShell{
-		Shell:           shell,
-		Cmd:             cmd,
+		Shell:   shell,
+		Cmd:     cmd,
 		Stopped: false,
 	}
-	mu.Lock()
+	Mu.Lock()
 	PipeShellMap[id] = pipeShell
-	mu.Unlock()
+	Mu.Unlock()
 	defer ClearStreamShell(id)
 
 	reader, err := cmd.StdoutPipe()
@@ -38,13 +39,13 @@ func RunStreamShell(id string, shell string, rpcSend func(s string) error) error
 		return err
 	}
 	buf := make([]byte, 1024)
-	
+
 	for {
 		n, err := reader.Read(buf)
 		if err != nil {
-			mu.RLock()
+			Mu.RLock()
 			stopped := PipeShellMap[id].Stopped
-			mu.RUnlock()
+			Mu.RUnlock()
 			if stopped {
 				return errors.New("stop stream shell")
 			}
@@ -61,8 +62,8 @@ func RunStreamShell(id string, shell string, rpcSend func(s string) error) error
 }
 
 func StopStreamShell(id string) error {
-	mu.Lock()
-	defer mu.Unlock()
+	Mu.Lock()
+	defer Mu.Unlock()
 
 	if PipeShellMap[id] == nil {
 		return nil
@@ -70,19 +71,25 @@ func StopStreamShell(id string) error {
 	PipeShellMap[id].Stopped = true
 
 	cmd := PipeShellMap[id].Cmd
-	if cmd.ProcessState!=nil && cmd.ProcessState.Exited() {
+	if cmd.ProcessState != nil && cmd.ProcessState.Exited() {
 		logrus.Infof("stream shell %s already stopped", id)
 		return nil
 	}
 	return cmd.Process.Kill()
 }
 
-func ClearStreamShell(id string)error{
-	mu.Lock()
-	defer mu.Unlock()
+func ClearStreamShell(id string) error {
+	Mu.Lock()
+	defer Mu.Unlock()
 	if PipeShellMap[id] == nil {
 		return nil
 	}
 	delete(PipeShellMap, id)
 	return nil
+}
+
+func IsShellRunning(id string) bool {
+	Mu.RLock()
+	defer Mu.RUnlock()
+	return PipeShellMap[id] != nil
 }
