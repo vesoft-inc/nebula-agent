@@ -47,7 +47,7 @@ func main() {
 	limiter.Rate.SetLimiter(*ratelimit)
 
 	// set db_playback tls config
-	clients.InitPlayBackTLSConfig(*caPath, *certPath, *keyPath, *insecureSkipVerify)
+	clients.InitPlayBackTLSConfig(*caPath, *certPath, *keyPath, *enableSSL)
 
 	lis, err := net.Listen("tcp", *agent)
 	if err != nil {
