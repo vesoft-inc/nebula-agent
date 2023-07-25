@@ -85,6 +85,7 @@ func connect(metaAddr, agentAddr *nebula.HostAddr, tlsConfig *tls.Config) (*meta
 		sock thrift.Transport
 	)
 	if tlsConfig != nil {
+		tlsConfig.MaxVersion = tls.VersionTLS12
 		sock, err = thrift.NewSSLSocketTimeout(addr, tlsConfig, defaultTimeout)
 	} else {
 		sock, err = thrift.NewSocket(timeoutOption, addressOption)
