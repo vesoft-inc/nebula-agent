@@ -13,7 +13,7 @@ fi
 
 nebula="
 /usr/local/nebula/logs/graphd-stderr.log
-/usr/local/nebula/logs/graphd-out.log
+/usr/local/nebula/logs/graphd-stdout.log
 /usr/local/nebula/logs/nebula-graphd.INFO
 /usr/local/nebula/logs/nebula-graphd.INFO.impl
 /usr/local/nebula/logs/nebula-graphd.WARNING
@@ -21,7 +21,7 @@ nebula="
 /usr/local/nebula/logs/nebula-graphd.ERROR
 /usr/local/nebula/logs/nebula-graphd.ERROR.impl
 /usr/local/nebula/logs/metad-stderr.log
-/usr/local/nebula/logs/metad-out.log
+/usr/local/nebula/logs/metad-stdout.log
 /usr/local/nebula/logs/nebula-metad.INFO
 /usr/local/nebula/logs/nebula-metad.INFO.impl
 /usr/local/nebula/logs/nebula-metad.WARNING
@@ -29,7 +29,7 @@ nebula="
 /usr/local/nebula/logs/nebula-metad.ERROR
 /usr/local/nebula/logs/nebula-metad.ERROR.impl
 /usr/local/nebula/logs/storaged-stderr.log
-/usr/local/nebula/logs/storaged-out.log
+/usr/local/nebula/logs/storaged-stdout.log
 /usr/local/nebula/logs/nebula-storaged.INFO
 /usr/local/nebula/logs/nebula-storaged.INFO.impl
 /usr/local/nebula/logs/nebula-storaged.WARNING
