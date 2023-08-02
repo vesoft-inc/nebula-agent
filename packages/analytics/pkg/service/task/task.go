@@ -1,6 +1,7 @@
 package task
 
 import (
+	"fmt"
 	"path"
 	"strings"
 	"time"
@@ -14,10 +15,10 @@ import (
 )
 
 type TaskInfo struct {
-	JobId         string            `json:"jobId"`
-	TaskId        string            `json:"taskId"`
-	Spec          map[string]string `json:"spec"`
-	AnalyticsPath string            `json:"analytics_path"`
+	JobId         string         `json:"jobId"`
+	TaskId        string         `json:"taskId"`
+	Spec          map[string]any `json:"spec"`
+	AnalyticsPath string         `json:"analytics_path"`
 
 	Status    types.TaskStatus `json:"status"`
 	StartTime int64            `json:"start_time"`
@@ -32,7 +33,13 @@ type TaskService struct {
 
 func HandleAnalyticsTask(res *types.Ws_Message, conn *websocket.Conn) *TaskService {
 	action := res.Body.Content["action"].(string)
-	task := res.Body.Content["task"].(TaskInfo)
+	taskContent := res.Body.Content["task"].(map[string]any)
+	task := TaskInfo{
+		JobId:  taskContent["jobId"].(string),
+		TaskId: taskContent["taskId"].(string),
+		Spec:   taskContent["spec"].(map[string]any),
+		Status: types.TaskStatusRunning,
+	}
 	t := &TaskService{
 		conn:  conn,
 		task:  &task,
@@ -123,12 +130,8 @@ func task2cmd(task *TaskInfo, filterPwd bool) string {
 	if task.AnalyticsPath != "" {
 		cmd = path.Join(task.AnalyticsPath, "scripts/run_algo.sh")
 	}
-	if jobId, exist := task.Spec["job_id"]; exist {
-		cmd = cmd + " --job_id '" + jobId + "' "
-	}
-	if taskId, exist := task.Spec["task_id"]; exist {
-		cmd = cmd + " --task_id '" + taskId + "' "
-	}
+	cmd = cmd + " --job_id '" + task.JobId + "' "
+	cmd = cmd + " --task_id '" + task.TaskId + "' "
 	for key, value := range task.Spec {
 		if key == "job_id" || key == "task_id" {
 			continue
@@ -137,7 +140,7 @@ func task2cmd(task *TaskInfo, filterPwd bool) string {
 		if filterPwd && strings.Contains(key, "password") {
 			cmd = cmd + " --" + key + " '***' "
 		} else {
-			cmd = cmd + " --" + key + " '" + value + "' "
+			cmd = cmd + " --" + fmt.Sprintf("%v", key) + " '" + fmt.Sprintf("%v", value) + "' "
 		}
 	}
 	return cmd

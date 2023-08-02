@@ -118,7 +118,7 @@ func GetMemoryInfo() MemoryInfo {
 		logrus.Errorf("get memory info failed: %v", err)
 		return MemoryInfo{}
 	}
-
+	logrus.Infof("memory info: %v", m)
 	return MemoryInfo{
 		Total:     m.Total,
 		Available: m.Available,

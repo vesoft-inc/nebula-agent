@@ -13,7 +13,7 @@ import (
 	"github.com/vesoft-inc/nebula-agent/v3/pkg/utils"
 )
 
-var LangTimeSpec = map[string]string{
+var LangTimeSpec = map[string]any{
 	"job_id":                        "0",
 	"task_id":                       "pagerank_1",
 	"algo_name":                     "pagerank",
@@ -44,7 +44,7 @@ var LangTimeSpec = map[string]string{
 	"encoder":                       "distributed",
 	"vtype":                         "int64",
 }
-var PageRankSpec = map[string]string{
+var PageRankSpec = map[string]any{
 	"job_id":                        "0",
 	"task_id":                       "pagerank_1",
 	"nebula_input_metad":            "",
@@ -72,8 +72,8 @@ var PageRankSpec = map[string]string{
 	"damping":                       "0.85",
 	"output":                        "/home/zhuang.miao/nebula-agent/plugins/analytics/data/pagerank",
 	"hosts":                         "192.168.8.240",
-	"threads":                       "3",
-	"iterations":                    "10",
+	"threads":                       3,
+	"iterations":                    10,
 }
 
 func InitTest() {
@@ -84,13 +84,13 @@ func InitTest() {
 
 func TestStart(t *testing.T) {
 	InitTest()
-	task := TaskInfo{
-		JobId:  "0",
-		TaskId: "pagerank_1",
-		Spec:   PageRankSpec,
+	task := map[string]any{
+		"jobId":  "0",
+		"taskId": "pagerank_1",
+		"spec":   PageRankSpec,
 	}
 	wsConn := &websocket.Dialer{}
-	conn, _, err := wsConn.Dial("ws://192.168.8.240:9000/nebula_ws", http.Header{
+	conn, _, err := wsConn.Dial("ws://192.168.10.35:9000/nebula_ws", http.Header{
 		"Origin":        []string{"192.168.8.240"},
 		"Authorization": []string{"AGENT_ANALYTICS_TOKEN"},
 	})
@@ -99,7 +99,7 @@ func TestStart(t *testing.T) {
 	}
 	taskService := HandleAnalyticsTask(&types.Ws_Message{
 		Body: types.Ws_Message_Body{
-			Content: map[string]interface{}{
+			Content: map[string]any{
 				"action": "start",
 				"task":   task,
 			},
