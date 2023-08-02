@@ -85,9 +85,23 @@ func InitTest() {
 func TestStart(t *testing.T) {
 	InitTest()
 	task := map[string]any{
-		"jobId":  "0",
-		"taskId": "pagerank_1",
-		"spec":   PageRankSpec,
+		"jobId":  "1690956662254",
+		"taskId": "query_1",
+		"spec": map[string]any{
+			"job_id":                    "1690956662254",
+			"task_id":                   "query_1",
+			"datasource_password":       "nebula",
+			"algo_name":                 "exec_ngql",
+			"processes":                 "1",
+			"datasource_graphd_timeout": "60000",
+			"datasource_user":           "root",
+			"datasink_hdfs_url":         "/home/bruce.lu/analytics-data/1690956662254/tasks/query_1",
+			"datasource_space":          "demo_football_2022",
+			"ngql":                      "match ()-[e]-() return src(e),dst(e) limit 100",
+			"hosts":                     "192.168.10.35",
+			"threads":                   "1",
+			"datasource_graphd":         "192.168.8.131:9669",
+		},
 	}
 	wsConn := &websocket.Dialer{}
 	conn, _, err := wsConn.Dial("ws://192.168.10.35:9000/nebula_ws", http.Header{

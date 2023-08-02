@@ -92,13 +92,13 @@ func listen(host string) {
 			logrus.Errorf("unmarshal message error: %v", err)
 			continue
 		}
-		switchRoute(&res)
+		switchRoute(&res, conn)
 	}
 }
-func switchRoute(res *types.Ws_Message) {
+func switchRoute(res *types.Ws_Message, conn *websocket.Conn) {
 	switch res.Body.MsgType {
 	case types.Ws_Message_Type_Task:
-		go task.HandleAnalyticsTask(res, nil)
+		go task.HandleAnalyticsTask(res, conn)
 	default:
 	}
 }

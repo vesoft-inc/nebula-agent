@@ -103,8 +103,8 @@ func (t *TaskService) KillAnalyticsProcess() {
 }
 
 func (t *TaskService) SendTaskStatusToExplorer() {
-	content := map[string]interface{}{
-		"task": map[string]interface{}{
+	content := map[string]any{
+		"task": map[string]any{
 			"jobId":     t.task.JobId,
 			"taskId":    t.task.TaskId,
 			"status":    t.task.Status,
