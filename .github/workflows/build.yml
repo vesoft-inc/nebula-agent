@@ -1,28 +1,53 @@
-# This workflow will build a golang project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
-
-name: Go
+name: nightly build
 
 on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        required: true
+        description: 'which mode you want to build?'
+        type: choice
+        options:
+          - default
+          - analytics
+        default: default       
+      sha: 
+        required: false
+        description: "The commit id you want to build"
+        default: master
   push:
-    branches: [ "master" ]
-  pull_request:
     branches: [ "master" ]
 
 jobs:
-
   build:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os:
+          - [centos7,nebula-arm,arm64]
+          - [centos7,nebula-fast,amd64]
+    runs-on: 
+      - self-hosted
+      - ${{ matrix.os[1] }}
     steps:
     - uses: actions/checkout@v3
-
+      with:
+        ref: ${{ github.event.inputs.sha }}
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
         go-version: '1.20'
-
     - name: Build
-      run: go build -v ./...
-
-    - name: Test
-      run: go test -v ./...
+      if: ${{github.event.inputs.mode == 'default'}}
+      run: make build
+    - name: Build With mode ${{github.event.inputs.mode}}
+      if: ${{github.event.inputs.mode != 'default'}}
+      run: make build-${{github.event.inputs.mode}}
+    - name: pack all
+      run: |
+        mkdir -p ./build
+        cp -rf plugins ./build/
+        cp -rf etc ./build/
+    - uses: actions/upload-artifact@v2
+      with:
+        path: ./build/
+        name: agent-${{ matrix.os[2] }}
