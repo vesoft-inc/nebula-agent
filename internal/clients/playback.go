@@ -17,7 +17,7 @@ type PlayBackTLSConfig struct {
 	EnableSSL bool
 }
 
-func InitPlayBackTLSConfig(caPath, keyPath, certPath string, enableSSL bool) {
+func InitPlayBackTLSConfig(caPath, certPath, keyPath string, enableSSL bool) {
 	pbtc = &PlayBackTLSConfig{
 		CertPath:  certPath,
 		KeyPath:   keyPath,
@@ -46,7 +46,7 @@ func (p *ServicePlayBack) PlayBack() error {
 		cmdStr += fmt.Sprintf(" --enable_ssl=%t --cert_path=%s --key_path=%s --ca_path=%s", pbtc.EnableSSL, pbtc.CertPath, pbtc.KeyPath, pbtc.CAPath)
 	}
 
-	log.WithField("cmd", cmdStr).Debug("Try to playback storage data...")
+	log.WithField("cmd", cmdStr).Info("Try to playback storage data...")
 	cmd := exec.Command("bash", "-c", cmdStr)
 	err := cmd.Run()
 	if err != nil {
