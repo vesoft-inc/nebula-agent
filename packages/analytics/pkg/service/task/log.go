@@ -88,7 +88,7 @@ func (t *TaskService) SendLogToExplorer(text string) {
 	t.conn.WriteJSON(types.Ws_Message{
 		Header: types.Ws_Message_Header{
 			MsgId:    t.msgId,
-			SendTime: time.Now().Unix(),
+			SendTime: time.Now().UnixMilli(),
 		},
 		Body: types.Ws_Message_Body{
 			MsgType: types.Ws_Message_Type_Task,

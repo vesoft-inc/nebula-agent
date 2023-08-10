@@ -64,7 +64,7 @@ func (t *TaskService) StartAnalyticsTask() {
 	cmdWithoutPwd := task2cmd(taskInfo, false)
 	id := taskInfo.JobId + "_" + taskInfo.TaskId
 	taskInfo.Status = types.TaskStatusRunning
-	taskInfo.StartTime = time.Now().Unix()
+	taskInfo.StartTime = time.Now().UnixMilli()
 	t.SendTaskStatusToExplorer()
 	go func() {
 		logrus.Info("start task: ", cmdWithoutPwd)
@@ -109,13 +109,13 @@ func (t *TaskService) SendTaskStatusToExplorer() {
 			"taskId":    t.task.TaskId,
 			"status":    t.task.Status,
 			"startTime": t.task.StartTime,
-			"endTime":   time.Now().Unix(),
+			"endTime":   time.Now().UnixMilli(),
 		},
 	}
 	logrus.Info("send task status to explorer: ", t.task.JobId, "_", t.task.TaskId, " status: ", t.task.Status)
 	t.conn.WriteJSON(types.Ws_Message{
 		Header: types.Ws_Message_Header{
-			SendTime: time.Now().Unix(),
+			SendTime: time.Now().UnixMilli(),
 			MsgId:    t.msgId,
 		},
 		Body: types.Ws_Message_Body{

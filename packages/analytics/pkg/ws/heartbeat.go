@@ -86,7 +86,7 @@ func GetMachineInfo() types.Ws_Message {
 	status, err := GetStatus()
 	res := types.Ws_Message{
 		Header: types.Ws_Message_Header{
-			SendTime: time.Now().Unix(),
+			SendTime: time.Now().UnixMilli(),
 		},
 		Body: types.Ws_Message_Body{
 			MsgType: types.Ws_Message_Type_Machine_Info,
@@ -183,7 +183,7 @@ func SendAgentChangeToExplorer() {
 	for _, conn := range WsClients {
 		res := types.Ws_Message{
 			Header: types.Ws_Message_Header{
-				SendTime: time.Now().Unix(),
+				SendTime: time.Now().UnixMilli(),
 			},
 			Body: types.Ws_Message_Body{
 				MsgType: types.Ws_Message_Type_Agent,
