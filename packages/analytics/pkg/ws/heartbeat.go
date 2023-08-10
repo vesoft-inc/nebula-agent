@@ -14,6 +14,7 @@ import (
 	"github.com/shirou/gopsutil/v3/process"
 	"github.com/sirupsen/logrus"
 
+	"github.com/vesoft-inc/nebula-agent/v3/packages/analytics/pkg/clients"
 	"github.com/vesoft-inc/nebula-agent/v3/packages/analytics/pkg/config"
 	"github.com/vesoft-inc/nebula-agent/v3/packages/analytics/pkg/license"
 	"github.com/vesoft-inc/nebula-agent/v3/packages/analytics/pkg/types"
@@ -53,7 +54,7 @@ var timeTricker *time.Ticker
 
 func SendHeartBeat() {
 	wg := &sync.WaitGroup{}
-	for wsHost, conn := range WsClients {
+	for wsHost, conn := range clients.WsClients {
 		wg.Add(1)
 		go func(c *websocket.Conn, wsHost string) {
 			info := GetMachineInfo()
@@ -176,11 +177,11 @@ func GetProcessInfo() []ProcessInfo {
 }
 
 func SendAgentChangeToExplorer() {
-	explorerHosts := make([]string, 0, len(WsClients))
-	for k := range WsClients {
+	explorerHosts := make([]string, 0, len(clients.WsClients))
+	for k := range clients.WsClients {
 		explorerHosts = append(explorerHosts, k)
 	}
-	for _, conn := range WsClients {
+	for _, conn := range clients.WsClients {
 		res := types.Ws_Message{
 			Header: types.Ws_Message_Header{
 				SendTime: time.Now().UnixMilli(),

@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gorilla/websocket"
 	"github.com/sirupsen/logrus"
+	"github.com/vesoft-inc/nebula-agent/v3/packages/analytics/pkg/clients"
 	"github.com/vesoft-inc/nebula-agent/v3/packages/analytics/pkg/config"
 	"github.com/vesoft-inc/nebula-agent/v3/packages/analytics/pkg/types"
 	agentTask "github.com/vesoft-inc/nebula-agent/v3/pkg/task"
@@ -26,12 +26,12 @@ type TaskInfo struct {
 }
 
 type TaskService struct {
-	conn  *websocket.Conn
+	host  string
 	task  *TaskInfo
 	msgId string
 }
 
-func HandleAnalyticsTask(res *types.Ws_Message, conn *websocket.Conn) *TaskService {
+func HandleAnalyticsTask(res *types.Ws_Message, host string) *TaskService {
 	action := res.Body.Content["action"].(string)
 	taskContent := res.Body.Content["task"].(map[string]any)
 	task := TaskInfo{
@@ -41,7 +41,7 @@ func HandleAnalyticsTask(res *types.Ws_Message, conn *websocket.Conn) *TaskServi
 		Status: types.TaskStatusRunning,
 	}
 	t := &TaskService{
-		conn:  conn,
+		host:  host,
 		task:  &task,
 		msgId: res.Header.MsgId,
 	}
@@ -113,7 +113,8 @@ func (t *TaskService) SendTaskStatusToExplorer() {
 		},
 	}
 	logrus.Info("send task status to explorer: ", t.task.JobId, "_", t.task.TaskId, " status: ", t.task.Status)
-	t.conn.WriteJSON(types.Ws_Message{
+	conn := clients.GetClientByHost(t.host)
+	conn.WriteJSON(types.Ws_Message{
 		Header: types.Ws_Message_Header{
 			SendTime: time.Now().UnixMilli(),
 			MsgId:    t.msgId,

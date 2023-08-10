@@ -8,6 +8,7 @@ import (
 
 	"github.com/gorilla/websocket"
 	"github.com/sirupsen/logrus"
+	"github.com/vesoft-inc/nebula-agent/v3/packages/analytics/pkg/clients"
 	"github.com/vesoft-inc/nebula-agent/v3/packages/analytics/pkg/config"
 	"github.com/vesoft-inc/nebula-agent/v3/packages/analytics/pkg/service/task"
 	"github.com/vesoft-inc/nebula-agent/v3/packages/analytics/pkg/types"
@@ -15,10 +16,9 @@ import (
 )
 
 var mu sync.Mutex
-var WsClients map[string]*websocket.Conn
 
 func InitWsConnect() {
-	WsClients = make(map[string]*websocket.Conn)
+	clients.WsClients = make(map[string]*websocket.Conn)
 	for _, host := range config.C.ExplorerHosts {
 		reconnect(host)
 	}
@@ -29,16 +29,16 @@ func InitWsConnect() {
 func CloseWsConnect() {
 	StopHeartBeat()
 	mu.Lock()
-	for _, conn := range WsClients {
+	for _, conn := range clients.WsClients {
 		conn.Close()
 	}
-	WsClients = nil
+	clients.WsClients = nil
 	mu.Unlock()
 }
 
 func reconnect(host string) {
 	mu.Lock()
-	delete(WsClients, host)
+	delete(clients.WsClients, host)
 	mu.Unlock()
 	err := connect(host)
 	if err == nil {
@@ -72,13 +72,13 @@ func connect(host string) error {
 		return err
 	}
 	mu.Lock()
-	WsClients[host] = conn
+	clients.WsClients[host] = conn
 	mu.Unlock()
 	return nil
 }
 
 func listen(host string) {
-	conn := WsClients[host]
+	conn := clients.GetClientByHost(host)
 	for {
 		_, msg, err := conn.ReadMessage()
 		if err != nil {
@@ -92,13 +92,14 @@ func listen(host string) {
 			logrus.Errorf("unmarshal message error: %v", err)
 			continue
 		}
-		switchRoute(&res, conn)
+		switchRoute(&res, host)
 	}
 }
-func switchRoute(res *types.Ws_Message, conn *websocket.Conn) {
+
+func switchRoute(res *types.Ws_Message, host string) {
 	switch res.Body.MsgType {
 	case types.Ws_Message_Type_Task:
-		go task.HandleAnalyticsTask(res, conn)
+		go task.HandleAnalyticsTask(res, host)
 	default:
 	}
 }

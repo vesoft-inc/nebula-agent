@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/sirupsen/logrus"
+	"github.com/vesoft-inc/nebula-agent/v3/packages/analytics/pkg/clients"
 	"github.com/vesoft-inc/nebula-agent/v3/packages/analytics/pkg/config"
 	"github.com/vesoft-inc/nebula-agent/v3/packages/analytics/pkg/types"
 	agentTask "github.com/vesoft-inc/nebula-agent/v3/pkg/task"
@@ -85,7 +86,8 @@ func (t *TaskService) SendLogToExplorer(text string) {
 	if testing.Verbose() {
 		log.Print("------->", text)
 	}
-	t.conn.WriteJSON(types.Ws_Message{
+	conn := clients.GetClientByHost(t.host)
+	conn.WriteJSON(types.Ws_Message{
 		Header: types.Ws_Message_Header{
 			MsgId:    t.msgId,
 			SendTime: time.Now().UnixMilli(),

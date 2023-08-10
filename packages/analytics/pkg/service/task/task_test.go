@@ -7,6 +7,7 @@ import (
 
 	"github.com/gorilla/websocket"
 	"github.com/sirupsen/logrus"
+	"github.com/vesoft-inc/nebula-agent/v3/packages/analytics/pkg/clients"
 	"github.com/vesoft-inc/nebula-agent/v3/packages/analytics/pkg/config"
 	"github.com/vesoft-inc/nebula-agent/v3/packages/analytics/pkg/types"
 	agentTask "github.com/vesoft-inc/nebula-agent/v3/pkg/task"
@@ -76,10 +77,22 @@ var PageRankSpec = map[string]any{
 	"iterations":                    10,
 }
 
+var host = "ws://192.168.8.48:7002/nebula_ws"
+
 func InitTest() {
 	agentTask.PipeShellMap = make(map[string]*agentTask.StreamShell)
 	logrus.SetFormatter(&logrus.TextFormatter{})
 	config.C.AnalyticsPath = "/home/zhuang.miao/nebula-analytics"
+	config.C.ExplorerHosts = []string{host}
+	wsConn := &websocket.Dialer{}
+	conn, _, err := wsConn.Dial(host, http.Header{
+		"Origin":        []string{"192.168.8.240"},
+		"Authorization": []string{"AGENT_ANALYTICS_TOKEN"},
+	})
+	if err != nil {
+		logrus.Error(err)
+	}
+	clients.WsClients[host] = conn
 }
 
 func TestStart(t *testing.T) {
@@ -87,29 +100,7 @@ func TestStart(t *testing.T) {
 	task := map[string]any{
 		"jobId":  "1690956662254",
 		"taskId": "query_1",
-		"spec": map[string]any{
-			"job_id":                    "1690956662254",
-			"task_id":                   "query_1",
-			"datasource_password":       "nebula",
-			"algo_name":                 "exec_ngql",
-			"processes":                 "1",
-			"datasource_graphd_timeout": "60000",
-			"datasource_user":           "root",
-			"datasink_hdfs_url":         "/home/bruce.lu/analytics-data/1690956662254/tasks/query_1",
-			"datasource_space":          "demo_football_2022",
-			"ngql":                      "match ()-[e]-() return src(e),dst(e) limit 100",
-			"hosts":                     "192.168.10.35",
-			"threads":                   "1",
-			"datasource_graphd":         "192.168.8.131:9669",
-		},
-	}
-	wsConn := &websocket.Dialer{}
-	conn, _, err := wsConn.Dial("ws://192.168.8.240:9000/nebula_ws", http.Header{
-		"Origin":        []string{"192.168.8.240"},
-		"Authorization": []string{"AGENT_ANALYTICS_TOKEN"},
-	})
-	if err != nil {
-		t.Error(err)
+		"spec":   PageRankSpec,
 	}
 	taskService := HandleAnalyticsTask(&types.Ws_Message{
 		Body: types.Ws_Message_Body{
@@ -118,7 +109,7 @@ func TestStart(t *testing.T) {
 				"task":   task,
 			},
 		},
-	}, conn)
+	}, host)
 	for {
 		if taskService.task.Status == types.TaskStatusSuccess {
 			break
@@ -133,44 +124,36 @@ func TestStart(t *testing.T) {
 
 func TestStop(t *testing.T) {
 	InitTest()
-	wsConn := &websocket.Dialer{}
-	conn, _, err := wsConn.Dial("ws://192.168.8.240:9000/nebula_ws", http.Header{
-		"Origin":        []string{"192.168.8.240"},
-		"Authorization": []string{"AGENT_ANALYTICS_TOKEN"},
-	})
-	if err != nil {
-		t.Error(err)
-	}
-
-	task := TaskInfo{
-		JobId:  "0",
-		TaskId: "pagerank_1",
-		Spec:   LangTimeSpec,
+	task := map[string]any{
+		"jobId":  "0",
+		"taskId": "pagerank_1",
+		"spec":   LangTimeSpec,
 	}
 	taskServiceStart := HandleAnalyticsTask(&types.Ws_Message{
 		Body: types.Ws_Message_Body{
-			Content: map[string]interface{}{
+			Content: map[string]any{
 				"action": "start",
 				"task":   task,
 			},
 		},
-	}, conn)
+	}, host)
 
 	// async stop for wait start on next loop
 	go func() {
 		time.Sleep(2 * time.Second)
 		HandleAnalyticsTask(&types.Ws_Message{
 			Body: types.Ws_Message_Body{
-				Content: map[string]interface{}{
+				Content: map[string]any{
 					"action": "stop",
 					"task":   task,
 				},
 			},
-		}, conn)
+		}, host)
 	}()
 
 	for {
 		if taskServiceStart.task.Status == types.TaskStatusStopped {
+			task := taskServiceStart.task
 			pids := utils.GetPidByName(task.JobId + "_" + task.TaskId)
 			if len(pids) != 0 {
 				t.Fatalf("task stop failed: %s , %s", task.JobId+"_"+task.TaskId, task.Status)
