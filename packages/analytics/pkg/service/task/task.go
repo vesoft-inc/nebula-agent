@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"path"
 	"strings"
+	"testing"
 	"time"
 
 	"github.com/sirupsen/logrus"
@@ -67,8 +68,11 @@ func (t *TaskService) StartAnalyticsTask() {
 	taskInfo.StartTime = time.Now().UnixMilli()
 	t.SendTaskStatusToExplorer()
 	go func() {
-		logrus.Info("start task: ", cmdWithoutPwd)
+		logrus.Info("\nstart task: ", cmdWithoutPwd)
 		err := agentTask.RunStreamShell(id, cmd, func(msg string) error {
+			if testing.Verbose() {
+				logrus.Info("----->task stdout:", msg)
+			}
 			return nil
 		})
 		if err != nil {

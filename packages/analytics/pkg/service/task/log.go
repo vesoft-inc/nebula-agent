@@ -84,7 +84,7 @@ func (t *TaskService) StopPipeLog() {
 
 func (t *TaskService) SendLogToExplorer(text string) {
 	if testing.Verbose() {
-		log.Print("------->", text)
+		log.Print("------->slice log:", text)
 	}
 	conn := clients.GetClientByHost(t.host)
 	conn.WriteJSON(types.Ws_Message{
@@ -110,12 +110,10 @@ func GetSomeLinesLogWithPath(path string) ([]string, error) {
 	//read log
 	file, err := os.Open(path)
 	if err != nil {
-		logrus.Error("open file error: ", err)
 		return nil, err
 	}
 	defer file.Close()
 	if err != nil {
-		logrus.Error("read file error: ", err)
 		return nil, err
 	}
 	scanner := bufio.NewScanner(file)
@@ -124,7 +122,8 @@ func GetSomeLinesLogWithPath(path string) ([]string, error) {
 	for scanner.Scan() {
 		lines = append(lines, scanner.Text())
 		if i > config.C.LogNum {
-			lines = append(lines[:100], lines[101:]...)
+			half := config.C.LogNum / 2
+			lines = append(lines[:half], lines[half+1:]...)
 		}
 		i++
 	}

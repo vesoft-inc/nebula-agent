@@ -49,7 +49,7 @@ func RunStreamShell(id string, shell string, rpcSend func(s string) error) error
 			if stopped {
 				return errors.New("stop stream shell")
 			}
-			return nil
+			return err
 		}
 		if n > 0 {
 			// rpc to push message or write to file or ignore

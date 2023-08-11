@@ -14,67 +14,75 @@ import (
 	"github.com/vesoft-inc/nebula-agent/v3/pkg/utils"
 )
 
-var LangTimeSpec = map[string]any{
-	"job_id":                        "0",
-	"task_id":                       "pagerank_1",
-	"algo_name":                     "pagerank",
-	"processes":                     "3",
-	"nebula_output_props":           "value",
-	"nebula_input_user":             "root",
-	"nebula_output_tag":             "pagerank",
-	"nebula_output_types":           "double",
-	"nebula_input_edges_props":      ",,,,,,,,,,,,,,",
-	"nebula_input_graphd":           "192.168.8.131:9669",
-	"nebula_input_metad_timeout":    "60000",
-	"nebula_input_storaged_timeout": "60000",
-	"iterations":                    "10",
-	"input":                         "nebula:gflags_input",
-	"nebula_input_graphd_timeout":   "60000",
-	"damping":                       "0.85",
-	"threads":                       "6",
-	"output":                        "/home/zhuang.miao/nebula-agent/plugins/analytics/data/langTime",
-	"hosts":                         "192.168.8.240",
-	"nebula_output_mode":            "insert",
-	"nebula_input_edges":            "CONTAINER_OF,HAS_CREATOR,HAS_INTEREST,HAS_MEMBER,HAS_MODERATOR,HAS_TAG,HAS_TYPE,IS_LOCATED_IN,IS_PART_OF,IS_SUBCLASS_OF,KNOWS,LIKES,REPLY_OF,STUDY_AT,WORK_AT",
-	"need_encode":                   "true",
-	"is_directed":                   "true",
-	"nebula_input_space":            "sf1_1",
-	"eps":                           "0.0001",
-	"nebula_input_password":         "nebula",
-	"nebula_input_metad":            "",
-	"encoder":                       "distributed",
-	"vtype":                         "int64",
+var LangTimeTask = map[string]any{
+	"jobId":  "0",
+	"taskId": "langTime_1",
+	"spec": map[string]any{
+		"job_id":                        "0",
+		"task_id":                       "pagerank_1",
+		"algo_name":                     "pagerank",
+		"processes":                     "3",
+		"nebula_output_props":           "value",
+		"nebula_input_user":             "root",
+		"nebula_output_tag":             "pagerank",
+		"nebula_output_types":           "double",
+		"nebula_input_edges_props":      ",,,,,,,,,,,,,,",
+		"nebula_input_graphd":           "192.168.8.131:9669",
+		"nebula_input_metad_timeout":    "60000",
+		"nebula_input_storaged_timeout": "60000",
+		"iterations":                    "10",
+		"input":                         "nebula:gflags_input",
+		"nebula_input_graphd_timeout":   "60000",
+		"damping":                       "0.85",
+		"threads":                       "6",
+		"output":                        "/home/zhuang.miao/nebula-agent/plugins/analytics/data/langTime",
+		"hosts":                         "192.168.8.240",
+		"nebula_output_mode":            "insert",
+		"nebula_input_edges":            "CONTAINER_OF,HAS_CREATOR,HAS_INTEREST,HAS_MEMBER,HAS_MODERATOR,HAS_TAG,HAS_TYPE,IS_LOCATED_IN,IS_PART_OF,IS_SUBCLASS_OF,KNOWS,LIKES,REPLY_OF,STUDY_AT,WORK_AT",
+		"need_encode":                   "true",
+		"is_directed":                   "true",
+		"nebula_input_space":            "sf1_1",
+		"eps":                           "0.0001",
+		"nebula_input_password":         "nebula",
+		"nebula_input_metad":            "",
+		"encoder":                       "distributed",
+		"vtype":                         "int64",
+	},
 }
-var PageRankSpec = map[string]any{
-	"job_id":                        "0",
-	"task_id":                       "pagerank_1",
-	"nebula_input_metad":            "",
-	"nebula_input_graphd_timeout":   "60000",
-	"nebula_input_graphd":           "192.168.8.131:9669",
-	"nebula_input_user":             "root",
-	"nebula_input_password":         "***",
-	"nebula_input_space":            "demo_football_2022",
-	"nebula_output_types":           "double",
-	"input":                         "nebula:gflags_input",
-	"nebula_output_tag":             "pagerank",
-	"algo_name":                     "pagerank",
-	"encoder":                       "distributed",
-	"nebula_input_edges":            "belongto,groupedin,serve",
-	"nebula_output_mode":            "insert",
-	"nebula_output_props":           "value",
-	"is_directed":                   "true",
-	"vtype":                         "string",
-	"need_encode":                   "true",
-	"nebula_input_edges_props":      ",,",
-	"nebula_input_metad_timeout":    "60000",
-	"processes":                     "1",
-	"eps":                           "0.0001",
-	"nebula_input_storaged_timeout": "60000",
-	"damping":                       "0.85",
-	"output":                        "/home/zhuang.miao/nebula-agent/plugins/analytics/data/pagerank",
-	"hosts":                         "192.168.8.240",
-	"threads":                       3,
-	"iterations":                    10,
+var PageRankTask = map[string]any{
+	"jobId":  "0",
+	"taskId": "pagerank_1",
+	"spec": map[string]any{
+		"job_id":                        "0",
+		"task_id":                       "pagerank_1",
+		"nebula_input_metad":            "",
+		"nebula_input_graphd_timeout":   "60000",
+		"nebula_input_graphd":           "192.168.8.131:9669",
+		"nebula_input_user":             "root",
+		"nebula_input_password":         "***",
+		"nebula_input_space":            "demo_football_2022",
+		"nebula_output_types":           "double",
+		"input":                         "nebula:gflags_input",
+		"nebula_output_tag":             "pagerank",
+		"algo_name":                     "pagerank",
+		"encoder":                       "distributed",
+		"nebula_input_edges":            "belongto,groupedin,serve",
+		"nebula_output_mode":            "insert",
+		"nebula_output_props":           "value",
+		"is_directed":                   "true",
+		"vtype":                         "string",
+		"need_encode":                   "true",
+		"nebula_input_edges_props":      ",,",
+		"nebula_input_metad_timeout":    "60000",
+		"processes":                     "1",
+		"eps":                           "0.0001",
+		"nebula_input_storaged_timeout": "60000",
+		"damping":                       "0.85",
+		"output":                        "/home/zhuang.miao/nebula-agent/plugins/analytics/data/pagerank",
+		"hosts":                         "192.168.8.240",
+		"threads":                       3,
+		"iterations":                    10,
+	},
 }
 
 var host = "ws://192.168.8.48:7002/nebula_ws"
@@ -84,6 +92,7 @@ func InitTest() {
 	logrus.SetFormatter(&logrus.TextFormatter{})
 	config.C.AnalyticsPath = "/home/zhuang.miao/nebula-analytics"
 	config.C.ExplorerHosts = []string{host}
+	config.C.LogNum = 200
 	wsConn := &websocket.Dialer{}
 	conn, _, err := wsConn.Dial(host, http.Header{
 		"Origin":        []string{"192.168.8.240"},
@@ -97,16 +106,11 @@ func InitTest() {
 
 func TestStart(t *testing.T) {
 	InitTest()
-	task := map[string]any{
-		"jobId":  "1690956662254",
-		"taskId": "query_1",
-		"spec":   PageRankSpec,
-	}
 	taskService := HandleAnalyticsTask(&types.Ws_Message{
 		Body: types.Ws_Message_Body{
 			Content: map[string]any{
 				"action": "start",
-				"task":   task,
+				"task":   PageRankTask,
 			},
 		},
 	}, host)
@@ -124,16 +128,11 @@ func TestStart(t *testing.T) {
 
 func TestStop(t *testing.T) {
 	InitTest()
-	task := map[string]any{
-		"jobId":  "0",
-		"taskId": "pagerank_1",
-		"spec":   LangTimeSpec,
-	}
 	taskServiceStart := HandleAnalyticsTask(&types.Ws_Message{
 		Body: types.Ws_Message_Body{
 			Content: map[string]any{
 				"action": "start",
-				"task":   task,
+				"task":   LangTimeTask,
 			},
 		},
 	}, host)
@@ -145,7 +144,7 @@ func TestStop(t *testing.T) {
 			Body: types.Ws_Message_Body{
 				Content: map[string]any{
 					"action": "stop",
-					"task":   task,
+					"task":   LangTimeTask,
 				},
 			},
 		}, host)
