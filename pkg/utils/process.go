@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/shirou/gopsutil/v3/process"
+	"github.com/sirupsen/logrus"
 )
 
 func GetPidByName(name string) []int {
@@ -33,8 +34,11 @@ func KillProcessByPids(pids []int) {
 	for _, pid := range pids {
 		proc, err := process.NewProcess(int32(pid))
 		if err != nil {
+			logrus.Error("get process failed: ", err)
 			continue
 		}
-		proc.Kill()
+		if err := proc.Kill(); err != nil {
+			logrus.Error("kill process failed: ", err)
+		}
 	}
 }

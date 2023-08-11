@@ -89,7 +89,7 @@ var host = "ws://192.168.8.48:7002/nebula_ws"
 
 func InitTest() {
 	agentTask.PipeShellMap = make(map[string]*agentTask.StreamShell)
-	logrus.SetFormatter(&logrus.TextFormatter{})
+	// logrus.SetFormatter(&logrus.TextFormatter{})
 	config.C.AnalyticsPath = "/home/zhuang.miao/nebula-analytics"
 	config.C.ExplorerHosts = []string{host}
 	config.C.LogNum = 200
@@ -139,7 +139,7 @@ func TestStop(t *testing.T) {
 
 	// async stop for wait start on next loop
 	go func() {
-		time.Sleep(2 * time.Second)
+		time.Sleep(10 * time.Second)
 		HandleAnalyticsTask(&types.Ws_Message{
 			Body: types.Ws_Message_Body{
 				Content: map[string]any{
@@ -155,14 +155,14 @@ func TestStop(t *testing.T) {
 			task := taskServiceStart.task
 			pids := utils.GetPidByName(task.JobId + "_" + task.TaskId)
 			if len(pids) != 0 {
-				t.Fatalf("task stop failed: %s , %s", task.JobId+"_"+task.TaskId, task.Status)
+				t.Errorf("task stop failed check pids: %s , %v", task.JobId+"_"+task.TaskId, pids)
 			}
 			break
 		}
 		if taskServiceStart.task.Status == types.TaskStatusFailed || taskServiceStart.task.Status == types.TaskStatusSuccess {
-			t.Fatalf("task stop failed: %s , %s", taskServiceStart.task.JobId+"_"+taskServiceStart.task.TaskId, taskServiceStart.task.Status)
+			t.Errorf("task stop failed: %s , %s", taskServiceStart.task.JobId+"_"+taskServiceStart.task.TaskId, taskServiceStart.task.Status)
 			break
 		}
-		time.Sleep(100 * time.Millisecond)
+		time.Sleep(1 * time.Second)
 	}
 }

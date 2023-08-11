@@ -92,11 +92,11 @@ func (t *TaskService) StartAnalyticsTask() {
 
 func (t *TaskService) StopAnalyticsTask() {
 	id := t.task.JobId + "_" + t.task.TaskId
+	t.KillAnalyticsProcess()
 	err := agentTask.StopStreamShell(id)
 	if err != nil {
 		logrus.Errorf("stop task %s failed: %s", id, err)
 	}
-	t.KillAnalyticsProcess()
 }
 
 func (t *TaskService) KillAnalyticsProcess() {

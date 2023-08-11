@@ -1,6 +1,7 @@
 package task
 
 import (
+	"bufio"
 	"errors"
 	"os/exec"
 	"sync"
@@ -38,27 +39,26 @@ func RunStreamShell(id string, shell string, rpcSend func(s string) error) error
 	if err != nil {
 		return err
 	}
-	buf := make([]byte, 1024)
-
-	for {
-		n, err := reader.Read(buf)
+	scanner := bufio.NewScanner(reader)
+	for scanner.Scan() {
+		text := scanner.Text()
+		// rpc to push message or write to file or ignore
+		err := rpcSend(text)
 		if err != nil {
-			Mu.RLock()
-			stopped := PipeShellMap[id].Stopped
-			Mu.RUnlock()
-			if stopped {
-				return errors.New("stop stream shell")
-			}
 			return err
 		}
-		if n > 0 {
-			// rpc to push message or write to file or ignore
-			err := rpcSend(string(buf[:n]))
-			if err != nil {
-				return err
-			}
-		}
 	}
+
+	Mu.RLock()
+	stopped := PipeShellMap[id].Stopped
+	Mu.RUnlock()
+	if stopped {
+		return errors.New("stop stream shell")
+	}
+	if err := cmd.Wait(); err != nil {
+		return err
+	}
+	return nil
 }
 
 func StopStreamShell(id string) error {
