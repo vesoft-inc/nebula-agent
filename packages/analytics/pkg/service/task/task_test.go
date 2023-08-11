@@ -85,6 +85,42 @@ var PageRankTask = map[string]any{
 	},
 }
 
+var TestTask = map[string]any{
+	"jobId":  "0",
+	"taskId": "pagerank_1",
+	"spec": map[string]any{
+		"job_id":                        "0",
+		"task_id":                       "pagerank_1",
+		"nebula_input_metad":            "",
+		"nebula_input_graphd_timeout":   "60000",
+		"nebula_input_graphd":           "192.168.8.48:9669",
+		"nebula_input_user":             "root",
+		"nebula_input_password":         "nebula",
+		"nebula_input_space":            "Anti-money laundering",
+		"nebula_output_types":           "double",
+		"input":                         "nebula:gflags_input",
+		"nebula_output_tag":             "pagerank",
+		"algo_name":                     "pagerank",
+		"encoder":                       "distributed",
+		"nebula_input_edges":            "Assessment passed,Capital dispersion,Capital inflow,First transaction,Risk control testing",
+		"nebula_output_mode":            "insert",
+		"nebula_output_props":           "value",
+		"is_directed":                   "true",
+		"vtype":                         "string",
+		"need_encode":                   "true",
+		"nebula_input_edges_props":      ",,,,",
+		"nebula_input_metad_timeout":    "60000",
+		"processes":                     "1",
+		"eps":                           "0.0001",
+		"nebula_input_storaged_timeout": "60000",
+		"damping":                       "0.85",
+		"output":                        "/home/zhuang.miao/nebula-agent/plugins/analytics/data/pagerank",
+		"hosts":                         "192.168.8.240",
+		"threads":                       3,
+		"iterations":                    10,
+	},
+}
+
 var host = "ws://192.168.8.48:7002/nebula_ws"
 
 func InitTest() {
@@ -102,6 +138,41 @@ func InitTest() {
 		logrus.Error(err)
 	}
 	clients.WsClients[host] = conn
+}
+
+func TestCMD(t *testing.T) {
+	InitTest()
+	err := agentTask.RunStreamShell("1", "/home/zhuang.miao/nebula-analytics/scripts/run_algo.sh --job_id '0'  --task_id 'pagerank_1'  --input 'nebula:gflags_input'  --algo_name 'pagerank'  --vtype 'string'  --nebula_output_mode 'insert'  --is_directed 'true'  --need_encode 'true'  --nebula_input_storaged_timeout '60000'  --threads '3'  --nebula_output_types 'double'  --nebula_output_props 'value'  --processes '1'  --nebula_input_space 'Anti-money laundering'  --nebula_input_user 'root'  --eps '0.0001'  --damping '0.85'  --nebula_output_tag 'pagerank'  --nebula_input_edges 'Assessment passed,Capital dispersion,Capital inflow,First transaction,Risk control testing'  --nebula_input_graphd_timeout '60000'  --nebula_input_edges_props ',,,,'  --hosts '192.168.8.240'  --iterations '10'  --nebula_input_metad ''  --output '/home/zhuang.miao/nebula-agent/plugins/analytics/data/pagerank'  --nebula_input_password 'nebula'  --encoder 'distributed'  --nebula_input_metad_timeout '60000'  --nebula_input_graphd '192.168.8.48:9669'",
+		func(s string) error {
+			t.Log(s)
+			return nil
+		})
+
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCase(t *testing.T) {
+	InitTest()
+	taskService := HandleAnalyticsTask(&types.Ws_Message{
+		Body: types.Ws_Message_Body{
+			Content: map[string]any{
+				"action": "start",
+				"task":   TestTask,
+			},
+		},
+	}, host)
+	for {
+		if taskService.task.Status == types.TaskStatusSuccess {
+			break
+		}
+		if taskService.task.Status == types.TaskStatusFailed {
+			t.Fatalf("task failed: %s", taskService.task.JobId+"_"+taskService.task.TaskId)
+			break
+		}
+		time.Sleep(100 * time.Millisecond)
+	}
 }
 
 func TestStart(t *testing.T) {

@@ -61,8 +61,8 @@ func HandleAnalyticsTask(res *types.Ws_Message, host string) *TaskService {
 
 func (t *TaskService) StartAnalyticsTask() {
 	taskInfo := t.task
-	cmd := task2cmd(taskInfo, true)
-	cmdWithoutPwd := task2cmd(taskInfo, false)
+	cmd := task2cmd(taskInfo, false)
+	cmdWithoutPwd := task2cmd(taskInfo, true)
 	id := taskInfo.JobId + "_" + taskInfo.TaskId
 	taskInfo.Status = types.TaskStatusRunning
 	taskInfo.StartTime = time.Now().UnixMilli()
