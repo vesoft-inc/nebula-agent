@@ -34,6 +34,7 @@ func (t *TaskService) GetAnalyticsTaskLog() error {
 		logrus.Error("get 200 lines log error:", err)
 		return nil
 	}
+	logrus.Info("get 200 lines log:", lines)
 	t.SendLogToExplorer(strings.Join(lines, "\n"))
 	// }
 	return nil

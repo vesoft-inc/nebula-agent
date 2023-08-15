@@ -10,6 +10,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/vesoft-inc/nebula-agent/v3/packages/analytics/pkg/clients"
 	"github.com/vesoft-inc/nebula-agent/v3/packages/analytics/pkg/config"
+	"github.com/vesoft-inc/nebula-agent/v3/packages/analytics/pkg/service/sshchecker"
 	"github.com/vesoft-inc/nebula-agent/v3/packages/analytics/pkg/service/task"
 	"github.com/vesoft-inc/nebula-agent/v3/packages/analytics/pkg/types"
 	agentConfig "github.com/vesoft-inc/nebula-agent/v3/pkg/config"
@@ -100,6 +101,8 @@ func switchRoute(res *types.Ws_Message, host string) {
 	switch res.Body.MsgType {
 	case types.Ws_Message_Type_Task:
 		go task.HandleAnalyticsTask(res, host)
+	case types.Ws_Message_Type_Check_SSH:
+		go sshchecker.HandleCheckSSH(res, host)
 	default:
 	}
 }

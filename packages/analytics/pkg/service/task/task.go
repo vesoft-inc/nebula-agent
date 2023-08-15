@@ -35,10 +35,14 @@ type TaskService struct {
 func HandleAnalyticsTask(res *types.Ws_Message, host string) *TaskService {
 	action := res.Body.Content["action"].(string)
 	taskContent := res.Body.Content["task"].(map[string]any)
+	spec, ok := taskContent["spec"].(map[string]any)
+	if !ok {
+		spec = make(map[string]any)
+	}
 	task := TaskInfo{
 		JobId:  taskContent["jobId"].(string),
 		TaskId: taskContent["taskId"].(string),
-		Spec:   taskContent["spec"].(map[string]any),
+		Spec:   spec,
 		Status: types.TaskStatusRunning,
 	}
 	t := &TaskService{
@@ -46,6 +50,7 @@ func HandleAnalyticsTask(res *types.Ws_Message, host string) *TaskService {
 		task:  &task,
 		msgId: res.Header.MsgId,
 	}
+
 	switch action {
 	case "start":
 		t.StartAnalyticsTask()
@@ -118,7 +123,7 @@ func (t *TaskService) SendTaskStatusToExplorer() {
 	}
 	logrus.Info("send task status to explorer: ", t.task.JobId, "_", t.task.TaskId, " status: ", t.task.Status)
 	conn := clients.GetClientByHost(t.host)
-	conn.WriteJSON(types.Ws_Message{
+	err := conn.WriteJSON(types.Ws_Message{
 		Header: types.Ws_Message_Header{
 			SendTime: time.Now().UnixMilli(),
 			MsgId:    t.msgId,
@@ -128,6 +133,9 @@ func (t *TaskService) SendTaskStatusToExplorer() {
 			Content: content,
 		},
 	})
+	if err != nil {
+		logrus.Errorf("send task status to explorer error: %v", err)
+	}
 }
 
 func task2cmd(task *TaskInfo, filterPwd bool) string {

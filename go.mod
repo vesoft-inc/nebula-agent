@@ -10,7 +10,9 @@ require (
 )
 
 require (
+	github.com/ScaleFT/sshkeys v1.2.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/dchest/bcrypt_pbkdf v0.0.0-20150205184540-83f37f9c154a // indirect
 	github.com/fatih/color v1.15.0 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/go-resty/resty/v2 v2.7.0 // indirect
@@ -33,6 +35,7 @@ require (
 	go.opentelemetry.io/otel v1.14.0 // indirect
 	go.opentelemetry.io/otel/trace v1.14.0 // indirect
 	go.uber.org/automaxprocs v1.5.2 // indirect
+	golang.org/x/crypto v0.10.0 // indirect
 	golang.org/x/sys v0.9.0 // indirect
 	golang.org/x/text v0.10.0 // indirect
 	google.golang.org/genproto v0.0.0-20230306155012-7f2fa6fef1f4 // indirect
@@ -42,6 +45,7 @@ require (
 )
 
 require (
+	github.com/appleboy/easyssh-proxy v1.4.0
 	github.com/aws/aws-sdk-go v1.44.224
 	github.com/facebook/fbthrift v0.31.1-0.20211129061412-801ed7f9f295
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da

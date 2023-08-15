@@ -15,6 +15,7 @@ type Ws_Message_Type string
 const (
 	Ws_Message_Type_Task         Ws_Message_Type = "analytics_task"
 	Ws_Message_Type_Agent        Ws_Message_Type = "analytics_agent"
+	Ws_Message_Type_Check_SSH    Ws_Message_Type = "analytics_check_ssh"
 	Ws_Message_Type_Machine_Info Ws_Message_Type = "analytics_machine_info"
 )
 
