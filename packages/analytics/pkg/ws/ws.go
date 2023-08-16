@@ -3,7 +3,6 @@ package ws
 import (
 	"encoding/json"
 	"net/http"
-	"sync"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -16,10 +15,7 @@ import (
 	agentConfig "github.com/vesoft-inc/nebula-agent/v3/pkg/config"
 )
 
-var mu sync.Mutex
-
 func InitWsConnect() {
-	clients.WsClients = make(map[string]*websocket.Conn)
 	for _, host := range config.C.ExplorerHosts {
 		reconnect(host)
 	}
@@ -29,18 +25,11 @@ func InitWsConnect() {
 
 func CloseWsConnect() {
 	StopHeartBeat()
-	mu.Lock()
-	for _, conn := range clients.WsClients {
-		conn.Close()
-	}
-	clients.WsClients = nil
-	mu.Unlock()
+	clients.Clear()
 }
 
 func reconnect(host string) {
-	mu.Lock()
-	delete(clients.WsClients, host)
-	mu.Unlock()
+	clients.DeleteClientByHost(host)
 	err := connect(host)
 	if err == nil {
 		logrus.Info("connect success:", host)
@@ -72,9 +61,7 @@ func connect(host string) error {
 		logrus.Errorf("connect to %s error: %v", host, err)
 		return err
 	}
-	mu.Lock()
-	clients.WsClients[host] = conn
-	mu.Unlock()
+	clients.AddClientByHost(host, conn)
 	return nil
 }
 
@@ -98,6 +85,11 @@ func listen(host string) {
 }
 
 func switchRoute(res *types.Ws_Message, host string) {
+	defer func() {
+		if r := recover(); r != nil {
+			logrus.Error("Recovered from panic:", r)
+		}
+	}()
 	switch res.Body.MsgType {
 	case types.Ws_Message_Type_Task:
 		go task.HandleAnalyticsTask(res, host)

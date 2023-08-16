@@ -121,9 +121,7 @@ func (t *TaskService) SendTaskStatusToExplorer() {
 			"endTime":   time.Now().UnixMilli(),
 		},
 	}
-	logrus.Info("send task status to explorer: ", t.task.JobId, "_", t.task.TaskId, " status: ", t.task.Status)
-	conn := clients.GetClientByHost(t.host)
-	err := conn.WriteJSON(types.Ws_Message{
+	msg := types.Ws_Message{
 		Header: types.Ws_Message_Header{
 			SendTime: time.Now().UnixMilli(),
 			MsgId:    t.msgId,
@@ -132,10 +130,9 @@ func (t *TaskService) SendTaskStatusToExplorer() {
 			MsgType: types.Ws_Message_Type_Task,
 			Content: content,
 		},
-	})
-	if err != nil {
-		logrus.Errorf("send task status to explorer error: %v", err)
 	}
+	logrus.Info("send task status to explorer: ", t.task.JobId, "_", t.task.TaskId, " status: ", t.task.Status)
+	clients.SendJsonMessage(t.host, msg)
 }
 
 func task2cmd(task *TaskInfo, filterPwd bool) string {

@@ -87,8 +87,7 @@ func (t *TaskService) SendLogToExplorer(text string) {
 	if testing.Verbose() {
 		log.Print("------->slice log:", text)
 	}
-	conn := clients.GetClientByHost(t.host)
-	conn.WriteJSON(types.Ws_Message{
+	msg := types.Ws_Message{
 		Header: types.Ws_Message_Header{
 			MsgId:    t.msgId,
 			SendTime: time.Now().UnixMilli(),
@@ -104,7 +103,8 @@ func (t *TaskService) SendLogToExplorer(text string) {
 				},
 			},
 		},
-	})
+	}
+	clients.SendJsonMessage(t.host, msg)
 }
 
 func GetSomeLinesLogWithPath(path string) ([]string, error) {
