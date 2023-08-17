@@ -6,8 +6,8 @@ ENV LOGROTATE_ROTATE=5 \
 
 RUN mkdir -p /usr/local/nebula/bin \
     && mkdir -p /usr/local/certs
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
-               echo $TZ > /etc/timezone
+RUN ln -sf /usr/share/zoneinfo/$TZ /etc/localtime \
+    && echo $TZ > /etc/timezone
 RUN apt-get update \
     && apt-get install -y --no-install-recommends ca-certificates curl cron logrotate \
     && apt-get clean all
