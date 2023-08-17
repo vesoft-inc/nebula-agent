@@ -830,6 +830,155 @@ func (m *HealthCheckResponse) GetStatus() string {
 	return ""
 }
 
+type GetSpaceUsagesRequest struct {
+	DataPath             string   `protobuf:"bytes,1,opt,name=data_path,json=dataPath,proto3" json:"data_path,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GetSpaceUsagesRequest) Reset()         { *m = GetSpaceUsagesRequest{} }
+func (m *GetSpaceUsagesRequest) String() string { return proto.CompactTextString(m) }
+func (*GetSpaceUsagesRequest) ProtoMessage()    {}
+func (*GetSpaceUsagesRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_56ede974c0020f77, []int{16}
+}
+func (m *GetSpaceUsagesRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GetSpaceUsagesRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GetSpaceUsagesRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GetSpaceUsagesRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetSpaceUsagesRequest.Merge(m, src)
+}
+func (m *GetSpaceUsagesRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *GetSpaceUsagesRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetSpaceUsagesRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetSpaceUsagesRequest proto.InternalMessageInfo
+
+func (m *GetSpaceUsagesRequest) GetDataPath() string {
+	if m != nil {
+		return m.DataPath
+	}
+	return ""
+}
+
+type GetSpaceUsagesResponse struct {
+	SpaceUsages          []*GetSpaceUsagesResponse_SpaceUsageItem `protobuf:"bytes,1,rep,name=SpaceUsages,proto3" json:"SpaceUsages,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                                 `json:"-"`
+	XXX_unrecognized     []byte                                   `json:"-"`
+	XXX_sizecache        int32                                    `json:"-"`
+}
+
+func (m *GetSpaceUsagesResponse) Reset()         { *m = GetSpaceUsagesResponse{} }
+func (m *GetSpaceUsagesResponse) String() string { return proto.CompactTextString(m) }
+func (*GetSpaceUsagesResponse) ProtoMessage()    {}
+func (*GetSpaceUsagesResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_56ede974c0020f77, []int{17}
+}
+func (m *GetSpaceUsagesResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GetSpaceUsagesResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GetSpaceUsagesResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GetSpaceUsagesResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetSpaceUsagesResponse.Merge(m, src)
+}
+func (m *GetSpaceUsagesResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *GetSpaceUsagesResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetSpaceUsagesResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetSpaceUsagesResponse proto.InternalMessageInfo
+
+func (m *GetSpaceUsagesResponse) GetSpaceUsages() []*GetSpaceUsagesResponse_SpaceUsageItem {
+	if m != nil {
+		return m.SpaceUsages
+	}
+	return nil
+}
+
+type GetSpaceUsagesResponse_SpaceUsageItem struct {
+	Id                   int64    `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Usage                int64    `protobuf:"varint,2,opt,name=usage,proto3" json:"usage,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GetSpaceUsagesResponse_SpaceUsageItem) Reset()         { *m = GetSpaceUsagesResponse_SpaceUsageItem{} }
+func (m *GetSpaceUsagesResponse_SpaceUsageItem) String() string { return proto.CompactTextString(m) }
+func (*GetSpaceUsagesResponse_SpaceUsageItem) ProtoMessage()    {}
+func (*GetSpaceUsagesResponse_SpaceUsageItem) Descriptor() ([]byte, []int) {
+	return fileDescriptor_56ede974c0020f77, []int{17, 0}
+}
+func (m *GetSpaceUsagesResponse_SpaceUsageItem) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GetSpaceUsagesResponse_SpaceUsageItem) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GetSpaceUsagesResponse_SpaceUsageItem.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GetSpaceUsagesResponse_SpaceUsageItem) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetSpaceUsagesResponse_SpaceUsageItem.Merge(m, src)
+}
+func (m *GetSpaceUsagesResponse_SpaceUsageItem) XXX_Size() int {
+	return m.Size()
+}
+func (m *GetSpaceUsagesResponse_SpaceUsageItem) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetSpaceUsagesResponse_SpaceUsageItem.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetSpaceUsagesResponse_SpaceUsageItem proto.InternalMessageInfo
+
+func (m *GetSpaceUsagesResponse_SpaceUsageItem) GetId() int64 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
+}
+
+func (m *GetSpaceUsagesResponse_SpaceUsageItem) GetUsage() int64 {
+	if m != nil {
+		return m.Usage
+	}
+	return 0
+}
+
 func init() {
 	proto.RegisterEnum("proto.ServiceRole", ServiceRole_name, ServiceRole_value)
 	proto.RegisterEnum("proto.Status", Status_name, Status_value)
@@ -849,48 +998,57 @@ func init() {
 	proto.RegisterType((*StopAgentResponse)(nil), "proto.StopAgentResponse")
 	proto.RegisterType((*HealthCheckRequest)(nil), "proto.HealthCheckRequest")
 	proto.RegisterType((*HealthCheckResponse)(nil), "proto.HealthCheckResponse")
+	proto.RegisterType((*GetSpaceUsagesRequest)(nil), "proto.GetSpaceUsagesRequest")
+	proto.RegisterType((*GetSpaceUsagesResponse)(nil), "proto.GetSpaceUsagesResponse")
+	proto.RegisterType((*GetSpaceUsagesResponse_SpaceUsageItem)(nil), "proto.GetSpaceUsagesResponse.SpaceUsageItem")
 }
 
 func init() { proto.RegisterFile("agent.proto", fileDescriptor_56ede974c0020f77) }
 
 var fileDescriptor_56ede974c0020f77 = []byte{
-	// 575 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x53, 0xcd, 0x6e, 0xd3, 0x4c,
-	0x14, 0x8d, 0x93, 0x34, 0x5f, 0x73, 0x93, 0x46, 0xf3, 0xdd, 0xfc, 0x10, 0x1c, 0x88, 0x2a, 0x4b,
-	0xa0, 0xaa, 0x12, 0x5d, 0x14, 0xb1, 0xad, 0xe4, 0x90, 0x28, 0x2d, 0x50, 0x27, 0xd8, 0x89, 0xca,
-	0x2e, 0x1a, 0x9a, 0x11, 0x89, 0x30, 0x71, 0xb0, 0xa7, 0x20, 0xde, 0x84, 0x47, 0x62, 0xd9, 0x47,
-	0x40, 0xe1, 0x45, 0x90, 0xed, 0xf1, 0x64, 0x9c, 0x9a, 0x05, 0xa2, 0x2b, 0x5b, 0xf7, 0xde, 0x39,
-	0xe7, 0xfe, 0x9c, 0x03, 0x15, 0xfa, 0x81, 0xad, 0xf8, 0xc9, 0xda, 0xf7, 0xb8, 0x87, 0x7b, 0xd1,
-	0xc7, 0x18, 0x41, 0xdd, 0xe1, 0xd4, 0xe7, 0x0e, 0xf3, 0xbf, 0x2c, 0xaf, 0x99, 0xcd, 0x3e, 0xdf,
-	0xb0, 0x80, 0xe3, 0x53, 0x28, 0xfa, 0x9e, 0xcb, 0xda, 0xda, 0xa1, 0x76, 0x54, 0x3b, 0xc5, 0xf8,
-	0xcd, 0x49, 0x52, 0xe4, 0xb9, 0xcc, 0x8e, 0xf2, 0x48, 0xa0, 0x30, 0x5f, 0xfa, 0xed, 0xfc, 0xa1,
-	0x76, 0x54, 0xb6, 0xc3, 0x5f, 0xa3, 0x05, 0x8d, 0x34, 0x60, 0xb0, 0xf6, 0x56, 0x01, 0x33, 0x2c,
-	0x40, 0x87, 0x7b, 0xeb, 0x7b, 0xe3, 0x69, 0x86, 0x8d, 0x2b, 0x78, 0x82, 0x66, 0x0c, 0x0d, 0x11,
-	0x72, 0x38, 0xe5, 0x37, 0xc1, 0xbf, 0x13, 0x9d, 0x41, 0x73, 0x07, 0x31, 0xa6, 0xc2, 0x27, 0x50,
-	0x0a, 0xa2, 0x88, 0x00, 0x3d, 0x48, 0x40, 0xe3, 0x32, 0x91, 0x34, 0xde, 0x42, 0xbd, 0x47, 0x57,
-	0x36, 0xa3, 0xf3, 0x2b, 0x7f, 0xc9, 0xff, 0x7a, 0x72, 0x84, 0x22, 0x9d, 0xcf, 0x93, 0x8e, 0xa2,
-	0xff, 0x70, 0xc7, 0x69, 0x48, 0x31, 0xbc, 0x03, 0x4d, 0xd3, 0x75, 0xbd, 0xaf, 0xf7, 0x4a, 0xd6,
-	0x86, 0xd6, 0x2e, 0xa8, 0xa0, 0xa3, 0x50, 0xef, 0x53, 0x4e, 0xc7, 0x2e, 0xfd, 0xd6, 0xa3, 0xd7,
-	0x1f, 0x13, 0x32, 0xb1, 0x42, 0x4d, 0xae, 0x10, 0x3b, 0x50, 0x9e, 0x53, 0x4e, 0x67, 0x6b, 0xca,
-	0x17, 0x02, 0x7b, 0x3f, 0x0c, 0x8c, 0x29, 0x5f, 0x84, 0xc9, 0x4f, 0x8c, 0xd3, 0x59, 0x44, 0x5c,
-	0x88, 0x93, 0x61, 0xc0, 0x14, 0x93, 0xa6, 0x29, 0x04, 0x35, 0x02, 0x09, 0xaf, 0x6f, 0x86, 0x82,
-	0x16, 0xbc, 0x46, 0x1d, 0xfe, 0x57, 0x62, 0xa2, 0xb0, 0x01, 0x78, 0xce, 0xa8, 0xcb, 0x17, 0x2f,
-	0x17, 0x4c, 0xb6, 0x68, 0x3c, 0x83, 0x7a, 0x2a, 0x2a, 0x2e, 0xda, 0x4a, 0x5d, 0xb4, 0x9c, 0x9c,
-	0xf0, 0xd8, 0x84, 0x8a, 0xb2, 0x2b, 0x24, 0x50, 0x9d, 0x5a, 0xaf, 0xad, 0xd1, 0x95, 0x35, 0xb3,
-	0x47, 0x6f, 0x06, 0x24, 0x87, 0xfb, 0x50, 0xbc, 0x1c, 0x4c, 0x4c, 0xa2, 0x61, 0x19, 0xf6, 0x86,
-	0xb6, 0x39, 0x3e, 0x27, 0x79, 0xac, 0xc0, 0x7f, 0xce, 0x64, 0x64, 0x9b, 0xc3, 0x01, 0x29, 0x1c,
-	0xbf, 0x80, 0x52, 0xac, 0x0b, 0x44, 0xa8, 0x25, 0xaf, 0x9d, 0x89, 0x39, 0x99, 0x3a, 0x24, 0x17,
-	0x96, 0xda, 0x53, 0xcb, 0xba, 0xb0, 0x86, 0x44, 0x43, 0x80, 0xd2, 0xe0, 0xdd, 0xc5, 0x64, 0xd0,
-	0x27, 0xf9, 0xd3, 0xdb, 0x22, 0x54, 0xa3, 0x81, 0x04, 0x3f, 0x0e, 0xa1, 0xaa, 0xda, 0x0b, 0xf5,
-	0xad, 0xe8, 0x76, 0x4d, 0xac, 0x77, 0x32, 0x73, 0x62, 0xd6, 0x3e, 0x54, 0x14, 0xff, 0xe0, 0x43,
-	0x59, 0xbb, 0xeb, 0x51, 0x5d, 0xcf, 0x4a, 0x09, 0x94, 0x57, 0x70, 0x90, 0x32, 0x07, 0x76, 0xd2,
-	0xda, 0x4a, 0x99, 0x50, 0x7f, 0x94, 0x9d, 0x14, 0x58, 0x43, 0xa8, 0xaa, 0xaa, 0x96, 0xa3, 0x65,
-	0xb8, 0x47, 0x8e, 0x96, 0x65, 0x03, 0xbc, 0x84, 0x5a, 0x5a, 0xb1, 0x98, 0x10, 0x67, 0xba, 0x43,
-	0x7f, 0xfc, 0x87, 0xec, 0xb6, 0x2f, 0x55, 0x83, 0xb2, 0xaf, 0x0c, 0xed, 0xcb, 0xbe, 0xb2, 0x44,
-	0x8b, 0x67, 0x50, 0x96, 0x02, 0xc5, 0x07, 0xca, 0x56, 0x55, 0x19, 0xeb, 0xed, 0xbb, 0x89, 0xed,
-	0xc9, 0x14, 0xd5, 0xca, 0x93, 0xdd, 0xd5, 0xb7, 0x3c, 0x59, 0x86, 0xc8, 0x7b, 0xe4, 0xc7, 0xa6,
-	0xab, 0xdd, 0x6e, 0xba, 0xda, 0xcf, 0x4d, 0x57, 0xfb, 0xfe, 0xab, 0x9b, 0x7b, 0x5f, 0x8a, 0x8a,
-	0x9f, 0xff, 0x0e, 0x00, 0x00, 0xff, 0xff, 0x33, 0x39, 0xf5, 0x42, 0x20, 0x06, 0x00, 0x00,
+	// 672 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x54, 0xcd, 0x6e, 0xd3, 0x4c,
+	0x14, 0xed, 0x24, 0x4d, 0xbe, 0xe6, 0x26, 0x8d, 0xfc, 0xdd, 0xfc, 0x10, 0x5c, 0x88, 0x2a, 0x4b,
+	0xa0, 0xaa, 0x82, 0x2e, 0xca, 0xcf, 0xb2, 0x92, 0x4b, 0xa3, 0xb4, 0x40, 0x9d, 0x60, 0x27, 0x2a,
+	0xbb, 0x6a, 0xa8, 0x47, 0x4d, 0x44, 0x5a, 0x87, 0x64, 0x0a, 0xe2, 0x4d, 0xd8, 0xc1, 0xe3, 0xb0,
+	0xe4, 0x11, 0x50, 0x79, 0x11, 0x64, 0x7b, 0x3c, 0x99, 0x49, 0x87, 0x05, 0xa2, 0xab, 0x38, 0xf7,
+	0xcc, 0x9c, 0x73, 0x7f, 0xe6, 0x5c, 0x28, 0xd3, 0x73, 0x76, 0xc9, 0x77, 0xa6, 0xb3, 0x88, 0x47,
+	0x58, 0x48, 0x7e, 0x9c, 0x1e, 0xd4, 0x02, 0x4e, 0x67, 0x3c, 0x60, 0xb3, 0x8f, 0xe3, 0x33, 0xe6,
+	0xb3, 0x0f, 0x57, 0x6c, 0xce, 0xf1, 0x21, 0xac, 0xce, 0xa2, 0x09, 0x6b, 0x91, 0x4d, 0xb2, 0x55,
+	0xdd, 0xc5, 0xf4, 0xce, 0x4e, 0x76, 0x28, 0x9a, 0x30, 0x3f, 0xc1, 0xd1, 0x82, 0x7c, 0x38, 0x9e,
+	0xb5, 0x72, 0x9b, 0x64, 0xab, 0xe4, 0xc7, 0x9f, 0x4e, 0x13, 0xea, 0x3a, 0xe1, 0x7c, 0x1a, 0x5d,
+	0xce, 0x99, 0xe3, 0x01, 0x06, 0x3c, 0x9a, 0xde, 0x9a, 0x4e, 0x23, 0x4e, 0x5c, 0xe1, 0x13, 0x32,
+	0x7d, 0xa8, 0x8b, 0x50, 0xc0, 0x29, 0xbf, 0x9a, 0xff, 0xbb, 0xd0, 0x1e, 0x34, 0x96, 0x18, 0x53,
+	0x29, 0x7c, 0x00, 0xc5, 0x79, 0x12, 0x11, 0xa4, 0xeb, 0x19, 0x69, 0x7a, 0x4c, 0x80, 0xce, 0x1b,
+	0xa8, 0xed, 0xd3, 0x4b, 0x9f, 0xd1, 0xf0, 0x64, 0x36, 0xe6, 0x7f, 0x5d, 0x39, 0xc2, 0x2a, 0x0d,
+	0xc3, 0x2c, 0xa3, 0xe4, 0x3b, 0xee, 0xb1, 0x4e, 0x29, 0x8a, 0x0f, 0xa0, 0xe1, 0x4e, 0x26, 0xd1,
+	0xa7, 0x5b, 0x15, 0x6b, 0x41, 0x73, 0x99, 0x54, 0xc8, 0x51, 0xa8, 0x1d, 0x50, 0x4e, 0xfb, 0x13,
+	0xfa, 0x79, 0x9f, 0x9e, 0xbd, 0xcf, 0xc4, 0x44, 0x0b, 0x89, 0x6c, 0x21, 0x6e, 0x40, 0x29, 0xa4,
+	0x9c, 0x9e, 0x4e, 0x29, 0x1f, 0x09, 0xee, 0xb5, 0x38, 0xd0, 0xa7, 0x7c, 0x14, 0x83, 0x17, 0x8c,
+	0xd3, 0xd3, 0x44, 0x38, 0x9f, 0x82, 0x71, 0xc0, 0x15, 0x95, 0xea, 0x12, 0x42, 0x1a, 0xc1, 0x8a,
+	0xa7, 0xef, 0xc6, 0x0f, 0x5a, 0xe8, 0x3a, 0x35, 0xf8, 0x5f, 0x89, 0x89, 0x83, 0x75, 0xc0, 0x43,
+	0x46, 0x27, 0x7c, 0xf4, 0x62, 0xc4, 0x64, 0x8a, 0xce, 0x63, 0xa8, 0x69, 0x51, 0x31, 0xd1, 0xa6,
+	0x36, 0xd1, 0x92, 0x1c, 0xe1, 0x53, 0x68, 0x74, 0x19, 0x0f, 0xa6, 0xf4, 0x8c, 0x0d, 0xe7, 0xf4,
+	0x9c, 0xc9, 0x57, 0xa5, 0x15, 0x46, 0xf4, 0xc2, 0x9c, 0x6f, 0x04, 0x9a, 0xcb, 0xd7, 0x84, 0x90,
+	0x07, 0x65, 0x25, 0xdc, 0x22, 0x9b, 0xf9, 0xad, 0xf2, 0xee, 0x23, 0x31, 0x16, 0xf3, 0x9d, 0x9d,
+	0x45, 0xec, 0x88, 0xb3, 0x0b, 0x5f, 0x25, 0xb0, 0x9f, 0x43, 0x55, 0x87, 0xb1, 0x0a, 0xb9, 0x71,
+	0x98, 0xa4, 0x94, 0xf7, 0x73, 0xe3, 0x10, 0xeb, 0x50, 0xb8, 0x8a, 0xc1, 0xa4, 0xfd, 0x79, 0x3f,
+	0xfd, 0xb3, 0xed, 0x42, 0x59, 0x79, 0x04, 0x68, 0x41, 0x65, 0xe8, 0xbd, 0xf2, 0x7a, 0x27, 0xde,
+	0xa9, 0xdf, 0x7b, 0xdd, 0xb1, 0x56, 0x70, 0x0d, 0x56, 0x8f, 0x3b, 0x03, 0xd7, 0x22, 0x58, 0x82,
+	0x42, 0xd7, 0x77, 0xfb, 0x87, 0x56, 0x0e, 0xcb, 0xf0, 0x5f, 0x30, 0xe8, 0xf9, 0x6e, 0xb7, 0x63,
+	0xe5, 0xb7, 0x9f, 0x41, 0x31, 0x7d, 0xf0, 0x88, 0x50, 0xcd, 0x6e, 0x07, 0x03, 0x77, 0x30, 0x0c,
+	0xac, 0x95, 0xf8, 0xa8, 0x3f, 0xf4, 0xbc, 0x23, 0xaf, 0x6b, 0x11, 0x04, 0x28, 0x76, 0xde, 0x1e,
+	0x0d, 0x3a, 0x07, 0x56, 0x6e, 0xf7, 0x6b, 0x01, 0x2a, 0xc9, 0xa4, 0x84, 0x3e, 0x76, 0xa1, 0xa2,
+	0xee, 0x0d, 0xb4, 0x17, 0x6e, 0x5a, 0xde, 0x4e, 0xf6, 0x86, 0x11, 0x13, 0xbd, 0x3d, 0x80, 0xb2,
+	0xb2, 0x18, 0xf0, 0xae, 0x3c, 0xbb, 0xbc, 0x7c, 0x6c, 0xdb, 0x04, 0x09, 0x96, 0x97, 0xb0, 0xae,
+	0xb9, 0x1e, 0x37, 0x74, 0xd3, 0x68, 0xdb, 0xc5, 0xbe, 0x67, 0x06, 0x05, 0x57, 0x17, 0x2a, 0xaa,
+	0x5d, 0x65, 0x69, 0x86, 0xb5, 0x20, 0x4b, 0x33, 0xf9, 0x1b, 0x8f, 0xa1, 0xaa, 0x5b, 0x11, 0x33,
+	0x61, 0xa3, 0xed, 0xed, 0xfb, 0x7f, 0x40, 0x17, 0x79, 0xa9, 0xe6, 0x92, 0x79, 0x19, 0x4c, 0x2d,
+	0xf3, 0x32, 0xb9, 0x11, 0xf7, 0xa0, 0x24, 0x9d, 0x87, 0x77, 0x94, 0xae, 0xaa, 0xfe, 0xb4, 0x5b,
+	0x37, 0x81, 0xc5, 0xc8, 0x14, 0x3b, 0xca, 0x91, 0xdd, 0x34, 0xae, 0x1c, 0x99, 0xc9, 0xbd, 0xc7,
+	0x50, 0xd5, 0xad, 0x23, 0xbb, 0x63, 0x34, 0xaf, 0xec, 0x8e, 0xd9, 0x6f, 0xfb, 0xd6, 0xf7, 0xeb,
+	0x36, 0xf9, 0x71, 0xdd, 0x26, 0x3f, 0xaf, 0xdb, 0xe4, 0xcb, 0xaf, 0xf6, 0xca, 0xbb, 0x62, 0x72,
+	0xfe, 0xc9, 0xef, 0x00, 0x00, 0x00, 0xff, 0xff, 0xb1, 0x6f, 0x9b, 0x9c, 0x48, 0x07, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -913,6 +1071,7 @@ type AgentServiceClient interface {
 	DataPlayBack(ctx context.Context, in *DataPlayBackRequest, opts ...grpc.CallOption) (*DataPlayBackResponse, error)
 	StopAgent(ctx context.Context, in *StopAgentRequest, opts ...grpc.CallOption) (*StopAgentResponse, error)
 	HealthCheck(ctx context.Context, in *HealthCheckRequest, opts ...grpc.CallOption) (*HealthCheckResponse, error)
+	GetSpaceUsages(ctx context.Context, in *GetSpaceUsagesRequest, opts ...grpc.CallOption) (*GetSpaceUsagesResponse, error)
 }
 
 type agentServiceClient struct {
@@ -995,6 +1154,15 @@ func (c *agentServiceClient) HealthCheck(ctx context.Context, in *HealthCheckReq
 	return out, nil
 }
 
+func (c *agentServiceClient) GetSpaceUsages(ctx context.Context, in *GetSpaceUsagesRequest, opts ...grpc.CallOption) (*GetSpaceUsagesResponse, error) {
+	out := new(GetSpaceUsagesResponse)
+	err := c.cc.Invoke(ctx, "/proto.AgentService/GetSpaceUsages", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AgentServiceServer is the server API for AgentService service.
 type AgentServiceServer interface {
 	StartService(context.Context, *StartServiceRequest) (*StartServiceResponse, error)
@@ -1005,6 +1173,7 @@ type AgentServiceServer interface {
 	DataPlayBack(context.Context, *DataPlayBackRequest) (*DataPlayBackResponse, error)
 	StopAgent(context.Context, *StopAgentRequest) (*StopAgentResponse, error)
 	HealthCheck(context.Context, *HealthCheckRequest) (*HealthCheckResponse, error)
+	GetSpaceUsages(context.Context, *GetSpaceUsagesRequest) (*GetSpaceUsagesResponse, error)
 }
 
 // UnimplementedAgentServiceServer can be embedded to have forward compatible implementations.
@@ -1034,6 +1203,9 @@ func (*UnimplementedAgentServiceServer) StopAgent(ctx context.Context, req *Stop
 }
 func (*UnimplementedAgentServiceServer) HealthCheck(ctx context.Context, req *HealthCheckRequest) (*HealthCheckResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method HealthCheck not implemented")
+}
+func (*UnimplementedAgentServiceServer) GetSpaceUsages(ctx context.Context, req *GetSpaceUsagesRequest) (*GetSpaceUsagesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSpaceUsages not implemented")
 }
 
 func RegisterAgentServiceServer(s *grpc.Server, srv AgentServiceServer) {
@@ -1184,6 +1356,24 @@ func _AgentService_HealthCheck_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AgentService_GetSpaceUsages_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetSpaceUsagesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AgentServiceServer).GetSpaceUsages(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.AgentService/GetSpaceUsages",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AgentServiceServer).GetSpaceUsages(ctx, req.(*GetSpaceUsagesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _AgentService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "proto.AgentService",
 	HandlerType: (*AgentServiceServer)(nil),
@@ -1219,6 +1409,10 @@ var _AgentService_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "HealthCheck",
 			Handler:    _AgentService_HealthCheck_Handler,
+		},
+		{
+			MethodName: "GetSpaceUsages",
+			Handler:    _AgentService_GetSpaceUsages_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -1750,6 +1944,118 @@ func (m *HealthCheckResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *GetSpaceUsagesRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GetSpaceUsagesRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GetSpaceUsagesRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.DataPath) > 0 {
+		i -= len(m.DataPath)
+		copy(dAtA[i:], m.DataPath)
+		i = encodeVarintAgent(dAtA, i, uint64(len(m.DataPath)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GetSpaceUsagesResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GetSpaceUsagesResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GetSpaceUsagesResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.SpaceUsages) > 0 {
+		for iNdEx := len(m.SpaceUsages) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.SpaceUsages[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintAgent(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GetSpaceUsagesResponse_SpaceUsageItem) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GetSpaceUsagesResponse_SpaceUsageItem) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GetSpaceUsagesResponse_SpaceUsageItem) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.Usage != 0 {
+		i = encodeVarintAgent(dAtA, i, uint64(m.Usage))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.Id != 0 {
+		i = encodeVarintAgent(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintAgent(dAtA []byte, offset int, v uint64) int {
 	offset -= sovAgent(v)
 	base := offset
@@ -2000,6 +2306,58 @@ func (m *HealthCheckResponse) Size() (n int) {
 	l = len(m.Status)
 	if l > 0 {
 		n += 1 + l + sovAgent(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *GetSpaceUsagesRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.DataPath)
+	if l > 0 {
+		n += 1 + l + sovAgent(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *GetSpaceUsagesResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.SpaceUsages) > 0 {
+		for _, e := range m.SpaceUsages {
+			l = e.Size()
+			n += 1 + l + sovAgent(uint64(l))
+		}
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *GetSpaceUsagesResponse_SpaceUsageItem) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Id != 0 {
+		n += 1 + sovAgent(uint64(m.Id))
+	}
+	if m.Usage != 0 {
+		n += 1 + sovAgent(uint64(m.Usage))
 	}
 	if m.XXX_unrecognized != nil {
 		n += len(m.XXX_unrecognized)
@@ -3209,6 +3567,263 @@ func (m *HealthCheckResponse) Unmarshal(dAtA []byte) error {
 			}
 			m.Status = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipAgent(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthAgent
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GetSpaceUsagesRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowAgent
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GetSpaceUsagesRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GetSpaceUsagesRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DataPath", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAgent
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthAgent
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthAgent
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DataPath = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipAgent(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthAgent
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GetSpaceUsagesResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowAgent
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GetSpaceUsagesResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GetSpaceUsagesResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field SpaceUsages", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAgent
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthAgent
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthAgent
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.SpaceUsages = append(m.SpaceUsages, &GetSpaceUsagesResponse_SpaceUsageItem{})
+			if err := m.SpaceUsages[len(m.SpaceUsages)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipAgent(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthAgent
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GetSpaceUsagesResponse_SpaceUsageItem) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowAgent
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: SpaceUsageItem: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: SpaceUsageItem: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			m.Id = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAgent
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Id |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Usage", wireType)
+			}
+			m.Usage = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAgent
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Usage |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipAgent(dAtA[iNdEx:])
