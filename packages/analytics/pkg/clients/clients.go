@@ -21,21 +21,37 @@ func GetClientByHost(host string) *websocket.Conn {
 
 func AddClientByHost(host string, conn *websocket.Conn) {
 	mu.Lock()
-	defer mu.Unlock()
 	WsClients[host] = conn
-	if PendingMsgMap[host] != nil {
-		for _, msg := range PendingMsgMap[host] {
-			SendJsonMessage(host, msg)
+	mu.Unlock()
+	SendPendingMsg(host)
+}
+
+func SendPendingMsg(host string) {
+	logrus.Infof("start send pending msg to explorer: %v", PendingMsgMap[host])
+	for {
+		mu.Lock()
+		if len(PendingMsgMap[host]) == 0 {
+			mu.Unlock()
+			break
 		}
-		delete(PendingMsgMap, host)
+		// pop first ,if send error again,reset to PendingMsgMap
+		popMsg := PendingMsgMap[host][0]
+		PendingMsgMap[host] = PendingMsgMap[host][1:]
+		mu.Unlock()
+		err := SendJsonMessage(host, popMsg)
+		if err != nil {
+			break
+		}
 	}
+	delete(PendingMsgMap, host)
+
 }
 
 func SendJsonMessage(host string, message any) error {
 	defer func() {
 		if err := recover(); err != nil {
 			AppendPendingMsg(host, message)
-			logrus.Errorf("send msg to explorer error: %v", err)
+			logrus.Warnf("send msg to explorer error: %v", err)
 		}
 	}()
 	err := func() error {
@@ -48,7 +64,7 @@ func SendJsonMessage(host string, message any) error {
 	}()
 	if err != nil {
 		AppendPendingMsg(host, message)
-		logrus.Error(err)
+		logrus.Warn(err)
 	}
 	return err
 }
@@ -57,6 +73,7 @@ func AppendPendingMsg(host string, message any) {
 	mu.Lock()
 	defer mu.Unlock()
 	PendingMsgMap[host] = append(PendingMsgMap[host], message)
+	logrus.Warn("append pending msg to explorer: ", PendingMsgMap[host])
 }
 
 func Clear() {
@@ -73,4 +90,5 @@ func DeleteClientByHost(host string) {
 	mu.Lock()
 	defer mu.Unlock()
 	delete(WsClients, host)
+	delete(PendingMsgMap, host)
 }
