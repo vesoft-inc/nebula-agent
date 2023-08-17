@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package proto;
+ 
+enum TaskType {
+  SHELL = 0;
+  JSON = 2;
+}
+
+enum TaskStatus {
+  TASK_SUCCESS = 0;
+  TASK_FAILED = 1;
+  TASK_RUNNING = 2;
+}
+message RunTaskRequest {
+  TaskType type = 1;
+  string data = 2;
+  string id = 3;
+}
+message RunTaskResponse {
+  TaskStatus status = 1;
+  string data = 2;
+  string id = 3;
+}
+
+message StreamRunTaskResponse {
+  TaskStatus status = 1;
+  string data = 2;
+  string id = 3;
+}
+
+service TaskService {
+  rpc RunTask(RunTaskRequest) returns (RunTaskResponse);
+  rpc RunStreamTask(RunTaskRequest) returns (stream StreamRunTaskResponse);
+}

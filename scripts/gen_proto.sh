@@ -23,9 +23,9 @@ if [ -z $GOPATH ]; then
 fi
 
 echo "install tools..."
-GO111MODULE=off go get -u github.com/golang/protobuf/proto
-GO111MODULE=off go get -u github.com/gogo/protobuf/protoc-gen-gofast
-GO111MODULE=off go get google.golang.org/grpc
+# GO111MODULE=off go get -u github.com/golang/protobuf/proto
+# GO111MODULE=off go get -u github.com/gogo/protobuf/protoc-gen-gofast
+# GO111MODULE=off go get google.golang.org/grpc
 
 
 echo "collect proto..."
