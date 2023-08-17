@@ -1,10 +1,11 @@
 package clients
 
 import (
-	pb "github.com/vesoft-inc/nebula-agent/v3/pkg/proto"
 	"os"
 	"path/filepath"
 	"strconv"
+
+	pb "github.com/vesoft-inc/nebula-agent/v3/pkg/proto"
 )
 
 type SpaceUsage struct {
@@ -19,26 +20,31 @@ func NewSpaceUsage(dataPath string) *SpaceUsage {
 
 func (s *SpaceUsage) GetSpaceUsages() (*pb.GetSpaceUsagesResponse, error) {
 	spaceUsages := make([]*pb.GetSpaceUsagesResponse_SpaceUsageItem, 0)
-	err := filepath.Walk(s.DataPath, func(path string, info os.FileInfo, err error) error {
+	dirs, err := filepath.Glob(filepath.Join(s.DataPath, "*/"))
+	if err != nil {
+		return nil, err
+	}
+	for _, dir := range dirs {
+		id, err := strconv.Atoi(filepath.Base(dir))
 		if err != nil {
+			continue
+		}
+
+		var size int64
+		err = filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+			if !info.IsDir() {
+				size += info.Size()
+			}
 			return err
-		}
-		if !info.IsDir() {
-			return nil
-		}
-		id, err := strconv.Atoi(info.Name())
+		})
 		if err != nil {
-			return nil
+			return nil, err
 		}
 
 		spaceUsages = append(spaceUsages, &pb.GetSpaceUsagesResponse_SpaceUsageItem{
 			Id:    int64(id),
-			Usage: info.Size(),
+			Usage: size,
 		})
-		return nil
-	})
-	if err != nil {
-		return nil, err
 	}
 
 	return &pb.GetSpaceUsagesResponse{SpaceUsages: spaceUsages}, nil
