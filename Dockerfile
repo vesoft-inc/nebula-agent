@@ -1,15 +1,16 @@
 FROM ubuntu:20.04
 
+ENV LOGROTATE_ROTATE=5 \
+    LOGROTATE_SIZE=100M \
+    TZ=Asia/Shanghai
+
 RUN mkdir -p /usr/local/nebula/bin \
     && mkdir -p /usr/local/certs
-RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
-                 && echo "Asia/Shanghai" > /etc/timezone
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
+               echo $TZ > /etc/timezone
 RUN apt-get update \
     && apt-get install -y --no-install-recommends ca-certificates curl cron logrotate \
     && apt-get clean all
-
-ENV LOGROTATE_ROTATE= \
-    LOGROTATE_SIZE=
 
 COPY bin/agent /usr/local/bin/agent
 COPY db_playback /usr/local/nebula/bin/db_playback
