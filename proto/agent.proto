@@ -68,6 +68,18 @@ message HealthCheckResponse {
   string status = 1;
 }
 
+message GetSpaceUsagesRequest {
+  string data_path = 1;
+}
+
+message GetSpaceUsagesResponse {
+  message SpaceUsageItem {
+    int64 id = 1;
+    int64 usage = 2;
+  }
+  repeated SpaceUsageItem SpaceUsages = 1;
+}
+
 service AgentService {
   rpc StartService(StartServiceRequest) returns (StartServiceResponse);
   rpc StopService(StopServiceRequest) returns (StopServiceResponse);
@@ -80,4 +92,6 @@ service AgentService {
 
   rpc StopAgent(StopAgentRequest) returns (StopAgentResponse);
   rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse);
+
+  rpc GetSpaceUsages(GetSpaceUsagesRequest) returns (GetSpaceUsagesResponse);
 }

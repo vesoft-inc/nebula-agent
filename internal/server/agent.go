@@ -94,3 +94,7 @@ func (a *AgentServer) HealthCheck(ctx context.Context, req *pb.HealthCheckReques
 		Status: "healthy",
 	}, nil
 }
+
+func (a *AgentServer) GetSpaceUsages(ctx context.Context, req *pb.GetSpaceUsagesRequest) (*pb.GetSpaceUsagesResponse, error) {
+	return clients.NewSpaceUsage(req.DataPath).GetSpaceUsages()
+}

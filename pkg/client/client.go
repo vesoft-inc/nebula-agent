@@ -33,6 +33,7 @@ type Client interface {
 	ExistDir(req *pb.ExistDirRequest) (*pb.ExistDirResponse, error)
 	StopAgent(req *pb.StopAgentRequest) (*pb.StopAgentResponse, error)
 	HealthCheck(req *pb.HealthCheckRequest) (*pb.HealthCheckResponse, error)
+	GetSpaceUsages(req *pb.GetSpaceUsagesRequest) (*pb.GetSpaceUsagesResponse, error)
 }
 
 func genSessionId() string {
@@ -198,4 +199,14 @@ func (c *client) HealthCheck(req *pb.HealthCheckRequest) (resp *pb.HealthCheckRe
 	}()
 
 	return c.agent.HealthCheck(c.ctx, req)
+}
+
+func (c *client) GetSpaceUsages(req *pb.GetSpaceUsagesRequest) (resp *pb.GetSpaceUsagesResponse, err error) {
+	defer func() {
+		if err != nil {
+			err = fmt.Errorf("agent, get space usages failed: %w", err)
+		}
+	}()
+
+	return c.agent.GetSpaceUsages(c.ctx, req)
 }
