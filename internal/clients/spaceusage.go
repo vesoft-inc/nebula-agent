@@ -26,7 +26,7 @@ func (s *SpaceUsage) GetSpaceUsages() (*pb.GetSpaceUsagesResponse, error) {
 	}
 	for _, dir := range dirs {
 		id, err := strconv.Atoi(filepath.Base(dir))
-		if err != nil {
+		if err != nil || id == 0 {
 			continue
 		}
 
