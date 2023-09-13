@@ -11,7 +11,6 @@ RUN ln -sf /usr/share/zoneinfo/$TZ /etc/localtime \
 RUN apt-get update \
     && apt-get install -y --no-install-recommends ca-certificates curl cron logrotate \
     && apt-get clean all
-
 COPY bin/agent /usr/local/bin/agent
 COPY db_playback /usr/local/nebula/bin/db_playback
 COPY logrotate.sh /logrotate.sh

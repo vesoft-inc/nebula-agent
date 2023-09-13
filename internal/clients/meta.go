@@ -6,8 +6,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/facebook/fbthrift/thrift/lib/go/thrift"
 	log "github.com/sirupsen/logrus"
+	"github.com/vesoft-inc/fbthrift/thrift/lib/go/thrift"
 	"github.com/vesoft-inc/nebula-agent/v3/internal/utils"
 	"github.com/vesoft-inc/nebula-go/v3/nebula"
 	"github.com/vesoft-inc/nebula-go/v3/nebula/meta"
