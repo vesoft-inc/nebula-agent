@@ -34,6 +34,7 @@ type Client interface {
 	StopAgent(req *pb.StopAgentRequest) (*pb.StopAgentResponse, error)
 	HealthCheck(req *pb.HealthCheckRequest) (*pb.HealthCheckResponse, error)
 	GetSpaceUsages(req *pb.GetSpaceUsagesRequest) (*pb.GetSpaceUsagesResponse, error)
+	Close() error
 }
 
 func genSessionId() string {
@@ -43,6 +44,7 @@ func genSessionId() string {
 type client struct {
 	ctx     context.Context
 	addr    *nebula.HostAddr
+	conn    *grpc.ClientConn
 	storage pb.StorageServiceClient
 	agent   pb.AgentServiceClient
 }
@@ -62,11 +64,16 @@ func New(ctx context.Context, cfg *Config) (Client, error) {
 	c := &client{
 		ctx:     ctx,
 		addr:    cfg.Addr,
+		conn:    conn,
 		storage: pb.NewStorageServiceClient(conn),
 		agent:   pb.NewAgentServiceClient(conn),
 	}
 
 	return c, nil
+}
+
+func (c *client) Close() error {
+	return c.conn.Close()
 }
 
 func (c *client) GetAddr() *nebula.HostAddr {
