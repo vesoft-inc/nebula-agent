@@ -36,6 +36,7 @@ nebula="
 /usr/local/nebula/logs/nebula-storaged.WARNING.impl
 /usr/local/nebula/logs/nebula-storaged.ERROR
 /usr/local/nebula/logs/nebula-storaged.ERROR.impl
+/usr/local/nebula/logs/audit/audit.log
 {
         daily
         rotate ${ROTATE}
