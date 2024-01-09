@@ -113,7 +113,7 @@ func connect(metaAddr, agentAddr *nebula.HostAddr, tlsConfig *tls.Config, handsh
 			err = fmt.Errorf("verifyClientVersion err: %s", string(resp.GetErrorMsg()))
 		}
 
-		log.WithError(err).WithField("addr", metaAddr).Error(string(resp.GetErrorMsg()))
+		log.WithError(err).WithField("addr", metaAddr)
 		client.Close()
 
 		return nil, err
