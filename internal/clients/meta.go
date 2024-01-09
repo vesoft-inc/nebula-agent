@@ -110,10 +110,10 @@ func connect(metaAddr, agentAddr *nebula.HostAddr, tlsConfig *tls.Config, handsh
 	resp, err := client.VerifyClientVersion(req)
 	if err != nil || resp.Code != nebula.ErrorCode_SUCCEEDED {
 		if err == nil {
-			err = fmt.Errorf("incompatible version between client and server, handshakeKey: %s", handshakeKey)
+			err = fmt.Errorf("verifyClientVersion err: %s", string(resp.GetErrorMsg()))
 		}
 
-		log.WithError(err).WithField("addr", addr).Error("incompatible version between client and server")
+		log.WithError(err).WithField("addr", metaAddr).Error(string(resp.GetErrorMsg()))
 		client.Close()
 
 		return nil, err
