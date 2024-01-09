@@ -18,18 +18,20 @@ const (
 )
 
 type MetaConfig struct {
-	GitInfoSHA string
-	HBInterval int
-	MetaAddr   *nebula.HostAddr // meta service address to connect
-	AgentAddr  *nebula.HostAddr // info to be reported to the meta service
-	TLSConfig  *tls.Config
+	GitInfoSHA   string
+	HBInterval   int
+	MetaAddr     *nebula.HostAddr // meta service address to connect
+	AgentAddr    *nebula.HostAddr // info to be reported to the meta service
+	TLSConfig    *tls.Config
+	HandShakeKey string
 }
 
-func NewMetaConfig(agentAddr, metaAddr, gitSHA string, hbInterval int, tlsConfig *tls.Config) (*MetaConfig, error) {
+func NewMetaConfig(agentAddr, metaAddr, gitSHA, handshakeKey string, hbInterval int, tlsConfig *tls.Config) (*MetaConfig, error) {
 	cfg := &MetaConfig{
-		GitInfoSHA: gitSHA,
-		HBInterval: hbInterval,
-		TLSConfig:  tlsConfig,
+		GitInfoSHA:   gitSHA,
+		HBInterval:   hbInterval,
+		TLSConfig:    tlsConfig,
+		HandShakeKey: handshakeKey,
 	}
 	var err error
 
@@ -61,7 +63,7 @@ func NewMeta(config *MetaConfig) (*NebulaMeta, error) {
 	}
 	var err error
 
-	if m.client, err = connect(m.config.MetaAddr, m.config.AgentAddr, m.config.TLSConfig); err != nil {
+	if m.client, err = connect(m.config.MetaAddr, m.config.AgentAddr, m.config.TLSConfig, m.config.HandShakeKey); err != nil {
 		return nil, err
 	}
 
@@ -73,7 +75,7 @@ func NewMeta(config *MetaConfig) (*NebulaMeta, error) {
 // We will reconnect when:
 //  1. the meta service leader changed
 //  2. get individual info from individual meta service, such as dir info
-func connect(metaAddr, agentAddr *nebula.HostAddr, tlsConfig *tls.Config) (*meta.MetaServiceClient, error) {
+func connect(metaAddr, agentAddr *nebula.HostAddr, tlsConfig *tls.Config, handshakeKey string) (*meta.MetaServiceClient, error) {
 	addr := utils.StringifyAddr(metaAddr)
 	log.WithField("meta address", addr).Info("try to connect meta service")
 
@@ -104,11 +106,16 @@ func connect(metaAddr, agentAddr *nebula.HostAddr, tlsConfig *tls.Config) (*meta
 		return nil, err
 	}
 
-	req := newVerifyClientVersionReq(agentAddr)
+	req := newVerifyClientVersionReq(agentAddr, handshakeKey)
 	resp, err := client.VerifyClientVersion(req)
 	if err != nil || resp.Code != nebula.ErrorCode_SUCCEEDED {
+		if err == nil {
+			err = fmt.Errorf("incompatible version between client and server, handshakeKey: %s", handshakeKey)
+		}
+
 		log.WithError(err).WithField("addr", addr).Error("incompatible version between client and server")
 		client.Close()
+
 		return nil, err
 	}
 
@@ -145,7 +152,7 @@ func (m *NebulaMeta) heartbeat() error {
 	for {
 		resp, err := m.client.AgentHeartbeat(req)
 		if err != nil {
-			c, err := connect(m.config.MetaAddr, m.config.AgentAddr, m.config.TLSConfig)
+			c, err := connect(m.config.MetaAddr, m.config.AgentAddr, m.config.TLSConfig, m.config.HandShakeKey)
 			if err != nil {
 				return err
 			}
@@ -171,7 +178,7 @@ func (m *NebulaMeta) heartbeat() error {
 				return LeaderNotFoundError
 			}
 			m.config.MetaAddr = resp.GetLeader()
-			c, err := connect(m.config.MetaAddr, m.config.AgentAddr, m.config.TLSConfig)
+			c, err := connect(m.config.MetaAddr, m.config.AgentAddr, m.config.TLSConfig, m.config.HandShakeKey)
 			if err != nil {
 				return err
 			}
@@ -190,10 +197,10 @@ func (m *NebulaMeta) heartbeat() error {
 
 // getMetaDirInfo get individual meta dir info of given meta service.
 // Because follower meta service could not report its dir info to the leader one.
-func getMetaDirInfo(metaAddr, agentAddr *nebula.HostAddr, tlsConfig *tls.Config) (*nebula.DirInfo, error) {
+func getMetaDirInfo(metaAddr, agentAddr *nebula.HostAddr, tlsConfig *tls.Config, handshakeKey string) (*nebula.DirInfo, error) {
 	log.WithField("addr", utils.StringifyAddr(metaAddr)).
 		Debugf("Try to get dir info from meta service: %s\n", utils.StringifyAddr(metaAddr))
-	c, err := connect(metaAddr, agentAddr, tlsConfig)
+	c, err := connect(metaAddr, agentAddr, tlsConfig, handshakeKey)
 	if err != nil {
 		return nil, err
 	}
@@ -227,7 +234,7 @@ func (m *NebulaMeta) refreshInfo(services []*meta.ServiceInfo) error {
 	for _, s := range services {
 		k := utils.StringifyAddr(s.GetAddr())
 		if s.GetRole() == meta.HostRole_META {
-			d, err := getMetaDirInfo(s.Addr, m.config.AgentAddr, m.config.TLSConfig)
+			d, err := getMetaDirInfo(s.Addr, m.config.AgentAddr, m.config.TLSConfig, m.config.HandShakeKey)
 			if err != nil {
 				return fmt.Errorf("get meta dir for %s failed: %w", k, err)
 			}
@@ -243,9 +250,13 @@ func (m *NebulaMeta) refreshInfo(services []*meta.ServiceInfo) error {
 	return nil
 }
 
-func newVerifyClientVersionReq(agentAddr *nebula.HostAddr) *meta.VerifyClientVersionReq {
+func newVerifyClientVersionReq(agentAddr *nebula.HostAddr, handshakeKey string) *meta.VerifyClientVersionReq {
+	if handshakeKey == "" {
+		handshakeKey = nebula.Version
+	}
+
 	return &meta.VerifyClientVersionReq{
-		ClientVersion: []byte(nebula.Version),
+		ClientVersion: []byte(handshakeKey),
 		Host:          agentAddr,
 	}
 }

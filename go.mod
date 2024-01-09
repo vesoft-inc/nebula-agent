@@ -16,7 +16,8 @@ require (
 	github.com/kr/pretty v0.3.0 // indirect
 	github.com/stretchr/testify v1.7.0
 	github.com/vesoft-inc/fbthrift v0.0.0-20230214024353-fa2f34755b28
-	github.com/vesoft-inc/nebula-go/v3 v3.6.0
+	github.com/vesoft-inc/nebula-go/v3 v3.6.2-0.20240108060629-6eb07e9b9e0f
+	golang.org/x/net v0.20.0 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )
