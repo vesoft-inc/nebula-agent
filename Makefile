@@ -25,7 +25,7 @@ docker-push:
 	docker push "${DOCKER_REPO}/nebula-agent:${IMAGE_TAG}"
 
 proto:
-	sh scripts/gen_proto.sh
+	bash scripts/gen_proto.sh
 
 run: build
 	 ./bin/agent
