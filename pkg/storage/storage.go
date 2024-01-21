@@ -14,7 +14,7 @@ const (
 
 // Downloader download data from externalUri in ExternalStorage to the localPath
 // If localPath not exist, create it;
-// If it exist, overwrite it when it is file, copy to it when it is folder
+// If it exists, overwrite it when it is file, copy to it when it is folder
 type Downloader interface {
 	Download(ctx context.Context, localPath, externalUri string, recursively bool) error
 }
@@ -55,6 +55,9 @@ func New(b *pb.Backend) (ExternalStorage, error) {
 		return &Local{}, nil
 	case pb.S3Type:
 		return NewS3(b)
+	case pb.GSType:
+		return NewGS(b)
+	default:
+		return nil, fmt.Errorf("unknown storage type: %s", b.Type())
 	}
-	return nil, fmt.Errorf("invalid uri: %s", b.Uri())
 }

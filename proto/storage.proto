@@ -14,13 +14,17 @@ message S3 {
   string secret_key = 7;
 }
 
-message HDFS { string remote = 1; }
+message GS {
+  string bucket = 1;
+  string path = 2;
+  string credentials = 3;
+}
 
 message Backend {
   oneof storage {
     Local local = 1;
     S3 s3 = 2;
-    HDFS hdfs = 3;
+    GS gs = 3;
   }
 }
 

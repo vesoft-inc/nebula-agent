@@ -13,17 +13,17 @@ import (
 )
 
 var (
-	rootDir string = "/tmp/nebula-agent"
+	rootDir = "/tmp/nebula-agent"
 
-	localFile        string = "/tmp/nebula-agent/local.txt"
-	externalFile     string = "/tmp/nebula-agent/external.txt"
-	localNotExist    string = "/tmp/nebula-agent/local_not_exist.txt"
-	externalNotExist string = "/tmp/nebula-agent/external_not_exist.txt"
+	localFile        = "/tmp/nebula-agent/local.txt"
+	externalFile     = "/tmp/nebula-agent/external.txt"
+	localNotExist    = "/tmp/nebula-agent/local_not_exist.txt"
+	externalNotExist = "/tmp/nebula-agent/external_not_exist.txt"
 
-	localDir    string = "/tmp/nebula-agent/local_dir/"
-	externalDir string = "/tmp/nebula-agent/external_dir/"
-	resultFile  string = "/tmp/nebula-agent/result.txt"
-	resultDir   string = "/tmp/nebula-agent/result/"
+	localDir    = "/tmp/nebula-agent/local_dir/"
+	externalDir = "/tmp/nebula-agent/external_dir/"
+	resultFile  = "/tmp/nebula-agent/result.txt"
+	resultDir   = "/tmp/nebula-agent/result/"
 )
 
 func toExternal(localname string) string {
@@ -145,20 +145,20 @@ func TestLocalDownload(t *testing.T) {
 	}
 
 	setup(t)
-	assert := assert.New(t)
+	assertion := assert.New(t)
 	backend := &pb.Backend{
 		Storage: &pb.Backend_Local{
 			Local: &pb.Local{Path: toExternal(rootDir)},
 		},
 	}
 	storage, err := New(backend)
-	assert.Nil(err, "Create storage failed", err)
+	assertion.Nil(err, "Create storage failed", err)
 
 	for _, tc := range testcases {
 		fmt.Printf("Test case: local download - %s\n", tc.Name)
 		err = storage.Download(context.Background(), tc.LocalPath, tc.ExternalUri, tc.Recursively)
 		hasError := err != nil
-		assert.Equalf(hasError, tc.HasError, "Test case: '%s' failed, error: %v", tc.Name, err)
+		assertion.Equalf(hasError, tc.HasError, "Test case: '%s' failed, error: %v", tc.Name, err)
 	}
 	teardown(t)
 }
@@ -212,19 +212,19 @@ func TestLocalUpload(t *testing.T) {
 	}
 
 	setup(t)
-	assert := assert.New(t)
+	assertion := assert.New(t)
 	backend := &pb.Backend{
 		Storage: &pb.Backend_Local{
 			Local: &pb.Local{Path: pb.LocalPrefix},
 		},
 	}
 	storage, err := New(backend)
-	assert.Nilf(err, "New storage from backend failed: %v", err)
+	assertion.Nilf(err, "New storage from backend failed: %v", err)
 	for _, tc := range testcases {
 		fmt.Printf("Test case: local upload - %s\n", tc.Name)
 		err := storage.Upload(context.Background(), tc.ExternalUri, tc.LocalPath, tc.Recursively)
 		hasError := err != nil
-		assert.Equalf(hasError, tc.HasError, "Test case: '%s' failed, error: %v", tc.Name, err)
+		assertion.Equalf(hasError, tc.HasError, "Test case: '%s' failed, error: %v", tc.Name, err)
 	}
 	teardown(t)
 }

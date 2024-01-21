@@ -2,8 +2,8 @@ package utils
 
 import (
 	"fmt"
-	"io/ioutil"
 	"math"
+	"os"
 	"path"
 	"strconv"
 	"strings"
@@ -16,7 +16,7 @@ const (
 
 // LoadIncrFiles load incremental wal file and commitlog.id file
 func LoadIncrFiles(srcDir string, commitLogId, lastLogId int64) ([]string, error) {
-	entries, err := ioutil.ReadDir(srcDir)
+	entries, err := os.ReadDir(srcDir)
 	if err != nil {
 		return nil, err
 	}

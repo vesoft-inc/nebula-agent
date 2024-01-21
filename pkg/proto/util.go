@@ -8,31 +8,28 @@ import (
 
 const (
 	S3Prefix    = "s3://"
+	GSPrefix    = "gs://"
 	LocalPrefix = "local://"
-	HdfsPrefix  = "hdfs://"
 )
 
 type BackendType int
 
 const (
-	InvalidType BackendType = iota
-	LocalType
-	HdfsType
+	LocalType BackendType = iota
 	S3Type
+	GSType
 )
 
 func (t BackendType) String() string {
 	switch t {
 	case LocalType:
-		return "Local"
-	case HdfsType:
-		return "HDFS"
+		return "local"
 	case S3Type:
-		return "S3-compatible"
-	case InvalidType:
-		return "Invalid"
+		return "s3"
+	case GSType:
+		return "gs"
 	default:
-		return "Unknown"
+		return "unknown"
 	}
 }
 
@@ -41,31 +38,23 @@ func ParseType(uri string) BackendType {
 		return LocalType
 	} else if strings.HasPrefix(uri, S3Prefix) {
 		return S3Type
+	} else if strings.HasPrefix(uri, GSPrefix) {
+		return GSType
 	}
 
-	return InvalidType
+	return -1
 }
 
 func (b *Backend) Type() BackendType {
 	t := ParseType(b.Uri())
-	switch t {
-	case LocalType:
-		if b.GetLocal() == nil {
-			panic(fmt.Errorf("uri %s is local, but local pointer is nil", b.Uri()))
-		}
-	case S3Type:
-		if b.GetS3() == nil {
-			panic(fmt.Errorf("uri %s is s3, but s3 pointer is nil", b.Uri()))
-		}
-	}
 	return t
 }
 
 func (b *Backend) Uri() string {
-	if hdfs := b.GetHdfs(); hdfs != nil {
-		return hdfs.GetRemote()
-	} else if s3 := b.GetS3(); s3 != nil {
+	if s3 := b.GetS3(); s3 != nil {
 		return S3Prefix + s3.GetBucket() + "/" + s3.GetPath()
+	} else if gs := b.GetGs(); gs != nil {
+		return GSPrefix + gs.GetBucket() + "/" + gs.GetPath()
 	} else if local := b.GetLocal(); local != nil {
 		return LocalPrefix + local.GetPath()
 	}
@@ -74,14 +63,8 @@ func (b *Backend) Uri() string {
 }
 
 func (b *Backend) SetUri(uri string) error {
-	if ParseType(uri) == InvalidType {
-		return fmt.Errorf("invalid uri: %s", uri)
-	}
-	if b.Type() != InvalidType && b.Type() != ParseType(uri) {
-		return fmt.Errorf("not same type uri, backend: %s, paramter: %s", b.Uri(), uri)
-	}
-
-	switch ParseType(uri) {
+	t := ParseType(uri)
+	switch t {
 	case LocalType:
 		if b.GetLocal() == nil {
 			b.Storage = &Backend_Local{
@@ -94,12 +77,10 @@ func (b *Backend) SetUri(uri string) error {
 		}
 
 	case S3Type:
-		u, err := url.Parse(uri)
-		if err != nil || strings.ToLower(u.Scheme) != "s3" {
-			return fmt.Errorf("bad s3 format uri: %s", uri)
+		u, err := parseUri(uri)
+		if err != nil {
+			return err
 		}
-		u.Host = strings.TrimRight(u.Host, "/ ")
-		u.Path = strings.TrimLeft(u.Path, "/ ")
 
 		if b.GetS3() == nil {
 			b.Storage = &Backend_S3{
@@ -112,18 +93,27 @@ func (b *Backend) SetUri(uri string) error {
 			b.GetS3().Bucket = u.Host
 			b.GetS3().Path = u.Path
 		}
-	case HdfsType:
-		if b.GetHdfs() == nil {
-			b.Storage = &Backend_Hdfs{
-				Hdfs: &HDFS{
-					Remote: uri,
+
+	case GSType:
+		u, err := parseUri(uri)
+		if err != nil {
+			return err
+		}
+
+		if b.GetGs() == nil {
+			b.Storage = &Backend_Gs{
+				Gs: &GS{
+					Bucket: u.Host,
+					Path:   u.Path,
 				},
 			}
 		} else {
-			b.GetHdfs().Remote = uri
+			b.GetGs().Bucket = u.Host
+			b.GetGs().Path = u.Path
 		}
+	default:
+		return fmt.Errorf("unknow storage backend type")
 	}
-
 	return nil
 }
 
@@ -136,6 +126,20 @@ func (b *Backend) DeepCopy() *Backend {
 	case S3Type:
 		s3 := *b.GetS3()
 		cp.Storage = &Backend_S3{&s3}
+	case GSType:
+		gs := *b.GetGs()
+		cp.Storage = &Backend_Gs{&gs}
 	}
 	return cp
+}
+
+func parseUri(uri string) (*url.URL, error) {
+	t := ParseType(uri)
+	u, err := url.Parse(uri)
+	if err != nil || strings.ToLower(u.Scheme) != t.String() {
+		return nil, fmt.Errorf("invalid uri: %s", uri)
+	}
+	u.Host = strings.TrimRight(u.Host, "/ ")
+	u.Path = strings.TrimLeft(u.Path, "/ ")
+	return u, nil
 }
