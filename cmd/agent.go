@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"flag"
 	"net"
+	"os"
 
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
@@ -14,6 +15,12 @@ import (
 	"github.com/vesoft-inc/nebula-agent/v3/internal/server"
 	"github.com/vesoft-inc/nebula-agent/v3/internal/utils"
 	pb "github.com/vesoft-inc/nebula-agent/v3/pkg/proto"
+)
+
+const (
+	CACertPathEnv     = "CA_CERT_PATH"
+	ClientCertPathEnv = "CLIENT_CERT_PATH"
+	ClientKeyPathEnv  = "CLIENT_KEY_PATH"
 )
 
 var (
@@ -46,6 +53,14 @@ func main() {
 
 	// set agent rate limit
 	limiter.Rate.SetLimiter(*ratelimit)
+
+	if os.Getenv(CACertPathEnv) != "" &&
+		os.Getenv(ClientCertPathEnv) != "" &&
+		os.Getenv(ClientKeyPathEnv) != "" {
+		caPath = stringPtr(os.Getenv(CACertPathEnv))
+		certPath = stringPtr(os.Getenv(ClientCertPathEnv))
+		keyPath = stringPtr(os.Getenv(ClientKeyPathEnv))
+	}
 
 	// set db_playback tls config
 	clients.InitPlayBackTLSConfig(*caPath, *certPath, *keyPath, *enableSSL)
@@ -92,4 +107,8 @@ func main() {
 	pb.RegisterAgentServiceServer(grpcServer, agentServer)
 	pb.RegisterStorageServiceServer(grpcServer, server.NewStorage())
 	grpcServer.Serve(lis)
+}
+
+func stringPtr(s string) *string {
+	return &s
 }
