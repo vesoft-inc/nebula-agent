@@ -38,7 +38,6 @@ var (
 	caPath             = flag.String("ca_path", "/usr/local/certs/ca.crt", "path to CA file")
 	enableSSL          = flag.Bool("enable_ssl", false, "Enable SSL for agent")
 	insecureSkipVerify = flag.Bool("insecure_skip_verify", false, "Skip server side cert verification")
-	handshakeKey       = flag.String("handshake_key", "3.0.0", "Specify the key for handshake with nebula")
 )
 
 func main() {
@@ -94,7 +93,7 @@ func main() {
 			tlsConfig.InsecureSkipVerify = *insecureSkipVerify
 		}
 
-		metaCfg, err := clients.NewMetaConfig(*agent, *meta, GitInfoSHA, *handshakeKey, *hbs, tlsConfig)
+		metaCfg, err := clients.NewMetaConfig(*agent, *meta, GitInfoSHA, *hbs, tlsConfig)
 		if err != nil {
 			log.WithError(err).Fatalf("Failed to create meta config.")
 		}
