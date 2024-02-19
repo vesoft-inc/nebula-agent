@@ -37,7 +37,8 @@ var (
 	keyPath            = flag.String("key_path", "/usr/local/certs/client.key", "Path to cert key")
 	caPath             = flag.String("ca_path", "/usr/local/certs/ca.crt", "path to CA file")
 	enableSSL          = flag.Bool("enable_ssl", false, "Enable SSL for agent")
-	insecureSkipVerify = flag.Bool("insecure_skip_verify", false, "Skip server side cert verification")
+	insecureSkipVerify = flag.Bool("insecure_skip_verify", false, "Verify the server's certificate chain and host name")
+	serverName         = flag.String("server_name", "", "The subject alternative name (SAN) of the peer server to verify")
 )
 
 func main() {
@@ -62,7 +63,7 @@ func main() {
 	}
 
 	// set db_playback tls config
-	clients.InitPlayBackTLSConfig(*caPath, *certPath, *keyPath, *enableSSL)
+	clients.InitPlayBackTLSConfig(*caPath, *certPath, *keyPath, *serverName, *enableSSL)
 
 	lis, err := net.Listen("tcp", *agent)
 	if err != nil {
@@ -91,6 +92,7 @@ func main() {
 				log.WithError(err).Fatalf("Failed to load tls config.")
 			}
 			tlsConfig.InsecureSkipVerify = *insecureSkipVerify
+			tlsConfig.ServerName = *serverName
 		}
 
 		metaCfg, err := clients.NewMetaConfig(*agent, *meta, GitInfoSHA, *hbs, tlsConfig)
