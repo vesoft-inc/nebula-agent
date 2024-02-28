@@ -9,7 +9,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"time"
 
 	"cloud.google.com/go/storage"
 	log "github.com/sirupsen/logrus"
@@ -25,8 +24,7 @@ import (
 )
 
 const (
-	defaultGCSPageSize = 100
-	defaultTimout      = time.Second * 30
+	defaultUploadChunkSize = 1024 * 1024 * 32
 )
 
 type GS struct {
@@ -232,12 +230,9 @@ func (g *GS) RemoveDir(ctx context.Context, uri string) error {
 }
 
 func (g *GS) getObjectSize(bucket, key string) (int64, error) {
-	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(defaultTimout))
-	defer cancel()
-
 	bkt := g.client.Bucket(bucket)
 	obj := bkt.Object(key)
-	attrs, err := obj.Attrs(ctx)
+	attrs, err := obj.Attrs(context.Background())
 	if err != nil {
 		return 0, err
 	}
@@ -272,6 +267,7 @@ func (g *GS) uploadToStorage(key, file string) error {
 	//}
 	//o = o.If(storage.Conditions{GenerationMatch: attrs.Generation})
 	wc := o.NewWriter(context.Background())
+	wc.ChunkSize = defaultUploadChunkSize
 	written, err := io.Copy(wc, f)
 	if err != nil {
 		return fmt.Errorf("io.Copy: %w", err)
